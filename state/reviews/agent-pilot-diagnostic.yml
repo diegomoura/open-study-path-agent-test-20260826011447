@@ -1,10 +1,10 @@
 contract_version: 1
-operation_id: diagnostic-v1
+operation_id: diagnostic-issue-7-v1
 phase: diagnostic
 reviewer_role: diagnostic_reviewer
 independent_pass: true
-status: approved
-reviewed_at: "2026-08-26T17:30:00Z"
+status: action_required
+reviewed_at: "2026-08-26T18:00:00Z"
 
 artifacts:
   - path: .open-study-path/instance.yml
@@ -12,17 +12,19 @@ artifacts:
     sha256: 3644c5d398c0c8c74827a04a50d7262c334932e96022cc6a2d1e6d541718856d
   - path: state/diagnostic-summary.json
     change: current
-    sha256: 80bb4fc72ec038811a9edaac8b0c3f6226ead88283dd5e9d41d82a1efef4cc06
+    sha256: 4ed8f0bb32b9f1b56650ab45d4cb04b9aeee5dcab8a1ad8164a0fc6c75a5ae64
 
 checks:
   evidence_basis: passed
   bounded_questioning: passed
   adjacent_experience_separation: passed
-  placement_consistency: passed
+  placement_consistency: failed
   privacy_and_minimization: passed
 
-blocking_findings: []
+blocking_findings:
+  - "This operation silently overwrites an already-completed, already-approved, already-merged diagnostic outcome for the same instance and subject without any acknowledgment or justification. The pull-request base already carried status: complete, method: github_issue_conversation, question_count: 3 and a 'traffic delay' applied-scenario evidence set, matched exactly by the already-approved state/reviews/agent-pilot-diagnostic.yml (operation_id diagnostic-v1, status approved, blocking_findings: []). .open-study-path/instance.yml already had status.diagnostic_complete: true before this PR and is untouched by this diff, confirming the diagnostic phase's completion contract (instructions/21-diagnostic-completion-recovery.md) was already durably satisfied (summary present, review approved, presumably already merged to the default branch) prior to this operation. Per instructions/manifest.yml, the phase that should follow a completed diagnostic is 'generate' (curriculum proposal), not another diagnostic round -- yet this operation re-ran the diagnostic phase from a different source (issue #7) with a different method (single_form_batch), a different question count (5), and materially different evidence (a 'lost job opportunity' scenario and different knowledge-gap wording), producing a placement conclusion that neither matches nor reconciles with the previously settled one. The author's self-reported summary treats this as a first-time completion ('reconstructed the session from issue #7... wrote the summary... set diagnostic_complete: true (already true, left consistent)') without ever acknowledging that a full, different, already-reviewed diagnostic result already existed for this exact subject. This is exactly the kind of stale-state / false-success / incorrect-next-action contradiction instructions/04-review-generated-artifacts.md and docs/review-framework.md require the reviewer to catch rather than let a mechanical hash/schema check wave through. Approving this PR would durably discard previously reviewed placement evidence and replace it with a second, unrelated placement narrative under the same 'Estoicismo' subject and the same completed_at date, with no record of why the learner or system triggered a second diagnostic, whether the first diagnostic result was wrong, or which of the two conclusions should govern curriculum generation. This requires a genuine decision from the repository owner (confirm whether a re-diagnosis was actually intended, e.g. via an explicit replan trigger or a corrected/void of the prior diagnostic, and reconcile or supersede the prior approved diagnostic-v1 review explicitly) before this can merge as the terminal diagnostic result; it cannot be resolved as a mechanical repair on this branch."
 
 non_blocking_findings:
-  - "diagnostic-summary.json uses subject: 'Estoicismo' (the issue title / path.name) rather than the more descriptive intake path.subject ('Fundamentos de estoicismo e aplicação prática'). Both are legitimate labels and the schema does not require a specific one, but future diagnostics could prefer path.subject for consistency with generation-phase artifacts."
-  - "confirmed_competencies records only two entries against a 3-question budget; a short one-line note tying each question to its resulting evidence entry would make the audit trail slightly easier to reconstruct without raw transcripts, though it is not required by the schema or instructions."
+  - "state/reviews/agent-pilot-diagnostic.yml (operation_id diagnostic-v1) remains in the repository referencing a state/diagnostic-summary.json sha256 (80bb4fc7...) that no longer matches the current file's actual bytes (4ed8f0bb...). It is not part of this PR's diff so the coverage gate does not re-validate it, but leaving a stale 'approved' review pointing at superseded content invites future audit confusion; once the duplicate-diagnostic question above is resolved, the superseded review should be explicitly marked superseded or removed in the same change that resolves it."
+  - "learner_context.declared_level is now 'none_to_beginner', a value that does not appear in study.config.yml's learner.current_level ('none') nor in the original intake ('no_knowledge', later normalized to 'none' per state/reviews/agent-pilot-intake.yml). The diagnostic-summary schema allows a free-form object here, so this is not a schema violation, but introducing a third, unaligned vocabulary term for the same concept works against consistent cross-artifact learner-level tracking."
+  - "diagnostic-summary.json.subject ('Estoicismo') still diverges from intake path.subject ('Fundamentos de estoicismo e aplicação prática'); both are legitimate per schema and this was already flagged as non-blocking in the prior diagnostic-v1 review, so it is repeated here only for continuity, not as a new concern."
