@@ -1,0 +1,37 @@
+contract_version: 1
+
+operation_id: intake-issue-3-v1
+
+phase: intake
+
+reviewer_role: intake_reviewer
+
+independent_pass: true
+
+status: approved
+
+reviewed_at: "2025-01-09T00:00:00Z"
+
+artifacts:
+  - path: study.config.yml
+    change: current
+    sha256: a97174b99bad5d3139bccf052af1f3996884a3e35d82855a418875d79f8cc26d
+  - path: state/intake-summary.json
+    change: current
+    sha256: 5cc5aa7a303a56014ebff016c4c96d2d8e32f3b05871c88797dbe33768ea6c2c
+  - path: .open-study-path/instance.yml
+    change: current
+    sha256: 96a3f77e8bd38ee38de4e9baf0aaa2078a0f7244ab9df9f3382c1341541fdbb2
+
+checks:
+  request_fidelity: passed
+  preference_preservation: passed
+  ambiguity_resolution: passed
+  data_minimization: passed
+  next_phase_consistency: passed
+
+blocking_findings: []
+
+non_blocking_findings:
+  - Assumptions recorded in state/intake-summary.json are helpful for curriculum planning (theory-practice balance, emphasis on original texts, practical application focus) and well-reasoned, though derived from learner's stated preferences rather than learner-declared assumptions. This is appropriate scaffolding.
+  - The normalized_at timestamp is synthetic (2025-01-09T00:00:00Z) rather than the actual intake submission timestamp; this is acceptable for automated intake processing provided it's consistent.
