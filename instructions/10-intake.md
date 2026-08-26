@@ -16,7 +16,7 @@ The natural command `Preenchi o formulário. Pode continuar.` approves importing
 
 ## GitHub Issue Form
 
-Search only the instance repository. Apply the algorithm in `scripts/intake_resolution.py`; do not replace it with similarity or newest-issue heuristics.
+Search only the instance repository. Apply the algorithm in `scripts/intake_resolution.py`; do not replace it with similarity or newest-issue heuristics. That algorithm matches headings by exact, line-anchored string comparison, not semantically: build each heading you pass to `resolve_intake_candidates` as `### ` followed by the field's exact `label:` text from `.github/ISSUE_TEMPLATE/create-study-path.yml`, verbatim (same wording, accents and punctuation, no trailing colon). A real dispatch produced a rejection with every required field and consent simultaneously reported missing against a submission that read as complete and correctly filled -- the cause was headings built without the `### ` prefix, not a bad submission; because every field is built the same way, one formatting slip fails all of them at once and looks identical to a genuinely malformed issue. If a submission that reads as complete gets rejected, re-derive the heading strings character-for-character from the form YAML before concluding the submission itself is the problem.
 
 ### Form contract and submission identity
 

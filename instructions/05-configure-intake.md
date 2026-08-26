@@ -75,6 +75,8 @@ Use:
 
 Update setup and intake-provider status in `.open-study-path/instance.yml`. Setup complete means only that the instance and intake method are ready.
 
+If `bootstrap_instance` already ran on this repository, every status field this phase would set may already be correct (this is the expected outcome for the `github_issue` provider, which needs no further configuration). Do not write a file just to have something to write. Verify each requirement above yourself, and if every one is already met, call `finish_phase` with `no_changes_needed=true` and a `reason` naming exactly which checks you verified and how -- an independent reviewer still re-checks the repository directly against this same contract before anything is accepted, so this is not a shortcut around review, only around writing a no-op diff.
+
 Validate the complete setup diff and required checks for the current head. Do not merge or report successful configuration while a required check is failing, pending, cancelled, missing or unreadable.
 
 Complete with `instructions/phase-completion.md`. Return the selected form or configuration path and make the next human action unmistakable.

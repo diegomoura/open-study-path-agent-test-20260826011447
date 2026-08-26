@@ -183,17 +183,36 @@ jobs:
           # git diff alone misses brand-new files (bootstrap's whole point is
           # creating files that don't exist yet), so check the working tree
           # status instead of the tracked-file diff.
+          #
+          # Exception (Etapa 9 item 2, real dispatch finding): when the author
+          # explicitly called finish_phase(no_changes_needed=true) -- only ever
+          # accepted for phases in agent_runtime.py's
+          # PHASES_ALLOWING_NO_CHANGES_NEEDED -- an empty working tree is a
+          # legitimate outcome (e.g. configure_intake against an instance
+          # bootstrap_instance already configured correctly), not a failure.
+          # It still goes through the reviewer job below exactly like any
+          # other run: the reviewer independently re-checks the repository and
+          # can reject this claim, it is never taken on the author's word.
+          no_changes_needed=$(python -c "import json; print(json.load(open('/tmp/author-result.json', encoding='utf-8')).get('no_changes_needed', False))")
           if [ -z "$(git status --porcelain)" ]; then
-            echo "::error::author agent finished without writing any allowed file"
-            exit 1
+            if [ "$no_changes_needed" = "True" ]; then
+              echo "Author reported no_changes_needed=true (see the job summary for its reason). Proceeding to independent review with an empty diff."
+            else
+              echo "::error::author agent finished without writing any allowed file"
+              exit 1
+            fi
           fi
 
       - name: Commit author output
         run: |
           git config user.name "open-study-path-agent"
           git config user.email "agent@users.noreply.github.com"
-          git add -A
-          git commit -m "agent(${PHASE}): author pass via ${TARGET_REPO}"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "agent(${PHASE}): author pass via ${TARGET_REPO}"
+          else
+            echo "Nothing to commit (no_changes_needed=true) -- pushing the branch unchanged so the reviewer job can still check it out."
+          fi
           git push origin "${{ steps.branch.outputs.name }}"
 
       - name: Upload author artifacts

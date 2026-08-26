@@ -480,6 +480,16 @@ PHASE_ALLOWED_REMOVED_LABELS: dict[str, frozenset[str]] = {
     "evaluate": frozenset({SUBMITTED_LABEL}),
 }
 
+# Etapa 9 item 2 (real dispatch finding): phases where the repository can
+# already fully satisfy the phase's contract before the author even runs --
+# configure_intake's github_issue path needs zero setup once bootstrap_instance
+# has defaulted every status field correctly, so a legitimate run can have
+# nothing left to write. finish_phase's no_changes_needed flag is only
+# accepted for phases in this set; every other phase keeps the original
+# "wrote nothing == the workflow's no-diff guard fails the job" behavior,
+# which intake's ambiguous/no-candidate case still relies on staying strict.
+PHASES_ALLOWING_NO_CHANGES_NEEDED: frozenset[str] = frozenset({"configure_intake"})
+
 
 class AllowlistViolation(RuntimeError):
     """Raised when a tool call would write (or read outside the repo) improperly."""
@@ -1195,7 +1205,13 @@ class RepoTools:
         self.files_written.append(path)
         return f"wrote {len(content)} bytes to {path}"
 
-    def finish_phase(self, summary: str, next_action: str) -> str:
+    def finish_phase(
+        self,
+        summary: str,
+        next_action: str,
+        no_changes_needed: bool = False,
+        reason: str = "",
+    ) -> str:
         if self.role != "author":
             raise AllowlistViolation("finish_phase is not available to this role")
         if self.phase == "diagnostic" and not self._diagnostic_comment_posted_this_turn:
@@ -1212,8 +1228,30 @@ class RepoTools:
                 "Every turn must post either the next question or the completion response before "
                 "finishing."
             )
+        if no_changes_needed:
+            # A real dispatch finding (Etapa 9 item 2): configure_intake against an
+            # instance where bootstrap_instance already defaulted every status field
+            # to github_issue correctly has nothing left to write. The workflow's
+            # own "no diff = fail" guard predates this case and cannot tell a
+            # legitimate no-op apart from an author that silently did nothing wrong
+            # -- this explicit, phase-allowlisted signal (still independently
+            # reviewed, see docs/claude-agent-pilot.md) is what lets the two be
+            # told apart without weakening intake's existing "ambiguous/no
+            # candidate must fail loudly" behavior, which never sets this flag.
+            if self.phase not in PHASES_ALLOWING_NO_CHANGES_NEEDED:
+                raise AllowlistViolation(
+                    f"no_changes_needed is not available to phase {self.phase!r}; "
+                    "write the required files instead"
+                )
+            if not reason.strip():
+                raise AllowlistViolation("no_changes_needed=true requires a non-empty reason")
         self.finished = True
-        self.finish_payload = {"summary": summary, "next_action": next_action}
+        self.finish_payload = {
+            "summary": summary,
+            "next_action": next_action,
+            "no_changes_needed": bool(no_changes_needed),
+            "reason": reason if no_changes_needed else "",
+        }
         return "phase marked finished"
 
     def submit_review(self, review_yaml: str, status: str, blocking_findings: list[str]) -> str:
@@ -1241,7 +1279,12 @@ class RepoTools:
         if name == "write_file":
             return self.write_file(tool_input["path"], tool_input["content"])
         if name == "finish_phase":
-            return self.finish_phase(tool_input["summary"], tool_input["next_action"])
+            return self.finish_phase(
+                tool_input["summary"],
+                tool_input["next_action"],
+                tool_input.get("no_changes_needed", False),
+                tool_input.get("reason", ""),
+            )
         if name == "submit_review":
             return self.submit_review(
                 tool_input["review_yaml"],
@@ -1430,6 +1473,34 @@ def _run_publish_projection_tool() -> dict[str, Any]:
 
 
 def author_tools(phase: str | None = None) -> list[dict[str, Any]]:
+    finish_phase_properties: dict[str, Any] = {
+        "summary": {"type": "string"},
+        "next_action": {"type": "string"},
+    }
+    finish_phase_description = "Call once all required files are written, to end the author run."
+    if phase in PHASES_ALLOWING_NO_CHANGES_NEEDED:
+        finish_phase_properties["no_changes_needed"] = {
+            "type": "boolean",
+            "description": (
+                "Set true only when you verified every requirement in this phase's "
+                "instructions is already satisfied by the repository as it stands, so "
+                "there is nothing to write. This does NOT skip review -- an independent "
+                "reviewer still checks the repository directly and can reject this claim. "
+                "Leave false (the default) whenever you write any file."
+            ),
+        }
+        finish_phase_properties["reason"] = {
+            "type": "string",
+            "description": (
+                "Required when no_changes_needed is true: which specific requirements you "
+                "checked and how you confirmed each is already met. Ignored otherwise."
+            ),
+        }
+        finish_phase_description += (
+            " If, after checking, every requirement is already satisfied and nothing needs "
+            "to change, call this with no_changes_needed=true and a reason instead of writing "
+            "a no-op file just to have a diff."
+        )
     tools = [
         {
             "name": "read_file",
@@ -1466,13 +1537,10 @@ def author_tools(phase: str | None = None) -> list[dict[str, Any]]:
         },
         {
             "name": "finish_phase",
-            "description": "Call once all required files are written, to end the author run.",
+            "description": finish_phase_description,
             "input_schema": {
                 "type": "object",
-                "properties": {
-                    "summary": {"type": "string"},
-                    "next_action": {"type": "string"},
-                },
+                "properties": finish_phase_properties,
                 "required": ["summary", "next_action"],
             },
         },

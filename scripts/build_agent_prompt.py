@@ -201,6 +201,21 @@ same repository, scoped to the intake discovery label:
   read_file first, then pass them here. Do not attempt to decide which issue
   is the right one yourself before calling this -- that is exactly the
   "similarity or newest-issue heuristic" instructions/10-intake.md forbids.
+
+  Real dispatch finding: this classifier does an exact, line-anchored string
+  match against the rendered issue body, not a fuzzy or semantic one. Each
+  heading you pass must be the literal Markdown GitHub renders for that
+  field -- `### ` (heading level 3, one space) followed by the field's exact
+  `label:` text from the YAML, verbatim: same wording, accents and
+  punctuation, no trailing colon, no paraphrase. Passing a bare label without
+  the `### ` prefix, or a label you reworded even slightly, makes every
+  field built from it silently fail to match -- and because every field
+  shares this exact same construction, one formatting slip fails all of them
+  at once, which looks identical to a genuinely malformed submission. If
+  `resolve_intake_candidates` rejects a candidate that a plain read of its
+  rendered body looks complete and correct, re-derive each heading string
+  character-for-character from the form YAML before concluding the
+  submission itself is the problem.
   Trust this tool's `state` field (`unique`, `none`, or `ambiguous`) and act
   on `accepted`/`rejected` exactly as instructions/10-intake.md's Selection
   and import section describes for each state:

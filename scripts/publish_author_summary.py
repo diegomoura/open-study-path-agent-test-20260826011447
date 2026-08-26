@@ -26,7 +26,7 @@ import os
 from pathlib import Path
 
 
-def render_summary(phase: str, summary: str, next_action: str) -> str:
+def render_summary(phase: str, summary: str, next_action: str, no_changes_needed: bool, reason: str) -> str:
     lines = [
         f"## Author result ({phase})",
         "",
@@ -35,6 +35,14 @@ def render_summary(phase: str, summary: str, next_action: str) -> str:
         f"**Next action:** {next_action or '(no next action provided)'}",
         "",
     ]
+    if no_changes_needed:
+        lines.extend([
+            "**No changes needed.** The author verified this phase's requirements are already "
+            "satisfied and wrote nothing. This still goes to independent review below.",
+            "",
+            f"Reason given: {reason or '(no reason provided)'}",
+            "",
+        ])
     return "\n".join(lines)
 
 
@@ -45,7 +53,13 @@ def main() -> None:
     args = parser.parse_args()
 
     data = json.loads(Path(args.author_result).read_text(encoding="utf-8"))
-    text = render_summary(args.phase, data.get("summary", ""), data.get("next_action", ""))
+    text = render_summary(
+        args.phase,
+        data.get("summary", ""),
+        data.get("next_action", ""),
+        data.get("no_changes_needed", False),
+        data.get("reason", ""),
+    )
 
     # Always print to stdout too, so it's visible in the plain job log even
     # if GITHUB_STEP_SUMMARY isn't set (e.g. a local dry run outside Actions).
