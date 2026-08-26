@@ -12,7 +12,7 @@ path:
 
 learner:
   preferred_language: pt-BR
-  current_level: no_knowledge
+  current_level: none
   prior_knowledge: []
   accessibility_needs: []
 
@@ -41,8 +41,6 @@ intake:
   submission_strategy: unique_verified_candidate
   attachments_optional: true
   persist_raw_submission: false
-  imported_from_issue: 3
-  imported_at: "2025-01-09T00:00:00Z"
 
 integration_preferences:
   experience: minimal
