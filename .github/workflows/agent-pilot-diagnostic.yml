@@ -70,10 +70,20 @@ jobs:
   author:
     name: Author agent (isolated call, one diagnostic turn)
     runs-on: ubuntu-latest
+    # Loop prevention: skip only the author's own posts, identified by the
+    # hidden marker it always appends (instructions/20-diagnostic.md,
+    # AUTHOR_DIAGNOSTIC_NOTE), never by bot identity alone. Etapa 9d's
+    # diagnostic-answer bridge (agent-pilot-diagnostic-answer-bridge.yml)
+    # also posts as github-actions[bot] when it reposts a form submission --
+    # a login-only check would silently swallow that comment and turn 2
+    # would never fire. Requiring the marker too means only the author's
+    # own question/completion comments are skipped; the bridge's unmarked
+    # repost of the learner's real answers is never mistaken for one.
     if: >
       github.event.issue.pull_request == null &&
       contains(github.event.issue.labels.*.name, 'diagnostic:in-progress') &&
-      github.event.comment.user.login != 'github-actions[bot]'
+      !(github.event.comment.user.login == 'github-actions[bot]' &&
+        contains(github.event.comment.body, '<!-- open-study-path:diagnostic-turn -->'))
     outputs:
       branch: ${{ steps.branch.outputs.name }}
       base_sha: ${{ steps.base.outputs.sha }}

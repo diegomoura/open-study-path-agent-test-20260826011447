@@ -67,10 +67,17 @@ def extract_session_issue_number(body: str) -> int | None:
     return int(match.group(0))
 
 
-def extract_answers(body: str, max_fields: int = MAX_ANSWER_FIELDS) -> tuple[str, ...]:
-    """Every non-empty answer_N field, in order, skipping unanswered ones."""
+def extract_answers(body: str, max_fields: int = MAX_ANSWER_FIELDS) -> tuple[tuple[int, str], ...]:
+    """Every non-empty answer_N field, as (question_number, answer) pairs, in order.
 
-    answers: list[str] = []
+    Skipped (empty) fields are omitted entirely rather than renumbered --
+    a reply answering questions 1, 2 and 4 must still say "4.", not be
+    relabeled "3.", or the diagnostic author (which only ever sees the
+    reposted text, never the original field IDs) has no way to tell which
+    question an answer actually responds to.
+    """
+
+    answers: list[tuple[int, str]] = []
     for index in range(1, max_fields + 1):
         heading = f"### Resposta à Pergunta {index}"
         value = _section_value(body, heading)
@@ -78,18 +85,21 @@ def extract_answers(body: str, max_fields: int = MAX_ANSWER_FIELDS) -> tuple[str
             continue
         if value.strip().lower() in NO_RESPONSE_VALUES:
             continue
-        answers.append(value.strip())
+        answers.append((index, value.strip()))
     return tuple(answers)
 
 
-def render_answers_as_comment(answers: Sequence[str]) -> str:
-    """Format extracted answers as a plain numbered comment, indistinguishable
+def render_answers_as_comment(answers: Sequence[tuple[int, str]]) -> str:
+    """Format extracted (question_number, answer) pairs as a plain numbered
 
-    from a learner who typed everything by hand -- this is what the
-    diagnostic author sees via list_issue_comments, with no special marker.
+    comment, indistinguishable from a learner who typed everything by hand
+    -- this is what the diagnostic author sees via list_issue_comments, with
+    no special marker. Uses each answer's real question number, not a
+    resequenced count, so a skipped question does not shift every answer
+    after it.
     """
 
-    lines = [f"{index}. {answer}" for index, answer in enumerate(answers, start=1)]
+    lines = [f"{number}. {answer}" for number, answer in answers]
     return "\n\n".join(lines)
 
 

@@ -550,6 +550,10 @@ runs, it is just one more comment in the thread, formatted plainly, with no
 special marker distinguishing it. Do not go looking for a separate answer
 issue; you have no tool for that and are not meant to need one.
 
+post_issue_comment automatically appends a hidden loop-prevention marker to
+every comment it posts on your behalf -- you never need to add or think
+about it yourself, it happens unconditionally.
+
 finish_phase refuses to end a turn where post_issue_comment was never
 called, in either case above -- a diagnostic turn must never end silently.
 This does not check whether your sufficiency judgment itself was correct

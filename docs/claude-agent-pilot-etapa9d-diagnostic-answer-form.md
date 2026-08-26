@@ -87,7 +87,7 @@ change, not deferred.
 
 ## Testing
 
-`scripts/test_diagnostic_answer_resolution.py` (13 cases) and
+`scripts/test_diagnostic_answer_resolution.py` (14 cases) and
 `scripts/test_bridge_diagnostic_answer.py` (3 cases, fake API) cover the
 parsing/classification logic and the orchestration script's branches
 (accepted, missing session number, session not found) entirely offline --
@@ -95,3 +95,33 @@ no real dispatch needed to validate the deterministic half. The one thing
 only a real dispatch can confirm is that the pre-filled form link actually
 round-trips end to end against a live GitHub Issue Form; that is Etapa 9d's
 real-dispatch validation step, tracked separately from this commit.
+
+## Two more findings from the real round-trip test
+
+Both surfaced testing the bridge end to end against a real form submission
+(a fresh diagnostic session, issue #9, answered via the actual form) and
+were fixed before that test could be called complete:
+
+1. **Answer renumbering.** `extract_answers()` originally returned answers
+   as a plain list, discarding which `answer_N` field each one came from.
+   Answering questions 1, 2 and 4 (3 left blank) then got reposted as "1.",
+   "2.", "3." -- silently relabeling the answer to question 4 as if it
+   answered question 3. Fixed: `extract_answers()` now returns
+   `(question_number, answer)` pairs, and `render_answers_as_comment()`
+   reposts each answer under its real question number, leaving gaps where
+   a question went unanswered rather than closing them up.
+
+2. **Loop-prevention guard blocked the bridge's own repost.**
+   `agent-pilot-diagnostic.yml`'s loop guard skipped every comment from
+   `github-actions[bot]` -- which is also the identity the bridge posts
+   under when it reposts a learner's form answers. The guard was silently
+   swallowing turn 2 every single time a learner used the form; only a
+   real end-to-end round trip surfaced it; the earlier plain-comment test
+   (issue #7, Etapa 9c) never posted as that identity, so it stayed hidden.
+   Fixed structurally, not just by prompt instruction: `post_issue_comment()`
+   now unconditionally appends a hidden marker
+   (`DIAGNOSTIC_AUTHOR_COMMENT_MARKER`,
+   `<!-- open-study-path:diagnostic-turn -->`) to every comment the
+   diagnostic author posts, and the workflow's guard now skips a
+   `github-actions[bot]` comment only when that exact marker is present --
+   the bridge's repost never carries it, so it passes through correctly.

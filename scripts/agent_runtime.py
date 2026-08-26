@@ -488,6 +488,14 @@ PHASE_ALLOWED_REMOVED_LABELS: dict[str, frozenset[str]] = {
 # accepted for phases in this set; every other phase keeps the original
 # "wrote nothing == the workflow's no-diff guard fails the job" behavior,
 # which intake's ambiguous/no-candidate case still relies on staying strict.
+# Etapa 9d: hidden marker post_issue_comment() appends to every diagnostic
+# author comment, structurally -- agent-pilot-diagnostic.yml's loop guard
+# treats a github-actions[bot] comment as the author's own turn (skip it)
+# only when this exact marker is present, which is what lets the
+# diagnostic-answer bridge's unmarked, bot-authored repost of a learner's
+# real answers through the same guard.
+DIAGNOSTIC_AUTHOR_COMMENT_MARKER = "<!-- open-study-path:diagnostic-turn -->"
+
 PHASES_ALLOWING_NO_CHANGES_NEEDED: frozenset[str] = frozenset({"configure_intake"})
 
 
@@ -1023,14 +1031,26 @@ class RepoTools:
     def post_issue_comment(self, number: int, body: str) -> str:
         """Post one comment -- the diagnostic author's only way to reach the learner.
 
-        Used for both a mid-session question (evidence still insufficient)
-        and the terminal completion response (after the repository operation
-        succeeds) -- instructions/20-diagnostic.md requires exactly one
-        question per turn either way, never the whole questionnaire at once.
+        Used for both the turn-1 question batch and the terminal completion
+        response (instructions/20-diagnostic.md's single-form-batch design,
+        Etapa 9c) -- never one question per turn.
+
+        Always appends the hidden loop-prevention marker
+        (DIAGNOSTIC_AUTHOR_COMMENT_MARKER) to every comment this posts,
+        structurally rather than trusting the model to remember it every
+        time: agent-pilot-diagnostic.yml's loop guard skips a re-trigger only
+        when a github-actions[bot] comment carries this exact marker, so a
+        forgotten marker would make the workflow re-process the author's own
+        message as if it were a fresh learner reply. Etapa 9d's diagnostic-
+        answer bridge (agent-pilot-diagnostic-answer-bridge.yml) also posts as
+        github-actions[bot] but never adds this marker, which is what lets
+        its reposted answers through the same guard as a genuine reply.
         """
         if self.role != "author":
             raise AllowlistViolation("post_issue_comment is not available to this role")
         request_json, repository = self._require_github()
+        if self.phase == "diagnostic" and DIAGNOSTIC_AUTHOR_COMMENT_MARKER not in body:
+            body = f"{body}\n\n{DIAGNOSTIC_AUTHOR_COMMENT_MARKER}"
         request_json("POST", f"/repos/{repository}/issues/{number}/comments", {"body": body})
         self._diagnostic_comment_posted_this_turn = True
         return f"posted comment to issue #{number}"
