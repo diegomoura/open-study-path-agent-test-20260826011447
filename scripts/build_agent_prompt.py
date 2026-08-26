@@ -488,9 +488,9 @@ whether the lookahead-window scope (not the whole roadmap) was respected.
 """
 
 AUTHOR_DIAGNOSTIC_NOTE = """\
-## Diagnostic session addendum (Etapa 4b)
+## Diagnostic session addendum (Etapa 4b, question style updated in Etapa 9c/9d)
 
-This run is one turn of a multi-turn session, not a single self-contained
+This run is one turn of a two-turn session, not a single self-contained
 operation -- you have no memory of earlier turns, and the same instruction
 contract above was written assuming a live conversational chat. This
 addendum adapts it to how this harness actually invokes you: triggered once
@@ -499,29 +499,56 @@ per learner reply (a GitHub issue comment), always a fresh process.
 Every turn, in this order:
 
 1. Call list_issue_comments(number) first, always -- this is your only
-   record of the session. Reconstruct exactly how many questions you have
-   already asked (count your own prior comments that end in a question) and
-   what the learner answered. Never assume this is the first turn without
-   checking.
-2. Decide, using instructions/20-diagnostic.md's stopping rule and question
-   budget computed from the reconstructed count: is evidence sufficient?
-3. If not sufficient: call post_issue_comment(number, body) with exactly one
-   short next question (never the whole remaining questionnaire, never a
-   restatement of the previous answer) -- on the very first turn only,
-   briefly state the expected maximum before the first question, exactly as
-   instructed above. Then call finish_phase with a summary noting the
-   question count and next_action "waiting for the learner's reply" --
-   do NOT write state/diagnostic-summary.json or
-   .open-study-path/instance.yml on a turn like this. Never post a separate
-   "there is enough evidence, I will register it" transition comment.
-4. If sufficient: write state/diagnostic-summary.json and
-   .open-study-path/instance.yml exactly as instructed above, then call
-   post_issue_comment with the single learner-facing completion response
-   (starting depth, and instructions/20-diagnostic.md's exact
-   roadmap-proposal guidance for the next command) -- use
-   instructions/21-diagnostic-completion-recovery.md's "provisional"
-   language, since this comment is posted before the pull request this same
-   operation opens is reviewed and merged. Then call finish_phase.
+   record of the session. Reconstruct whether you have already posted the
+   question batch (your own prior comment listing every question) and
+   whether the learner has replied since. Never assume this is the first
+   turn without checking.
+2. If you have not yet posted the question batch: choose the question count
+   from instructions/20-diagnostic.md's budget table (this is decided once,
+   here, not extended turn by turn -- there is no second round of
+   questions), then call post_issue_comment(number, body) with the entire
+   numbered question list in one message, stating the total count up front.
+   Also include, on its own line, a direct clickable link the learner can
+   use instead of writing a comment by hand:
+   `https://github.com/<owner>/<repo>/issues/new?template=diagnostic-answer.yml&session_issue_number=<this issue's number>`
+   -- substitute the actual owner/repo (this transcript's target repository)
+   and this session issue's own number (shown at the top of this
+   transcript). Label it with something like **Responder pelo formulário**.
+   Then call finish_phase with a summary noting the question count and
+   next_action "waiting for the learner's reply" -- do NOT write
+   state/diagnostic-summary.json or .open-study-path/instance.yml on this
+   turn. Never post a separate "there is enough evidence, I will register
+   it" transition comment, and never ask only part of the question set
+   expecting a follow-up round.
+   Exception: if this transcript's very first comment already contains
+   complete, unprompted answers to what the question set would have asked,
+   skip straight to step 3 in this same turn instead of posting a question
+   batch at all.
+3. Otherwise (the question batch is already posted and the learner has
+   replied, whether by comment or via the linked form -- both arrive as an
+   ordinary comment on this issue by the time you read it, see the bridge
+   note below): evaluate the entire reply at once against every question
+   you asked. This is always the terminal turn -- there is no third round.
+   If the reply leaves a genuine gap on some dimension, do not ask a
+   follow-up question; record evidence_sufficiency: limited and the gap as
+   a material caveat instead, per instructions/20-diagnostic.md's stopping
+   rule. Write state/diagnostic-summary.json and .open-study-path/instance.yml
+   exactly as instructed above, then call post_issue_comment with the single
+   learner-facing completion response (starting depth, and
+   instructions/20-diagnostic.md's exact roadmap-proposal guidance for the
+   next command) -- use instructions/21-diagnostic-completion-recovery.md's
+   "provisional" language, since this comment is posted before the pull
+   request this same operation opens is reviewed and merged. Then call
+   finish_phase.
+
+A learner who used the linked Issue Form instead of typing a comment never
+appears to you as anything different: `.github/workflows/agent-pilot-diagnostic-answer-bridge.yml`
+resolves and validates that form submission deterministically (never by your
+judgment) and reposts its answers as a normal comment on this session issue
+before you are ever invoked for it -- by the time list_issue_comments(number)
+runs, it is just one more comment in the thread, formatted plainly, with no
+special marker distinguishing it. Do not go looking for a separate answer
+issue; you have no tool for that and are not meant to need one.
 
 finish_phase refuses to end a turn where post_issue_comment was never
 called, in either case above -- a diagnostic turn must never end silently.

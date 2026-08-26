@@ -56,6 +56,10 @@ harness's other phases' one-shot `run_agent()` -> `finish_phase()` shape.
 Originally one question per turn; Etapa 9c (real dispatch measured this at
 ~4x a normal phase's cost) switched the question-asking style to a single
 form batch -- see `docs/claude-agent-pilot-etapa9c-diagnostic-single-form.md`.
+Etapa 9d added a real Issue Form (`.github/ISSUE_TEMPLATE/diagnostic-answer.yml`)
+as an alternative to typing the reply as a raw comment, bridged back to the
+session issue by a small deterministic, zero-LLM-cost workflow -- see
+`docs/claude-agent-pilot-etapa9d-diagnostic-answer-form.md`.
 The workflow's trigger and turn/terminal mechanics are unchanged from the
 original real 4-turn validation (question budget respected, correct
 placement conclusion, reviewer approved with substantive findings) --

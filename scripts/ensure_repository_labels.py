@@ -23,6 +23,18 @@ REQUIRED_LABELS: dict[str, dict[str, str]] = {
         "color": "0E8A16",
         "description": "Intake já importado para a configuração da trilha",
     },
+    "diagnostic:in-progress": {
+        "color": "FBCA04",
+        "description": "Sessão de diagnóstico aberta, aguardando resposta do aluno",
+    },
+    "diagnostic:answer": {
+        "color": "1D76DB",
+        "description": "Submissão do formulário de resposta ao diagnóstico",
+    },
+    "diagnostic:answer-imported": {
+        "color": "0E8A16",
+        "description": "Resposta de diagnóstico já importada para a sessão",
+    },
 }
 
 
