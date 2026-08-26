@@ -1,0 +1,277 @@
+name: Agent pilot - diagnostic
+
+# Etapa 4b (docs/claude-agent-pilot-etapa4b-diagnostic-design.md): unlike
+# every other agent-pilot workflow (agent-pilot-setup.yml, one
+# workflow_dispatch = one complete operation), `diagnostic` is a real,
+# multi-turn placement session with the learner
+# (instructions/20-diagnostic.md: "Ask exactly one short question ... at a
+# time"). That does not fit a single isolated author+reviewer call, so this
+# workflow runs once per learner reply instead: triggered by `issue_comment`
+# on the session issue, not by a human pressing "Run workflow".
+#
+# Each run is still one isolated `run_agent()` call with zero memory of
+# earlier turns -- it reconstructs the whole running exchange from the
+# issue's own comment thread (scripts/build_diagnostic_context.py), the same
+# "context from artifacts, never memory" discipline every other phase
+# already follows, just triggered by a different event.
+#
+# Most turns only post the next question (a GitHub comment) and touch no
+# repository file at all -- that is a normal, successful outcome here, NOT
+# the failure it would be in agent-pilot-setup.yml's phases. Only the
+# terminal turn, once evidence is sufficient, writes
+# state/diagnostic-summary.json and .open-study-path/instance.yml and opens
+# a pull request exactly like every other phase.
+#
+# Guards against the two real risks of a comment-triggered workflow:
+# - Loop prevention: skip if the triggering comment was posted by this same
+#   workflow's own token (github-actions[bot]) -- otherwise the author's own
+#   completion/question comment would immediately retrigger itself.
+# - Scope: `issue_comment` fires for comments on both issues and pull
+#   requests in GitHub's model -- skip PR comments explicitly.
+# The repository this operates against is always `github.repository` (this
+# workflow's own repo), never taken from any event payload field a comment
+# author could influence -- same boundary as every other agent-pilot
+# workflow (see scripts/agent_runtime.py's module docstring).
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  # Scoped per session issue, not per repo: overlapping comments on the same
+  # session must not race, but two different learners' sessions (different
+  # issues) may run at the same time.
+  group: agent-pilot-diagnostic-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+env:
+  PHASE: diagnostic
+  TARGET_REPO: ${{ github.repository }}
+  ISSUE_NUMBER: ${{ github.event.issue.number }}
+
+jobs:
+  author:
+    name: Author agent (isolated call, one diagnostic turn)
+    runs-on: ubuntu-latest
+    if: >
+      github.event.issue.pull_request == null &&
+      contains(github.event.issue.labels.*.name, 'diagnostic:in-progress') &&
+      github.event.comment.user.login != 'github-actions[bot]'
+    outputs:
+      branch: ${{ steps.branch.outputs.name }}
+      base_sha: ${{ steps.base.outputs.sha }}
+      completed: ${{ steps.diff.outputs.completed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --quiet --disable-pip-version-check pyyaml jsonschema
+
+      - name: Record base SHA
+        id: base
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Create feature branch
+        id: branch
+        run: |
+          name="agent-pilot/diagnostic-$(date -u +%Y%m%d%H%M%S)"
+          git checkout -b "$name"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch diagnostic transcript
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/build_diagnostic_context.py \
+            --repository "$TARGET_REPO" \
+            --issue-number "$ISSUE_NUMBER" \
+            --out /tmp/diagnostic-transcript.txt
+
+      - name: Build author prompt
+        run: |
+          python scripts/build_agent_prompt.py author \
+            --phase "$PHASE" \
+            --target-repo "$TARGET_REPO" \
+            --extra-context-file /tmp/diagnostic-transcript.txt \
+            --out-system /tmp/author-system.txt \
+            --out-user /tmp/author-user.txt
+
+      - name: Run author agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/agent_runtime.py author \
+            --phase "$PHASE" \
+            --system-prompt-file /tmp/author-system.txt \
+            --user-prompt-file /tmp/author-user.txt \
+            > /tmp/author-result.json
+
+      - name: Extract author summary for the reviewer
+        run: |
+          python -c "import json; open('/tmp/author-summary.txt', 'w', encoding='utf-8').write(json.load(open('/tmp/author-result.json', encoding='utf-8'))['summary'])"
+
+      - name: Publish author result to the job summary
+        run: |
+          python scripts/publish_author_summary.py \
+            --author-result /tmp/author-result.json \
+            --phase "$PHASE"
+
+      - name: Check whether this turn completed the diagnostic
+        id: diff
+        run: |
+          # Unlike agent-pilot-setup.yml's phases, an empty diff here is the
+          # normal outcome of most turns (the author only posted the next
+          # question as a comment) -- not a failure. Only report completed=
+          # true when there is real repository state to commit and review.
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "completed=false" >> "$GITHUB_OUTPUT"
+            echo "This turn posted a question and is waiting for the learner's reply -- no repository change yet, which is expected." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "completed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Remove diagnostic:in-progress label
+        # Runs only on the terminal turn, before committing -- closes the
+        # window where a late/duplicate learner comment could retrigger a
+        # second run against the same, now-resolved session.
+        if: steps.diff.outputs.completed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh issue edit "$ISSUE_NUMBER" --repo "$TARGET_REPO" --remove-label "diagnostic:in-progress"
+
+      - name: Commit author output
+        if: steps.diff.outputs.completed == 'true'
+        run: |
+          git config user.name "open-study-path-agent"
+          git config user.email "agent@users.noreply.github.com"
+          git add -A
+          git commit -m "agent(diagnostic): author pass via ${TARGET_REPO}, issue #${ISSUE_NUMBER}"
+          git push origin "${{ steps.branch.outputs.name }}"
+
+      - name: Upload author artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: author-result
+          path: |
+            /tmp/author-result.json
+            /tmp/author-summary.txt
+            /tmp/diagnostic-transcript.txt
+
+  reviewer:
+    name: Reviewer agent (isolated call, terminal turn only)
+    needs: author
+    if: needs.author.outputs.completed == 'true'
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ needs.author.outputs.branch }}
+      BASE_SHA: ${{ needs.author.outputs.base_sha }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.author.outputs.branch }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --quiet --disable-pip-version-check pyyaml jsonschema
+
+      - name: Download author artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: author-result
+          path: /tmp
+
+      - name: Build reviewer prompt
+        run: |
+          python scripts/build_agent_prompt.py reviewer \
+            --phase "$PHASE" \
+            --target-repo "$TARGET_REPO" \
+            --base-sha "$BASE_SHA" \
+            --author-summary-file /tmp/author-summary.txt \
+            --out-system /tmp/reviewer-system.txt \
+            --out-user /tmp/reviewer-user.txt
+
+      - name: Run reviewer agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # agent_runtime.py's main() requires GITHUB_TOKEN for any phase in
+          # PHASES_WITH_GITHUB_ISSUES, which "diagnostic" is (for the
+          # author's comment tools) -- even though the reviewer role's own
+          # tool set for this phase has no GitHub Issues tools at all
+          # (reviewer_tools() deliberately excludes them for "diagnostic",
+          # see agent_runtime.py). Harmless, unused token here, same
+          # reasoning bootstrap_instance/configure_intake already have it.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/agent_runtime.py reviewer \
+            --phase "$PHASE" \
+            --system-prompt-file /tmp/reviewer-system.txt \
+            --user-prompt-file /tmp/reviewer-user.txt \
+            > /tmp/reviewer-result.json
+
+      - name: Write review artifact
+        run: |
+          mkdir -p state/reviews
+          python -c "import json, os; open('state/reviews/agent-pilot-' + os.environ['PHASE'] + '.yml', 'w', encoding='utf-8').write(json.load(open('/tmp/reviewer-result.json', encoding='utf-8'))['review_yaml'])"
+
+      - name: Summarize combined token usage and cost
+        run: |
+          python scripts/summarize_agent_pilot_usage.py \
+            --author-result /tmp/author-result.json \
+            --reviewer-result /tmp/reviewer-result.json \
+            --phase "$PHASE" \
+            --target-repo "$TARGET_REPO" \
+            --out-summary-json /tmp/usage-summary.json \
+            --append-log state/agent-pilot-usage.jsonl
+          cat /tmp/usage-summary.json
+
+      - name: Commit review artifact and usage log
+        run: |
+          git config user.name "open-study-path-agent"
+          git config user.email "agent@users.noreply.github.com"
+          git add state/reviews/ state/agent-pilot-usage.jsonl
+          git commit -m "agent(diagnostic): independent review + usage record" || echo "nothing to commit"
+          git push origin "$BRANCH"
+
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/format_pr_body.py \
+            --reviewer-result /tmp/reviewer-result.json \
+            --usage-summary /tmp/usage-summary.json \
+            > /tmp/pr-body.md
+          gh pr create \
+            --repo "${{ github.repository }}" \
+            --head "$BRANCH" \
+            --base "${{ github.ref_name }}" \
+            --title "agent pilot: diagnostic for ${TARGET_REPO} (issue #${ISSUE_NUMBER})" \
+            --body-file /tmp/pr-body.md
+
+      - name: Fail the job if the reviewer did not approve
+        run: |
+          status=$(python -c "import json;print(json.load(open('/tmp/reviewer-result.json'))['status'])")
+          echo "reviewer status: $status"
+          if [ "$status" != "approved" ]; then
+            echo "::warning::reviewer returned action_required -- see the opened PR and state/reviews/ for blocking findings"
+          fi

@@ -1,0 +1,7 @@
+flowchart LR
+    A[Contexto inicial] --> B[Conceito principal]
+    B --> C[Decisão observável]
+    C --> D{Critério de verificação}
+    D -->|passou| E[Evidência produzida]
+    D -->|não passou| F[Revisão orientada]
+    F --> B
