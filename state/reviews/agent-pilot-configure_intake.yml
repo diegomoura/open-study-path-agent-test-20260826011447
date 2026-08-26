@@ -1,0 +1,27 @@
+kind: open-study-path-review
+contract_version: 1
+operation_id: setup-configure-intake-v1
+phase: setup
+reviewer_role: setup_reviewer
+independent_pass: true
+status: approved
+reviewed_at: "2025-01-09T00:30:00Z"
+
+artifacts:
+  - path: .open-study-path/instance.yml
+    change: current
+    sha256: b1a7934f12095a1f31661d6ba2412b5cb5029f048fce9a395f180e969eb75212
+  - path: study.config.yml
+    change: current
+    sha256: 9a8a2e3c443180406fc58b26b159932e930e4c7ec9472f13b70137f0aa2e27d6
+
+checks:
+  repository_identity: passed
+  reusable_assets_preserved: passed
+  intake_entrypoint_ready: passed
+  safety_and_secrets: passed
+  next_phase_consistency: passed
+
+blocking_findings: []
+
+non_blocking_findings: []
