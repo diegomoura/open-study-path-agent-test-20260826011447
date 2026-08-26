@@ -69,8 +69,9 @@ content_generation:
 
 status:
   setup_complete: true
-  intake_configured: false
-  intake_provider: unset
+  intake_configured: true
+  intake_provider: github_issue
+  intake_entrypoint_ready: true
   intake_imported: false
   diagnostic_complete: false
   curriculum_proposed: false
