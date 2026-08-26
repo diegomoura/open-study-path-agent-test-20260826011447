@@ -29,27 +29,31 @@ For a learner declared as `intermediate` or `advanced`:
 
 Exceed the hard maximum only when the owner explicitly requests a comprehensive assessment. Record `owner_requested_comprehensive` in the diagnostic summary. Never continue merely because more questions could produce more detail.
 
-At the first turn, briefly state the expected maximum and ask the first question. Stop earlier when evidence is sufficient. If the hard maximum is reached with uncertainty remaining, choose a conservative starting depth and record `evidence_sufficiency: limited` instead of asking indefinitely.
+Choose the number of questions once, in the first turn, from this budget -- do not decide question-by-question as answers arrive, since there is no second round to react to them.
 
-## Interaction style
+## Interaction style (single-form batch)
 
-- Ask exactly one short question or practical task at a time.
-- Do not present the entire questionnaire at once.
-- Do not praise, restate or interpret every answer before asking the next question.
-- Avoid mini-lessons during assessment. Correct a misconception only when the correction is needed to continue, using at most two short sentences.
-- Ask the next question directly when no clarification is required.
-- Do not send a separate transition message such as “there is enough evidence; I will register it”. Once evidence is sufficient, perform the repository operation and send only the guided completion response.
+Real dispatch finding (Etapa 9 item 2): the original one-question-at-a-time design, while genuinely adaptive, cost roughly four times a normal phase in a real session (~$0.48 for one placement, against ~$0.11-0.12 for bootstrap/configure_intake/intake) and took several `issue_comment` round trips to complete -- each turn re-reconstructs the entire thread from scratch (`scripts/build_diagnostic_context.py`), so cost and latency both grow with every question instead of staying flat. This phase now asks its whole question set in one turn and evaluates everything in the next, cutting a placement down to exactly two turns (occasionally one, see below) regardless of how many questions the budget calls for.
+
+- **Turn 1:** read the intake and any existing evidence, choose the question count for this budget tier, and post all questions together as a single numbered list in one comment. State the total count up front (e.g. "5 perguntas curtas"). Do not wait for or request answers one at a time.
+- **Turn 2:** the learner's reply is expected to answer every question in one message, in any order or format. Evaluate the whole reply at once against every question and finish the phase -- write the summary, run the review, and complete. This is always the terminal turn; there is no third round.
+- **Optimization, not a requirement:** if the very first message already contains complete, unprompted answers to what the question set would have asked (e.g. the owner pastes a full self-assessment upfront), skip straight to evaluation and finish in turn 1. Do not manufacture a question round just to have one.
+- If the single reply leaves a genuine gap on one dimension, do not open a second round of questions to close it. Record `evidence_sufficiency: limited`, note the specific gap in `material_caveats`, and choose a conservative starting depth instead -- exactly the existing hard-maximum fallback below, just reached after one round instead of several.
+- Do not praise, restate or grade individual answers before concluding. Avoid mini-lessons; correct a misconception only when the correction is needed to continue, in at most two short sentences, as part of the completion response.
+- Do not send a separate transition message such as "there is enough evidence; I will register it". Once the single reply is evaluated, perform the repository operation and send only the guided completion response.
 - Do not generate the curriculum during this phase.
+
+Record which method produced this summary in `method` (e.g. `"single_form_batch"`), so a future real-dispatch cost comparison can tell which sessions used which interaction style.
 
 ## Stopping rule
 
-Stop as soon as all of the following are true:
+The single combined reply is always sufficient to stop -- there is no further round to extend the session. Evaluate what the reply actually supports:
 
-1. a starting depth can be selected with responsible confidence;
-2. at least one conceptual and one applied signal are available, unless reliable prior evidence already covers one of them;
-3. any remaining uncertainty can safely become a curriculum topic rather than another placement question.
+1. if a starting depth can be selected with responsible confidence, record `evidence_sufficiency: sufficient`;
+2. if at least one conceptual and one applied signal are available (or reliable prior evidence already covers one of them) but some secondary dimension is thin, that thinness is a caveat, not a reason to ask again;
+3. if the reply is genuinely too sparse to place responsibly on more than one dimension, choose the most conservative starting depth the evidence does support and record `evidence_sufficiency: limited`, exactly as the old hard-maximum fallback did.
 
-Repeated answers that confirm the same pattern do not justify additional questions.
+Repeated or redundant detail in the single reply does not change the conclusion once the dimensions above are covered.
 
 ## Output
 

@@ -1613,11 +1613,12 @@ def author_tools(phase: str | None = None) -> list[dict[str, Any]]:
                 "name": "post_issue_comment",
                 "description": (
                     "Post one comment to the diagnostic session issue -- your only channel to "
-                    "the learner. Use it for exactly one short question per turn while evidence "
-                    "is still insufficient (instructions/20-diagnostic.md's interaction style: "
-                    "never the whole questionnaire at once, no separate transition message), or "
-                    "for the single learner-facing completion response once you have written "
-                    "the domain files and the repository operation is done."
+                    "the learner. Use it once, in turn 1, to post the whole question set together "
+                    "as a single numbered list (instructions/20-diagnostic.md's interaction style: "
+                    "single form batch, not one question per turn, no separate transition "
+                    "message), or for the single learner-facing completion response once you have "
+                    "evaluated the reply, written the domain files and the repository operation is "
+                    "done."
                 ),
                 "input_schema": {
                     "type": "object",

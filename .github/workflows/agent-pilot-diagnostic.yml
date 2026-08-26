@@ -3,11 +3,23 @@ name: Agent pilot - diagnostic
 # Etapa 4b (docs/claude-agent-pilot-etapa4b-diagnostic-design.md): unlike
 # every other agent-pilot workflow (agent-pilot-setup.yml, one
 # workflow_dispatch = one complete operation), `diagnostic` is a real,
-# multi-turn placement session with the learner
-# (instructions/20-diagnostic.md: "Ask exactly one short question ... at a
-# time"). That does not fit a single isolated author+reviewer call, so this
-# workflow runs once per learner reply instead: triggered by `issue_comment`
-# on the session issue, not by a human pressing "Run workflow".
+# multi-turn placement session with the learner. That does not fit a single
+# isolated author+reviewer call, so this workflow runs once per learner
+# reply instead: triggered by `issue_comment` on the session issue, not by a
+# human pressing "Run workflow".
+#
+# Etapa 9c (docs/claude-agent-pilot-etapa9c-diagnostic-single-form.md):
+# originally this meant one question per turn (several `issue_comment` round
+# trips per session). A real dispatch measured that at ~$0.48 for a single
+# placement -- about 4x bootstrap/configure_intake/intake -- because every
+# turn reconstructs the whole thread from scratch, so cost and latency both
+# grew with every question. instructions/20-diagnostic.md now asks the whole
+# question set in turn 1 and evaluates the single combined reply in turn 2
+# (occasionally turn 1 alone, if the trigger comment already answered
+# everything). The workflow mechanics below did not need to change for
+# this -- an empty diff is still the normal, non-failing outcome of a
+# non-terminal turn; only the terminal turn writes files and opens a PR --
+# only the question-asking philosophy in the instructions changed.
 #
 # Each run is still one isolated `run_agent()` call with zero memory of
 # earlier turns -- it reconstructs the whole running exchange from the
@@ -15,10 +27,10 @@ name: Agent pilot - diagnostic
 # "context from artifacts, never memory" discipline every other phase
 # already follows, just triggered by a different event.
 #
-# Most turns only post the next question (a GitHub comment) and touch no
+# The non-terminal turn (turn 1, posting the question batch) touches no
 # repository file at all -- that is a normal, successful outcome here, NOT
 # the failure it would be in agent-pilot-setup.yml's phases. Only the
-# terminal turn, once evidence is sufficient, writes
+# terminal turn, once the single reply has been evaluated, writes
 # state/diagnostic-summary.json and .open-study-path/instance.yml and opens
 # a pull request exactly like every other phase.
 #
