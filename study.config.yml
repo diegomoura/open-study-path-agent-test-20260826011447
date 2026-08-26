@@ -1,25 +1,28 @@
 version: 1
-configured: false
+configured: true
 
 path:
-  name: null
-  subject: ""
-  learning_request: ""
+  name: Estoicismo
+  subject: Fundamentos de estoicismo e aplicação prática
+  learning_request: "Quero aprender estoicismo: os fundamentos da filosofia estoica, os principais autores (Sêneca, Epicteto e Marco Aurélio) e como aplicar os princípios estoicos no dia a dia para lidar melhor com adversidades, tomar decisões com mais clareza e cultivar disciplina emocional."
   objective: null
-  desired_outcome: null
+  desired_outcome: "Quero conseguir aplicar práticas estoicas (como a dicotomia do controle e o diário reflexivo) na minha rotina, e entender o pensamento original dos principais textos, não só resumos ou citações soltas."
   motivation: null
   time_constraints: null
 
 learner:
   preferred_language: pt-BR
-  current_level: beginner
+  current_level: no_knowledge
   prior_knowledge: []
   accessibility_needs: []
 
 preferences:
-  formats: []
+  formats:
+    - written_explanations
+    - practical_exercises
   theory_practice_balance: balanced
-  assessment_style: []
+  assessment_style:
+    - exercises
   notes: null
 
 references:
@@ -38,9 +41,11 @@ intake:
   submission_strategy: unique_verified_candidate
   attachments_optional: true
   persist_raw_submission: false
+  imported_from_issue: 3
+  imported_at: "2025-01-09T00:00:00Z"
 
 integration_preferences:
-  experience: guided_recommendations
+  experience: minimal
   account_connections: ask_per_provider
   already_uses: []
   willing_to_connect: []
@@ -72,7 +77,7 @@ integrations:
       - web_research
 
   task_manager:
-    provider: auto
+    provider: github_issues
     preferred: trello
     alternatives:
       - github_issues

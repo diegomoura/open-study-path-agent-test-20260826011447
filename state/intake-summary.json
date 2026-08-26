@@ -1,19 +1,49 @@
 {
   "version": 1,
-  "source": null,
-  "source_reference": null,
-  "normalized_at": null,
-  "subject": null,
-  "objective": null,
-  "desired_outcome": null,
-  "motivation": null,
-  "current_level": null,
-  "weekly_hours": null,
-  "deadline": null,
+  "source": "github_issue",
+  "source_reference": {
+    "repository": "diegomoura/open-study-path-agent-test-20260826011447",
+    "issue_number": 3,
+    "issue_title": "Estoicismo",
+    "issue_created_at": "2026-08-26T16:51:07Z",
+    "issue_labels": ["study-request"],
+    "issue_author": "diegomoura"
+  },
+  "normalized_at": "2025-01-09T00:00:00Z",
+  "path": {
+    "name": "Estoicismo",
+    "subject": "Fundamentos de estoicismo e aplicação prática",
+    "learning_request": "Quero aprender estoicismo: os fundamentos da filosofia estoica, os principais autores (Sêneca, Epicteto e Marco Aurélio) e como aplicar os princípios estoicos no dia a dia para lidar melhor com adversidades, tomar decisões com mais clareza e cultivar disciplina emocional.",
+    "desired_outcome": "Quero conseguir aplicar práticas estoicas (como a dicotomia do controle e o diário reflexivo) na minha rotina, e entender o pensamento original dos principais textos, não só resumos ou citações soltas."
+  },
+  "learner": {
+    "current_level": "no_knowledge",
+    "preferred_language": "pt-BR"
+  },
+  "preferences": {
+    "formats": ["written_explanations", "practical_exercises"],
+    "theory_practice_balance": "balanced",
+    "assessment_style": ["exercises"]
+  },
+  "integration_preferences": {
+    "experience": "minimal",
+    "account_connections": "ask_per_provider",
+    "routine": {
+      "mode": "decide_later"
+    }
+  },
+  "integrations": {
+    "task_manager": "github_issues"
+  },
   "references": {
     "text_or_urls": [],
     "attachments": []
   },
-  "preferences": {},
-  "assumptions": []
+  "assumptions": [
+    "Learner requires no external integrations beyond GitHub; all learning materials, assessments and progress tracking will use repository-native features.",
+    "Theory and practice will be equally balanced in curriculum design.",
+    "Assessment will focus on practical exercises to demonstrate understanding of stoic principles.",
+    "Content will prioritize original texts and authors (Seneca, Epictetus, Marcus Aurelius) over secondhand summaries.",
+    "Practical application and daily integration are core success criteria for this course."
+  ]
 }
