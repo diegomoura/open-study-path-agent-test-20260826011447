@@ -1,0 +1,28 @@
+contract_version: 1
+operation_id: diagnostic-v1
+phase: diagnostic
+reviewer_role: diagnostic_reviewer
+independent_pass: true
+status: approved
+reviewed_at: "2026-08-26T17:30:00Z"
+
+artifacts:
+  - path: .open-study-path/instance.yml
+    change: current
+    sha256: 3644c5d398c0c8c74827a04a50d7262c334932e96022cc6a2d1e6d541718856d
+  - path: state/diagnostic-summary.json
+    change: current
+    sha256: 80bb4fc72ec038811a9edaac8b0c3f6226ead88283dd5e9d41d82a1efef4cc06
+
+checks:
+  evidence_basis: passed
+  bounded_questioning: passed
+  adjacent_experience_separation: passed
+  placement_consistency: passed
+  privacy_and_minimization: passed
+
+blocking_findings: []
+
+non_blocking_findings:
+  - "diagnostic-summary.json uses subject: 'Estoicismo' (the issue title / path.name) rather than the more descriptive intake path.subject ('Fundamentos de estoicismo e aplicação prática'). Both are legitimate labels and the schema does not require a specific one, but future diagnostics could prefer path.subject for consistency with generation-phase artifacts."
+  - "confirmed_competencies records only two entries against a 3-question budget; a short one-line note tying each question to its resulting evidence entry would make the audit trail slightly easier to reconstruct without raw transcripts, though it is not required by the schema or instructions."
