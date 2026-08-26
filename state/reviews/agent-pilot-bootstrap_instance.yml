@@ -1,0 +1,44 @@
+contract_version: 1
+
+operation_id: bootstrap-instance-v1
+
+phase: setup
+
+reviewer_role: setup_reviewer
+
+independent_pass: true
+
+status: approved
+
+reviewed_at: 2025-08-26T01:20:00Z
+
+artifacts:
+  - path: .open-study-path/instance.yml
+    change: current
+    sha256: 33973485a07bba48f8ed019741fe026b23299d4cc85dae0ebc97bf7812a3b501
+  - path: study.config.yml
+    change: current
+    sha256: 83faaa7c39960fce6e9b2c9e3de9fa83f521d817f0c4ef55a09c1dddb3411462
+  - path: state/intake-summary.json
+    change: current
+    sha256: b103ffd9b35d98b236b5b55fbb761039f0f1b7056ff95b96ef64b971c4d19733
+  - path: state/integrations.json
+    change: current
+    sha256: b2683fc35267b9df0c04dfbe5190067668da1981fbd687e78aa69301b0a7b801
+  - path: state/progress.json
+    change: current
+    sha256: 38da5074224a78fa19c36b2249c8c712a9ac077236eceae48d1c0098481687a6
+  - path: study/roadmap.md
+    change: current
+    sha256: bfd3e781e4bdae4a096480f0c88327374a915bdf3ee9d993c45494d6441556e4
+
+checks:
+  repository_identity: passed
+  reusable_assets_preserved: passed
+  intake_entrypoint_ready: passed
+  safety_and_secrets: passed
+  next_phase_consistency: passed
+
+blocking_findings: []
+
+non_blocking_findings: []
