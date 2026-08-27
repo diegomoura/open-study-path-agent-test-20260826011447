@@ -1,18 +1,18 @@
 contract_version: 1
-operation_id: diagnostic-v1
+operation_id: diagnostic-v2
 phase: diagnostic
 reviewer_role: diagnostic_reviewer
 independent_pass: true
 status: approved
-reviewed_at: "2026-08-26T17:30:00Z"
+reviewed_at: "2026-08-27T12:00:00Z"
 
 artifacts:
+  - path: state/diagnostic-summary.json
+    change: current
+    sha256: a32eeb3bf0cf5e14cfd173cb1a1004ca1cb06c36aa1263a7f75133907f7afaa5
   - path: .open-study-path/instance.yml
     change: current
     sha256: 3644c5d398c0c8c74827a04a50d7262c334932e96022cc6a2d1e6d541718856d
-  - path: state/diagnostic-summary.json
-    change: current
-    sha256: 80bb4fc72ec038811a9edaac8b0c3f6226ead88283dd5e9d41d82a1efef4cc06
 
 checks:
   evidence_basis: passed
@@ -24,5 +24,40 @@ checks:
 blocking_findings: []
 
 non_blocking_findings:
-  - "diagnostic-summary.json uses subject: 'Estoicismo' (the issue title / path.name) rather than the more descriptive intake path.subject ('Fundamentos de estoicismo e aplicação prática'). Both are legitimate labels and the schema does not require a specific one, but future diagnostics could prefer path.subject for consistency with generation-phase artifacts."
-  - "confirmed_competencies records only two entries against a 3-question budget; a short one-line note tying each question to its resulting evidence entry would make the audit trail slightly easier to reconstruct without raw transcripts, though it is not required by the schema or instructions."
+  - "This diagnostic-summary.json (single_form_batch, question_count 4, evidence_sufficiency limited) fully supersedes a previously approved and merged diagnostic-summary.json (github_issue_conversation, question_count 3, evidence_sufficiency sufficient), which had its own approved review at state/reviews/agent-pilot-diagnostic.yml (operation_id diagnostic-v1). Nothing in the new summary, instance.yml or this PR's domain diff records why the diagnostic was re-run or cross-references the superseded conclusion, and the prior review file remains in the repository unchanged, now pointing at a stale sha256 for state/diagnostic-summary.json and asserting a different (sufficient/3-question) conclusion. This does not block CI today because coverage validation only inspects files changed in a given diff, but it leaves two contradictory 'approved' diagnostic conclusions coexisting in state/reviews/ with no supersession marker. Recommend that a future re-diagnosis operation either update the prior review's status to reflect supersession or delete it in the same PR, and that the new summary briefly note that it replaces an earlier session (e.g. in material_caveats or method)."
+  - "learner_context in the new summary drops the explicit declared_level field that the superseded version carried (mirroring intake's learner.current_level: no_knowledge). This is not a schema violation (learner_context has no required sub-keys) and recommended_starting_depth.level: beginner is still consistent with intake, but restating declared_level would keep the diagnostic summary self-contained for audit without needing to cross-reference state/intake-summary.json."
+  - "subject: 'Estoicismo' mirrors the issue title / path.name rather than the more descriptive intake path.subject ('Fundamentos de estoicismo e aplicação prática'). Both are legitimate per schema; carried over from the same non-blocking observation already recorded in the superseded review."
+
+evidence_notes: |
+  Reconstructed independently from repository reads (no issue/thread access, per the diagnostic
+  session addendum):
+  - state/diagnostic-summary.json (current, sha256 verified above): status complete, method
+    single_form_batch, question_count 4 (within question_budget target_min 3 / target_max 5 /
+    hard_max 7), evidence_sufficiency limited.
+  - Internal consistency check: confirmed_competencies (1 entry, dichotomy of control + applied
+    delayed-flight example), knowledge_gaps (3 entries: primary texts, cardinal virtues unanswered,
+    reflective practice only a future aspiration) and material_caveats (2 entries, exactly mirroring
+    the Q3-unanswered and Q4-future-aspiration gaps) are mutually consistent with each other and with
+    the recommended_starting_depth (beginner, bridging the already-understood dichotomy of control into
+    primary sources and the cardinal virtues) -- matches instructions/20-diagnostic.md's stopping-rule
+    item 3 (conservative depth when more than one dimension is thin) rather than inventing evidence.
+    misconceptions: [] and required_prerequisites: [] are appropriate given no incorrect belief was
+    recorded, only an unanswered question and an off-target answer.
+  - Question budget and interaction style (whole question set posted once, single terminal evaluation,
+    no second round opened despite the Q3 gap) match the current single-form-batch stopping rule in
+    instructions/20-diagnostic.md verbatim, including using the gap as a caveat rather than a reason to
+    re-question.
+  - No raw transcript, verbatim learner quotes beyond paraphrase, or unnecessary personal data appear in
+    the summary; privacy_and_minimization passes.
+  - No indication that adjacent/professional experience was credited as subject-matter mastery;
+    adjacent_experience_separation passes.
+  - .open-study-path/instance.yml is byte-identical to the version already covered by the superseded
+    review (same sha256), so this operation does not need to (and did not) modify it; diagnostic_complete
+    was already true and remains true.
+  - schemas/diagnostic-summary.schema.json fully validates: all 16 required top-level keys present,
+    no additional properties, and the status=="complete" conditional block's extra requirements
+    (subject minLength 1, completed_at date, method minLength 1, question_count >= 1, evidence_sufficiency
+    in {sufficient, limited}, recommended_starting_depth an object) are all satisfied.
+  - curriculum_generated: false, study/roadmap.md content and state/progress.json (status: not_started)
+    confirm no downstream artifact had yet consumed the superseded diagnostic conclusion, so replacing it
+    before curriculum generation carries no orphaned-reference risk.
