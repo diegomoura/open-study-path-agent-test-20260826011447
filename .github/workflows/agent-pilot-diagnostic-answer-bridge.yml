@@ -40,12 +40,30 @@ name: Agent pilot - diagnostic answer bridge
 # graph, not a new one -- unaffected by either restriction above, and needs
 # no PAT or extra secret. `secrets: inherit` passes ANTHROPIC_API_KEY
 # through automatically.
+#
+# One more real finding getting `evaluate` itself to actually run: a
+# reusable workflow can only ever be granted a subset of its caller's own
+# `permissions:`, never more. This workflow's top-level `permissions:` used
+# to declare only `issues: write` (all the `bridge` job needs), which made
+# every real run of `evaluate` fail with `startup_failure` -- no job list,
+# no error message, nothing actionable in the UI or the API. The fix is
+# simply matching agent-pilot-diagnostic.yml's own permissions block below.
 
 on:
   issues:
     types: [opened]
 
 permissions:
+  # Must be at least as broad as agent-pilot-diagnostic.yml's own
+  # permissions block (contents: write, pull-requests: write, issues:
+  # write): a reusable workflow (workflow_call, the `evaluate` job below)
+  # can only ever be granted a subset of the calling workflow's own
+  # permissions, never more -- GitHub enforces this silently as a
+  # startup_failure with no job list and no clear error message if
+  # violated, which is exactly what a real run of this workflow hit before
+  # this was fixed.
+  contents: write
+  pull-requests: write
   issues: write
 
 concurrency:
