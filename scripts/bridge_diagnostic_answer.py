@@ -9,16 +9,28 @@ diagnostic session/reviewer pipeline
 issue's own comment thread. This script is the deterministic bridge between
 the two: no Anthropic API call, no LLM judgment -- identity and content
 extraction are handled entirely by `scripts/diagnostic_answer_resolution.py`,
-this script only does the I/O (fetch, classify, comment, label, close, then
-explicitly dispatch the evaluation turn).
+this script only does the I/O (fetch, classify, comment, label, close).
 
-A real round trip found that reposting the comment alone is not enough:
-GitHub does not fire event-triggered workflows (issue_comment included) for
-events caused by a workflow's own GITHUB_TOKEN, so that comment alone can
-never trigger agent-pilot-diagnostic.yml. This script's last step instead
-calls that workflow's workflow_dispatch trigger explicitly -- a direct API
-action, not a passive event cascade, so it is not subject to that
-restriction and needs no extra secret or PAT.
+Two real, sequential findings shaped how the evaluation turn actually gets
+triggered after a successful import (both documented in
+docs/claude-agent-pilot-etapa9d-diagnostic-answer-form.md):
+
+1. Reposting the comment alone is not enough: GitHub does not fire
+   event-triggered workflows (issue_comment included) for events caused by a
+   workflow's own GITHUB_TOKEN.
+2. An explicit workflow_dispatch API call, the first fix attempted, does not
+   work either: GitHub structurally blocks GITHUB_TOKEN from firing
+   workflow_dispatch/repository_dispatch, regardless of granted permissions.
+   This is not a settings problem -- it needs a PAT, full stop -- confirmed
+   by a real 403 ("Resource not accessible by integration").
+
+Given both, this script does not try to trigger a second run of
+agent-pilot-diagnostic.yml at all. It only imports the submission and
+prints/exposes the resolved session issue number (via GITHUB_OUTPUT, when
+running in Actions); agent-pilot-diagnostic-answer-bridge.yml's second job
+calls agent-pilot-diagnostic.yml directly as a reusable workflow
+(`workflow_call`, in the same run graph, not a new triggered run), which
+needs no PAT or extra secret since it is not an event being fired.
 
 Runs as `.github/workflows/agent-pilot-diagnostic-answer-bridge.yml`,
 triggered by `issues: [opened]` on issues carrying the `diagnostic:answer`
@@ -50,15 +62,18 @@ def _fetch_issue(request_json, repository: str, number: int) -> dict | None:
         raise
 
 
+def _write_github_output(name: str, value: str) -> None:
+    path = os.environ.get("GITHUB_OUTPUT")
+    if not path:
+        return  # not running in Actions (e.g. under test) -- nothing to write
+    with open(path, "a", encoding="utf-8") as handle:
+        handle.write(f"{name}={value}\n")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repository", required=True, help="owner/repo, from GITHUB_REPOSITORY")
     parser.add_argument("--answer-issue-number", required=True, type=int)
-    parser.add_argument(
-        "--default-branch",
-        default="main",
-        help="Branch to run agent-pilot-diagnostic.yml's workflow_dispatch from",
-    )
     args = parser.parse_args()
 
     token = os.environ.get("GITHUB_TOKEN")
@@ -106,6 +121,7 @@ def main() -> None:
             f"/repos/{args.repository}/issues/{answer_issue.number}/comments",
             {"body": render_rejection_comment(decision)},
         )
+        _write_github_output("session_issue_number", "")
         return
 
     comment_body = render_answers_as_comment(decision.answers)
@@ -125,25 +141,17 @@ def main() -> None:
         {"state": "closed"},
     )
 
-    # GitHub does not fire event-triggered workflows (issue_comment included)
-    # for events caused by this workflow's own GITHUB_TOKEN -- confirmed by a
-    # real round trip, not assumed -- so the comment just posted above can
-    # never itself trigger agent-pilot-diagnostic.yml via issue_comment, no
-    # matter how that workflow's guard is written. An explicit
-    # workflow_dispatch API call is a direct action, not a passive event
-    # cascade, and is not subject to that restriction -- this needs no extra
-    # secret or PAT, only the actions: write permission this workflow already
-    # grants itself.
-    request_json(
-        "POST",
-        f"/repos/{args.repository}/actions/workflows/agent-pilot-diagnostic.yml/dispatches",
-        {"ref": args.default_branch, "inputs": {"issue_number": str(decision.session_issue_number)}},
-    )
-
+    # Does NOT try to trigger agent-pilot-diagnostic.yml itself -- see the
+    # module docstring for why (both a plain repost and an explicit
+    # workflow_dispatch call were tried against a real instance and both
+    # failed for structural GITHUB_TOKEN reasons, not fixable from here).
+    # Exposing the session issue number as a job output is enough:
+    # agent-pilot-diagnostic-answer-bridge.yml's second job reads it and
+    # calls agent-pilot-diagnostic.yml directly as a reusable workflow.
+    _write_github_output("session_issue_number", str(decision.session_issue_number))
     print(
         f"imported answer issue #{answer_issue.number} "
-        f"({len(decision.answers)} answers) into session issue #{decision.session_issue_number}, "
-        f"dispatched agent-pilot-diagnostic.yml for it"
+        f"({len(decision.answers)} answers) into session issue #{decision.session_issue_number}"
     )
 
 

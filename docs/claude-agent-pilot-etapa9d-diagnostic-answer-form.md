@@ -135,15 +135,30 @@ were fixed before that test could be called complete:
    `docs/claude-agent-setup.md` for PR creation, just not previously known to
    apply to issue comments too. No loop-guard rewrite could fix this, because
    the event never reaches the workflow at all; the guard's condition is
-   simply never evaluated. Fixed by adding a second trigger to
-   `agent-pilot-diagnostic.yml` (`workflow_dispatch`, with an `issue_number`
-   input) and having the bridge's last step call it explicitly via the
-   Actions API, after its own deterministic checks already stand in for the
-   `issue_comment` branch's label/PR guards. An explicit `workflow_dispatch`
-   API call is a direct action, not a passive event cascade, and is not
-   subject to the same-token restriction -- this needed no new secret or
-   PAT, only the `actions: write` permission the bridge workflow already
-   grants itself. Every future instance gets this for free; it required no
-   manual onboarding step, unlike the earlier `ANTHROPIC_API_KEY` and
-   "allow Actions to create pull requests" gaps documented in
+   simply never evaluated.
+
+4. **The first fix attempted for #3 was itself wrong.** The initial fix had
+   the bridge call `agent-pilot-diagnostic.yml`'s `workflow_dispatch` trigger
+   explicitly via the Actions API, reasoning that an explicit API call is not
+   subject to the same-token event-cascade restriction. That reasoning was
+   incomplete: a third real round trip failed with a 403 ("Resource not
+   accessible by integration") on the dispatch call itself. GitHub
+   structurally blocks the default `GITHUB_TOKEN` from firing
+   `workflow_dispatch`/`repository_dispatch` at all, regardless of any
+   `permissions:` granted in the workflow YAML -- this is not a settings
+   problem to work around, it genuinely requires a PAT if you want a
+   *separate triggered run*.
+
+   The actual fix avoids needing a separate triggered run in the first
+   place: `agent-pilot-diagnostic.yml` now also accepts `workflow_call`, and
+   `agent-pilot-diagnostic-answer-bridge.yml` gained a second job,
+   `evaluate`, that calls it directly as a reusable workflow
+   (`uses: ./.github/workflows/agent-pilot-diagnostic.yml`) after a
+   successful import. `workflow_call` is part of the *same* run graph, not a
+   new triggered run, so neither the same-token event restriction (#3) nor
+   the dispatch-API block (this finding) applies to it -- no PAT or extra
+   secret needed, only `secrets: inherit` to pass `ANTHROPIC_API_KEY`
+   through. Every future instance gets this for free with no manual
+   onboarding step, unlike the earlier `ANTHROPIC_API_KEY` and "allow
+   Actions to create pull requests" gaps documented in
    `docs/claude-agent-setup.md`.
