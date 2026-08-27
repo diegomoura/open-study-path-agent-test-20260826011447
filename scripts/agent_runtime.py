@@ -118,6 +118,15 @@ PHASE_MAX_TOKENS: dict[str, int] = {
     # generate_detailed's lesson modules -- raised preemptively rather than
     # waiting for a second real dispatch to hit it separately.
     "replan": 16384,
+    # Etapa 9 item 2: same reasoning as replan above, preemptively -- this
+    # is the phase that writes study/roadmap.md from scratch in the first
+    # place (replan only revises it), so if anything this write is at least
+    # as large as replan's. The real dispatch that motivated adding
+    # generate_proposal to PHASE_MAX_TOOL_ITERATIONS below did not confirm a
+    # max_tokens failure specifically (it exhausted tool round trips first),
+    # but there is no reason to expect this phase's single largest write to
+    # be smaller than replan's already-confirmed-large one.
+    "generate_proposal": 16384,
     # Etapa 6d real finding: 16384 (set preemptively in Etapa 6c) was not
     # enough -- a real materialization dispatch hit stop_reason="max_tokens"
     # mid-turn, never reaching finish_phase, almost certainly while writing
@@ -171,6 +180,20 @@ MAX_TOOL_ITERATIONS = 20
 # smaller phase should still be caught quickly, at the original budget.
 PHASE_MAX_TOOL_ITERATIONS: dict[str, int] = {
     "generate_detailed": 40,
+    # Etapa 9 item 2: a real dispatch (generate_proposal was never
+    # real-dispatch-validated before this -- proposal section 7 step 5)
+    # hit "did not finish within 20 tool round trips" and failed outright,
+    # for the same shape of reason generate_detailed needed 40:
+    # instructions/28-propose-path.md has the author read intake and
+    # diagnostic summaries, then design and write out a full roadmap
+    # covering every module/topic of the curriculum, easily exceeding 20
+    # round trips for anything beyond a trivially small subject. This is
+    # also the phase the proposal itself (section 3) puts at the highest
+    # reasoning tier (curriculum_architect, Opus) precisely because a
+    # structural error here propagates through everything generated after
+    # it -- cutting the budget short here would silently truncate that
+    # same curriculum design work, not just fail cleanly.
+    "generate_proposal": 40,
     # Etapa 6b: a real replan dispatch hit "did not finish within 20 tool
     # round trips" and failed outright -- replan needs to read the current
     # roadmap, instance marker, study.config.yml and the evidence that
