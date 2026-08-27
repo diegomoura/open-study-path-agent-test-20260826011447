@@ -125,3 +125,25 @@ were fixed before that test could be called complete:
    diagnostic author posts, and the workflow's guard now skips a
    `github-actions[bot]` comment only when that exact marker is present --
    the bridge's repost never carries it, so it passes through correctly.
+
+3. **The fix above was necessary but not sufficient.** A second real round
+   trip, after fix #2, still never triggered turn 2 -- no
+   `agent-pilot-diagnostic.yml` run appeared at all, not even a skipped one.
+   The actual cause: GitHub does not fire *event*-triggered workflows
+   (`issue_comment` included) for events caused by a workflow's own
+   `GITHUB_TOKEN` -- the same restriction already documented in
+   `docs/claude-agent-setup.md` for PR creation, just not previously known to
+   apply to issue comments too. No loop-guard rewrite could fix this, because
+   the event never reaches the workflow at all; the guard's condition is
+   simply never evaluated. Fixed by adding a second trigger to
+   `agent-pilot-diagnostic.yml` (`workflow_dispatch`, with an `issue_number`
+   input) and having the bridge's last step call it explicitly via the
+   Actions API, after its own deterministic checks already stand in for the
+   `issue_comment` branch's label/PR guards. An explicit `workflow_dispatch`
+   API call is a direct action, not a passive event cascade, and is not
+   subject to the same-token restriction -- this needed no new secret or
+   PAT, only the `actions: write` permission the bridge workflow already
+   grants itself. Every future instance gets this for free; it required no
+   manual onboarding step, unlike the earlier `ANTHROPIC_API_KEY` and
+   "allow Actions to create pull requests" gaps documented in
+   `docs/claude-agent-setup.md`.

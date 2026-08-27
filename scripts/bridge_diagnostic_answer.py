@@ -9,7 +9,16 @@ diagnostic session/reviewer pipeline
 issue's own comment thread. This script is the deterministic bridge between
 the two: no Anthropic API call, no LLM judgment -- identity and content
 extraction are handled entirely by `scripts/diagnostic_answer_resolution.py`,
-this script only does the I/O (fetch, classify, comment, label, close).
+this script only does the I/O (fetch, classify, comment, label, close, then
+explicitly dispatch the evaluation turn).
+
+A real round trip found that reposting the comment alone is not enough:
+GitHub does not fire event-triggered workflows (issue_comment included) for
+events caused by a workflow's own GITHUB_TOKEN, so that comment alone can
+never trigger agent-pilot-diagnostic.yml. This script's last step instead
+calls that workflow's workflow_dispatch trigger explicitly -- a direct API
+action, not a passive event cascade, so it is not subject to that
+restriction and needs no extra secret or PAT.
 
 Runs as `.github/workflows/agent-pilot-diagnostic-answer-bridge.yml`,
 triggered by `issues: [opened]` on issues carrying the `diagnostic:answer`
@@ -45,6 +54,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repository", required=True, help="owner/repo, from GITHUB_REPOSITORY")
     parser.add_argument("--answer-issue-number", required=True, type=int)
+    parser.add_argument(
+        "--default-branch",
+        default="main",
+        help="Branch to run agent-pilot-diagnostic.yml's workflow_dispatch from",
+    )
     args = parser.parse_args()
 
     token = os.environ.get("GITHUB_TOKEN")
@@ -110,9 +124,26 @@ def main() -> None:
         f"/repos/{args.repository}/issues/{answer_issue.number}",
         {"state": "closed"},
     )
+
+    # GitHub does not fire event-triggered workflows (issue_comment included)
+    # for events caused by this workflow's own GITHUB_TOKEN -- confirmed by a
+    # real round trip, not assumed -- so the comment just posted above can
+    # never itself trigger agent-pilot-diagnostic.yml via issue_comment, no
+    # matter how that workflow's guard is written. An explicit
+    # workflow_dispatch API call is a direct action, not a passive event
+    # cascade, and is not subject to that restriction -- this needs no extra
+    # secret or PAT, only the actions: write permission this workflow already
+    # grants itself.
+    request_json(
+        "POST",
+        f"/repos/{args.repository}/actions/workflows/agent-pilot-diagnostic.yml/dispatches",
+        {"ref": args.default_branch, "inputs": {"issue_number": str(decision.session_issue_number)}},
+    )
+
     print(
         f"imported answer issue #{answer_issue.number} "
-        f"({len(decision.answers)} answers) into session issue #{decision.session_issue_number}"
+        f"({len(decision.answers)} answers) into session issue #{decision.session_issue_number}, "
+        f"dispatched agent-pilot-diagnostic.yml for it"
     )
 
 

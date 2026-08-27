@@ -44,10 +44,30 @@ name: Agent pilot - diagnostic
 # workflow's own repo), never taken from any event payload field a comment
 # author could influence -- same boundary as every other agent-pilot
 # workflow (see scripts/agent_runtime.py's module docstring).
+#
+# Etapa 9d found a third trigger path is required: GitHub does not fire
+# *event*-triggered workflows (issue_comment included) for events caused by
+# a workflow's own GITHUB_TOKEN -- confirmed by a real round trip, not
+# assumed -- so agent-pilot-diagnostic-answer-bridge.yml reposting a
+# learner's form answer as a comment can never itself trigger this workflow
+# via issue_comment, no matter how the guard above is written. An *explicit*
+# workflow_dispatch API call is not subject to that restriction (it is a
+# direct action, not a passive event cascade), so the bridge calls this
+# workflow via workflow_dispatch instead, after its own deterministic checks
+# already stand in for the label/PR guards below. No extra secret or PAT is
+# needed for this -- the default GITHUB_TOKEN can call workflow_dispatch on
+# another workflow in the same repository as long as it has `actions:
+# write`, which agent-pilot-diagnostic-answer-bridge.yml grants itself.
 
 on:
   issue_comment:
     types: [created]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Session issue number (only used when dispatched by the diagnostic-answer bridge)
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -58,13 +78,13 @@ concurrency:
   # Scoped per session issue, not per repo: overlapping comments on the same
   # session must not race, but two different learners' sessions (different
   # issues) may run at the same time.
-  group: agent-pilot-diagnostic-${{ github.event.issue.number }}
+  group: agent-pilot-diagnostic-${{ github.event.inputs.issue_number || github.event.issue.number }}
   cancel-in-progress: false
 
 env:
   PHASE: diagnostic
   TARGET_REPO: ${{ github.repository }}
-  ISSUE_NUMBER: ${{ github.event.issue.number }}
+  ISSUE_NUMBER: ${{ github.event.inputs.issue_number || github.event.issue.number }}
 
 jobs:
   author:
@@ -79,11 +99,19 @@ jobs:
     # would never fire. Requiring the marker too means only the author's
     # own question/completion comments are skipped; the bridge's unmarked
     # repost of the learner's real answers is never mistaken for one.
+    #
+    # A workflow_dispatch trigger always proceeds unconditionally: only the
+    # bridge ever calls it, and only after its own deterministic checks
+    # (scripts/diagnostic_answer_resolution.py) already confirmed the
+    # session issue exists, isn't a PR and carries diagnostic:in-progress --
+    # the same guarantees the issue_comment branch checks for itself below,
+    # just already verified by the caller instead of re-checked here.
     if: >
-      github.event.issue.pull_request == null &&
-      contains(github.event.issue.labels.*.name, 'diagnostic:in-progress') &&
-      !(github.event.comment.user.login == 'github-actions[bot]' &&
-        contains(github.event.comment.body, '<!-- open-study-path:diagnostic-turn -->'))
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.pull_request == null &&
+       contains(github.event.issue.labels.*.name, 'diagnostic:in-progress') &&
+       !(github.event.comment.user.login == 'github-actions[bot]' &&
+         contains(github.event.comment.body, '<!-- open-study-path:diagnostic-turn -->')))
     outputs:
       branch: ${{ steps.branch.outputs.name }}
       base_sha: ${{ steps.base.outputs.sha }}
