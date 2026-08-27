@@ -1,0 +1,34 @@
+contract_version: 1
+operation_id: curriculum-proposal-v1
+phase: curriculum
+reviewer_role: curriculum_reviewer
+independent_pass: true
+status: approved
+reviewed_at: "2026-08-26T17:30:00Z"
+
+artifacts:
+  - path: .open-study-path/instance.yml
+    change: current
+    sha256: b32908b498e37d2e4073d083c61b9d8195759177accfff9b6a270c72ad41c92f
+  - path: study/roadmap.md
+    change: current
+    sha256: 5485f2871b1e6141ec46bd9e845ceb837ffc8ea4efffc902b8f9da0c206dbb0f
+
+checks:
+  scope_alignment: passed
+  dependency_integrity: passed
+  effort_feasibility: passed
+  learner_language: passed
+  content_review_complete: passed
+  assessment_alignment: passed
+  source_and_integration_consistency: passed
+
+blocking_findings: []
+
+non_blocking_findings:
+  - "content_review_complete and assessment_alignment are recorded passed because no teaching content, modules, rubrics or assessment forms are materialized in this proposal suboperation; there is no materialized artifact for those checks to fail against, and each topic's 'Evidência esperada' is consistent with the exercise-based assessment style recorded in the intake summary."
+  - "Independently reconstructed the dependency graph: every Mermaid edge (T1->T2, T1->T3, T2->T7, T3->T4, T3->T5, T3->T6, T4->T5, T4->T7, T5->T8, T6->T8, T7->T8) matches the per-topic direct prerequisite lists exactly; the graph is acyclic with a single root (TOPIC-001), and the roadmap markers topics=8 / roots=TOPIC-001 are accurate."
+  - "Independently summed per-topic effort (60+60+75+75+75+60+90+90 = 585 min ~= 9.75h), which matches the stated ~9-10h of directed study; all topics fall within the 45-90 min target band and the roadmap uses topic-based structure with no weekly/calendar projection."
+  - "Scope, starting point and rationale are grounded in the approved intake (three Roman authors, dichotomy of control, reflective journal, primary texts over summaries) and the diagnostic (complete beginner who already holds a correct informal intuition of the dichotomy of control); the roadmap correctly contextualizes and formalizes that intuition rather than re-teaching it, and the scope section is honest about the introductory boundary (excludes deep Stoic logic/physics and Greek Stoics beyond needed context)."
+  - "No integrations.md, state/integrations.json or external resources were created or changed in this proposal, consistent with the topic-first safe-publication contract; instance markers were set atomically (curriculum_proposed: true, curriculum_approved: true, curriculum_generated: false). Both changed generated artifacts are covered here with verified current SHA-256 fingerprints."
+  - "Learner-facing prose is pt-BR, uses 'aula futura'/'pronta' rather than internal materialized/planned terminology, defines vocabulary at first occurrence, and explains that lesson numbering aids navigation while direct prerequisites remain authoritative for readiness."
