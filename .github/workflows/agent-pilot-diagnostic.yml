@@ -134,9 +134,20 @@ jobs:
     # those paths -- the same guarantees the issue_comment branch checks for
     # itself below, just already verified by the caller instead of
     # re-checked here.
+    #
+    # Detected via inputs.issue_number being non-empty, not
+    # github.event_name -- a real test found github.event_name inside a
+    # workflow invoked via workflow_call is NOT 'workflow_call', it stays
+    # whatever the top-level calling workflow's own trigger was (here,
+    # 'issues', from agent-pilot-diagnostic-answer-bridge.yml's issues:
+    # opened trigger) -- so an event_name check here always evaluated false
+    # for the workflow_call path, silently skipping this job every time.
+    # inputs.issue_number is only ever populated for workflow_dispatch and
+    # workflow_call (issue_comment never sets it), which is exactly the
+    # distinction needed and does not depend on which event name GitHub
+    # happens to report.
     if: >
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'workflow_call' ||
+      inputs.issue_number != '' ||
       (github.event.issue.pull_request == null &&
        contains(github.event.issue.labels.*.name, 'diagnostic:in-progress') &&
        !(github.event.comment.user.login == 'github-actions[bot]' &&
