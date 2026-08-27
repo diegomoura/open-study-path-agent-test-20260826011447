@@ -1,10 +1,10 @@
 contract_version: 1
-operation_id: diagnostic-v1
+operation_id: diagnostic-v2
 phase: diagnostic
 reviewer_role: diagnostic_reviewer
 independent_pass: true
 status: approved
-reviewed_at: "2026-08-26T17:30:00Z"
+reviewed_at: "2026-08-27T12:00:00Z"
 
 artifacts:
   - path: .open-study-path/instance.yml
@@ -12,7 +12,7 @@ artifacts:
     sha256: 3644c5d398c0c8c74827a04a50d7262c334932e96022cc6a2d1e6d541718856d
   - path: state/diagnostic-summary.json
     change: current
-    sha256: 80bb4fc72ec038811a9edaac8b0c3f6226ead88283dd5e9d41d82a1efef4cc06
+    sha256: 8103b0b9fd9ce1f35e5d8fb4d28e96311d4f79fc2577446b0bb91da0b51a656e
 
 checks:
   evidence_basis: passed
@@ -24,5 +24,7 @@ checks:
 blocking_findings: []
 
 non_blocking_findings:
-  - "diagnostic-summary.json uses subject: 'Estoicismo' (the issue title / path.name) rather than the more descriptive intake path.subject ('Fundamentos de estoicismo e aplicação prática'). Both are legitimate labels and the schema does not require a specific one, but future diagnostics could prefer path.subject for consistency with generation-phase artifacts."
-  - "confirmed_competencies records only two entries against a 3-question budget; a short one-line note tying each question to its resulting evidence entry would make the audit trail slightly easier to reconstruct without raw transcripts, though it is not required by the schema or instructions."
+  - "evidence_sufficiency is recorded as 'limited', but per instructions/20-diagnostic.md's stopping rule this reply arguably fits case 2 rather than case 3: both a conceptual signal (dichotomy of control, correctly explained) and an applied signal (correct reasoning on a delayed-flight scenario) are present and strong, and only one secondary/vocabulary dimension (the four cardinal virtues) is thin. Case 2 describes exactly this shape ('at least one conceptual and one applied signal are available ... but some secondary dimension is thin, that thinness is a caveat, not a reason to ask again') and does not itself mandate 'limited'; case 3 is reserved for a reply 'genuinely too sparse to place responsibly on more than one dimension'. Recording 'limited' instead of 'sufficient' is defensible if the cardinal virtues are treated as a second conceptual pillar rather than a secondary detail, and it is strictly more conservative (it does not hide the gap or inflate confidence), so it is not blocking -- but a future session should make explicit which of the two stopping-rule branches is being applied when the classification is ambiguous, since evidence_sufficiency is a field later phases may key off of."
+  - "The self-reported summary describes this as a 'follow-up/confirmation session' reopening an already-diagnostic_complete subject before curriculum generation (curriculum_proposed and curriculum_generated are both still false), with a new question batch, method and evidence_sufficiency replacing the prior turn's values wholesale. The repository state is internally consistent with that account (previous diagnostic-summary.json and its approved review at state/reviews/agent-pilot-diagnostic.yml match the prior fingerprints exactly, and nothing in the new file contradicts previously confirmed competencies), but instructions/20-diagnostic.md documents only the single fresh-session turn-1/turn-2 flow and does not separately describe a post-completion confirmation round. This is not a blocking finding because diagnostic_complete stays true, no curriculum has been generated yet, and the new evidence strictly refines rather than reverses the prior placement, but instructions/manifest.yml or 20-diagnostic.md could usefully document this reopening pattern explicitly."
+  - "confirmed_competencies includes a personal-motivation statement ('wants calmer reactions to traffic and work delays') alongside two genuine competency demonstrations. It is accurately described and does not overstate mastery, but it is not itself evidence of a capability the way the other two entries are; a future revision could move motivational context into learner_context instead of confirmed_competencies for clarity."
+
