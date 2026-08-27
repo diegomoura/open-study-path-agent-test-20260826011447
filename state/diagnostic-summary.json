@@ -2,38 +2,37 @@
   "version": 1,
   "status": "complete",
   "subject": "Estoicismo",
-  "completed_at": "2026-08-26",
-  "method": "github_issue_conversation",
-  "question_count": 3,
+  "completed_at": "2026-08-27",
+  "method": "single_form_batch",
+  "question_count": 4,
   "question_budget": {
     "target_min": 3,
     "target_max": 5,
     "hard_max": 7,
     "exception": null
   },
-  "evidence_sufficiency": "sufficient",
+  "evidence_sufficiency": "limited",
   "learner_context": {
-    "declared_level": "none",
-    "prior_exposure": "informal only (social media excerpts, aware Marco Aurélio wrote 'Meditações'), no formal reading of primary texts"
+    "prior_exposure": "Secondhand summaries and social-media quotes about Stoicism; no primary texts read (Seneca, Epictetus, Marcus Aurelius)."
   },
   "confirmed_competencies": [
-    "Intuitive grasp of the core idea behind the 'dicotomia do controle' (separating what is within one's control from what is not)",
-    "Able to apply that idea to a plausible everyday scenario (traffic delay) with a coherent, correct Stoic-style response"
+    "Can explain the core idea of the dichotomy of control in own words and generate a plausible, correctly-scoped daily-life example (a delayed flight)."
   ],
   "knowledge_gaps": [
-    "No familiarity with primary texts or authors beyond recognizing Marco Aurélio's 'Meditações' by name",
-    "No exposure to Sêneca or Epicteto or their specific contributions",
-    "No formal vocabulary or framework for Stoic ethics beyond the dichotomy of control (e.g. cardinal virtues, Stoic logic/physics, oikeiosis, the role of virtue as the sole good)",
-    "No knowledge of historical context or the development of the Stoic school"
+    "No direct reading of primary Stoic texts (Seneca, Epictetus, Marcus Aurelius) -- only secondhand summaries and isolated quotes.",
+    "No demonstrated familiarity with the four cardinal virtues (wisdom, courage, justice, temperance) or other core Stoic ethical concepts -- question went unanswered.",
+    "No established reflective practice (journaling, brief meditation, evening review) -- the answer described a future aspiration to react more calmly, not a past sustained practice."
   ],
   "misconceptions": [],
   "required_prerequisites": [],
   "recommended_starting_depth": {
-    "level": "beginner_no_prior_formal_study",
-    "notes": "Learner has no formal exposure to Stoicism but already holds a correct informal intuition about the dichotomy of control and can apply it. The path should start from first principles (history, key authors, foundational vocabulary) rather than re-teaching the dichotomy of control from scratch, while still formalizing and deepening that concept early on."
+    "level": "beginner",
+    "entry_point": "Start from first principles: introduce Stoicism's historical context and vocabulary, ground the already-understood dichotomy of control in a primary-source excerpt, then build up the cardinal virtues and ethics before introducing a structured reflective-practice habit.",
+    "skip": "Do not re-teach the dichotomy of control from scratch; use it as a bridge into primary-source reading and the virtues."
   },
   "material_caveats": [
-    "Evidence is based on a short, bounded diagnostic (3 questions) focused on prior exposure, conceptual understanding and one applied scenario; broader curriculum gaps (e.g. Stoic physics/logic, other philosophers) are expected to be covered as regular curriculum topics rather than further diagnostic probing."
+    "Question 3 (four cardinal virtues / core ethical concepts) received no answer in the single reply; treated as a full gap rather than a partial competency, not as a second question round.",
+    "Question 4's answer described a future intention (reacting more calmly to traffic and delays) rather than a past reflective-practice experience, so evidence about prior practice habits is thin; the conservative assumption is no prior sustained practice."
   ],
   "curriculum_generated": false
 }
