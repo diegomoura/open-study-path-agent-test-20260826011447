@@ -74,6 +74,6 @@ status:
   intake_entrypoint_ready: true
   intake_imported: true
   diagnostic_complete: true
-  curriculum_proposed: false
-  curriculum_approved: false
+  curriculum_proposed: true
+  curriculum_approved: true
   curriculum_generated: false
