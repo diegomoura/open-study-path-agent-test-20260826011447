@@ -2,38 +2,41 @@
   "version": 1,
   "status": "complete",
   "subject": "Estoicismo",
-  "completed_at": "2026-08-26",
-  "method": "github_issue_conversation",
-  "question_count": 3,
+  "completed_at": "2026-08-27",
+  "method": "single_form_batch",
+  "question_count": 4,
   "question_budget": {
     "target_min": 3,
     "target_max": 5,
     "hard_max": 7,
     "exception": null
   },
-  "evidence_sufficiency": "sufficient",
+  "evidence_sufficiency": "limited",
   "learner_context": {
     "declared_level": "none",
-    "prior_exposure": "informal only (social media excerpts, aware Marco Aurélio wrote 'Meditações'), no formal reading of primary texts"
+    "prior_exposure": "informal only (social media summaries and loose quotes); confirmed no reading of primary texts by Sêneca, Epicteto or Marco Aurélio"
   },
   "confirmed_competencies": [
-    "Intuitive grasp of the core idea behind the 'dicotomia do controle' (separating what is within one's control from what is not)",
-    "Able to apply that idea to a plausible everyday scenario (traffic delay) with a coherent, correct Stoic-style response"
+    "Intuitive and correct grasp of the 'dicotomia do controle' (separating what depends on oneself -- reactions, choices -- from what does not -- external events)",
+    "Able to apply that idea to a plausible everyday scenario (a delayed flight) with a coherent, correct Stoic-style response",
+    "Clear, concrete motivation for practical application: wants calmer reactions to traffic and work delays by focusing on their own response instead of the external event"
   ],
   "knowledge_gaps": [
-    "No familiarity with primary texts or authors beyond recognizing Marco Aurélio's 'Meditações' by name",
-    "No exposure to Sêneca or Epicteto or their specific contributions",
-    "No formal vocabulary or framework for Stoic ethics beyond the dichotomy of control (e.g. cardinal virtues, Stoic logic/physics, oikeiosis, the role of virtue as the sole good)",
+    "No familiarity with primary texts or authors beyond recognizing names in passing (Sêneca, Epicteto, Marco Aurélio) -- confirmed again in this follow-up session",
+    "No confirmed knowledge of the four Stoic cardinal virtues (sabedoria, coragem, justiça, temperança): the follow-up question about them went unanswered across three separate reply attempts on this session, so this remains an open gap rather than a demonstrated competency",
+    "No formal vocabulary or framework for Stoic ethics beyond the dichotomy of control (e.g. cardinal virtues, Stoic logic/physics, oikeiosis, virtue as the sole good)",
     "No knowledge of historical context or the development of the Stoic school"
   ],
   "misconceptions": [],
   "required_prerequisites": [],
   "recommended_starting_depth": {
     "level": "beginner_no_prior_formal_study",
-    "notes": "Learner has no formal exposure to Stoicism but already holds a correct informal intuition about the dichotomy of control and can apply it. The path should start from first principles (history, key authors, foundational vocabulary) rather than re-teaching the dichotomy of control from scratch, while still formalizing and deepening that concept early on."
+    "notes": "Confirmed in a follow-up session: the learner has no formal exposure to Stoicism but already holds a correct informal intuition about the dichotomy of control and can apply it to a real scenario, plus a clear personal motivation (calmer reactions to traffic/work delays). The path should start from first principles (history, key authors, foundational vocabulary including the four cardinal virtues) rather than re-teaching the dichotomy of control from scratch, while still formalizing and deepening that concept early on."
   },
   "material_caveats": [
-    "Evidence is based on a short, bounded diagnostic (3 questions) focused on prior exposure, conceptual understanding and one applied scenario; broader curriculum gaps (e.g. Stoic physics/logic, other philosophers) are expected to be covered as regular curriculum topics rather than further diagnostic probing."
+    "This was a bounded 4-question follow-up/confirmation session for a subject with a prior diagnostic already on record; it refines rather than replaces that placement.",
+    "The question about the four cardinal virtues was left unanswered in all three reply attempts recorded on this session issue (the learner's replies answered questions 1, 2 and 4 each time, renumbering them inconsistently, but never answered the virtues question) -- evidence_sufficiency is recorded as limited for that reason, and the existing conservative assumption (no knowledge of the cardinal virtues) was kept rather than assumed resolved.",
+    "Broader curriculum gaps (e.g. Stoic physics/logic, other philosophers) are expected to be covered as regular curriculum topics rather than further diagnostic probing."
   ],
   "curriculum_generated": false
 }
