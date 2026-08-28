@@ -68,7 +68,8 @@ def main() -> None:
 
     fake = FakeApi({"study-request"})
     result = ensure_repository_labels("example/study", fake)
-    if result != {"existing": ["study-request"], "created": ["intake:imported"]}:
+    expected_created = [name for name in REQUIRED_LABELS if name != "study-request"]
+    if result != {"existing": ["study-request"], "created": expected_created}:
         raise SystemExit(f"existing labels were not reused: {result}")
 
     fake = FakeApi(set(REQUIRED_LABELS))
