@@ -1,0 +1,99 @@
+contract_version: 1
+operation_id: curriculum-estoicismo-detailed-generation-v1
+phase: curriculum
+reviewer_role: curriculum_reviewer
+independent_pass: true
+status: approved
+reviewed_at: "2026-08-26T19:30:00Z"
+
+artifacts:
+  - path: .open-study-path/instance.yml
+    change: current
+    sha256: 0c7f7aaab92d8bd107b95277457bd706bb23154cc3073a4395a3dcc81784f389
+  - path: study/roadmap.md
+    change: current
+    sha256: 33b37465e5754ab72e5d63ddee681bd357bae7144356ac1bd8396ea62ee570f2
+  - path: study/integrations.md
+    change: current
+    sha256: 62feaa9cbd64c29baf4fe8d9e7c0abd0af11bae6a28d155f3cba46b0942598b5
+  - path: study/modules/TOPIC-001.md
+    change: current
+    sha256: ccc1246b7d6c983894b6ae46bf65d0848280d5190ebb72fa8b15dbfdb8e68baf
+  - path: study/modules/TOPIC-002.md
+    change: current
+    sha256: 09b6f964076a1cbe4f81a4645b7bd7173e4be086c6b9018aea4b2a1216c31279
+  - path: study/assessments/TOPIC-001.yml
+    change: current
+    sha256: feef2785b18133d8b62c82162763759c5b3bd027bbabd8590a96318e001b86ff
+  - path: study/assessments/TOPIC-002.yml
+    change: current
+    sha256: 3ebe5b5e12b8bd140cd9397bad59b2a6b24164c317a798613edb3d184ec96c5e
+  - path: study/topics/TOPIC-001.md
+    change: current
+    sha256: d1d8d28d54151bcbe653484e9e8575e58e2276199bd09b2095fe1f4397df53b4
+  - path: study/topics/TOPIC-002.md
+    change: current
+    sha256: 5d9c572f4a5631d9e8372ee2921f80a90c41d0d4a6260c267d1ae9f220577ae1
+  - path: study/topics/TOPIC-003.md
+    change: current
+    sha256: 62171fbf7a679eb14b6e568ab12984c51c660d7dcafea3f7453fba0e1d31f428
+  - path: study/topics/TOPIC-004.md
+    change: current
+    sha256: 4deebced48e5fdeb97b48f2a84f5516373319b0dc2d8bcfa7ba63140b9d78333
+  - path: study/topics/TOPIC-005.md
+    change: current
+    sha256: 9bf06d90ae7e6c61b861001066b96ebe7f8e6a060a338890d23a7f06c69625fb
+  - path: study/topics/TOPIC-006.md
+    change: current
+    sha256: 238060654df1f89ad84d0f2ede7c77f7b82d42491baec34b4df528e3fd031ee8
+  - path: study/topics/TOPIC-007.md
+    change: current
+    sha256: 48ccf5a395e1dc9a7034e1823cefb5e01731160184860fa77e9ca4e709258781
+  - path: study/topics/TOPIC-008.md
+    change: current
+    sha256: f9a053f673fb89ec6de290f7b433afd8e0a47088273474d9cd73066e28323ff1
+  - path: .github/ISSUE_TEMPLATE/assessment-topic-001.yml
+    change: current
+    sha256: b40e84942aeb5238e6f733b618be7df44a9f5a7ec48151e6ecf0a50695a39d14
+  - path: .github/ISSUE_TEMPLATE/assessment-topic-002.yml
+    change: current
+    sha256: ea62b82b901fa05cab0f9f036f5ee5e79f57dd0835ccfe50f4f17b5ad05038ad
+
+checks:
+  scope_alignment: passed
+  dependency_integrity: passed
+  effort_feasibility: passed
+  learner_language: passed
+  content_review_complete: passed
+  assessment_alignment: passed
+  source_and_integration_consistency: passed
+
+blocking_findings: []
+
+non_blocking_findings:
+  - "TOPIC-002 learning outcome LO-1's statement bundles a biographical-identification claim with a 'why this diversity is rare in the history of philosophy' clause that is really the theme of LO-3; the LO-1 outcome marker and assessment question (q1) only exercise the biographical half. Not blocking because the identification capability is fully taught and assessed and the rarity/diversity claim is genuinely taught and assessed under LO-3 elsewhere in the same lesson, but a future content_version should tighten LO-1's statement to match only what its own marker and question test."
+  - "TOPIC-001's source table is entirely text-based (two academic encyclopedia entries, one primary translation, two web articles) with no video/audio alternative format; acceptable per docs/content-quality-and-sources.md ('não force variedade quando ela não ajuda') given the primary+academic combination already present, and already self-flagged in state/content-reviews/TOPIC-001.yml as a non-blocking note for a future revision."
+  - "Per this run's explicit scope addendum, study slides (study/slides/, state/slide-reviews/, slides/slides_pdf/slides_review topic-contract fields, and the 'Slides da aula' PDF link) were intentionally skipped for both materialized topics as a deliberate pilot omission; this review does not evaluate that dimension and defers it entirely to a future operation, consistent with the addendum's instruction that this is not a finding for this run."
+
+independent_pass_notes: >
+  Reconstructed evidence directly from repository state rather than the author's summary:
+  cross-checked study/roadmap.md's Mermaid dependency graph against every study/topics/TOPIC-00N.md
+  frontmatter `prerequisites` list (all 8 topics, acyclic, single root TOPIC-001); recomputed
+  rubric-to-outcome coverage for both assessments/TOPIC-00N.yml against the corresponding
+  state/content-reviews/TOPIC-00N.yml outcome_coverage tables and confirmed exact set equality
+  per outcome (LO-1/LO-2/LO-3); verified both materialized modules contain exactly one
+  `open-study-path:outcome` marker per approved learning outcome, positioned beside the section
+  that actually teaches it; verified the canonical module heading order, two labeled worked
+  examples (one explicitly marked as a pedagogical scenario, one as a documented historical case
+  with primary-source citation), Mermaid diagram presence, and the natural
+  "Terminei <título>. Avalie minhas respostas." command against
+  scripts/validate_curriculum_safe.py, scripts/validate_learning_experience.py,
+  scripts/beginner_pedagogy.py and scripts/course_content_review.py's exact deterministic rules;
+  verified study/integrations.md against .open-study-path/instance.yml integration_preferences
+  and state/intake-summary.json (task_manager=github_issues, routine=decide_later,
+  account_connections=ask_per_provider) with no external writes performed; verified
+  content_generation.adaptive_rolling_window thresholds (lookahead_topics=2,
+  full_upfront_max_topics=4, full_upfront_max_hours=4) justify materializing exactly
+  TOPIC-001 and TOPIC-002 out of 8 topics totalling ~9.75 estimated hours; confirmed
+  state/content-reviews/TOPIC-001.yml and TOPIC-002.yml are both status:approved with all 9
+  course-content-review checks passed and zero blocking findings, satisfying content_review_complete.
