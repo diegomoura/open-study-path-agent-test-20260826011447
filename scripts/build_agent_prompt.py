@@ -314,6 +314,21 @@ You have exactly one tool for the actual publication:
   `state/integrations.json` first and pass it back in -- this is what lets
   the engine update the same issue instead of creating a duplicate.
 
+  If `.open-study-path/instance.yml`'s `study_slides.enabled` is not
+  explicitly `true`, or a topic's `study/slides/<topic_id>/slides.pdf` does
+  not actually exist in the repository (check with read_file or an
+  equivalent existence check before writing the field, never assume the
+  path from convention), pass `slides_url=None` for that topic -- do not
+  construct a plausible-looking slides path the same way you build
+  `lesson_url` from the module's real path. A real dispatch rendered a
+  "Slides:" resource line in a published, learner-visible GitHub issue
+  pointing at `study/slides/TOPIC-001/slides.pdf` for a pilot that had
+  `study_slides.enabled: false` and no `study/slides/` directory at all --
+  a dead link the learner would have clicked. `lesson_url`,
+  `practice_url` and `assessment_url` come from files/templates that this
+  pilot always materializes, so they do not need this same check; only
+  `slides_url` is conditional on the toggle.
+
   Also populate `learning_summary` (plain-language capability summary,
   becomes "O que você vai aprender:"), `estimated_minutes` (integer,
   becomes "Tempo sugerido:"), `deliverable_summary` (becomes "O que você
@@ -403,6 +418,13 @@ gap a real Etapa 6d dispatch's reviewer previously caught, so read the
 actual issue body back rather than trusting that the author populated
 these fields. You do not have run_publish_projection: you are checking
 the result, not reproducing or re-running the publication.
+
+Also confirm the "Recursos" block never lists a "Slides:" line unless
+`.open-study-path/instance.yml`'s `study_slides.enabled` is `true` and
+`study/slides/<topic_id>/slides.pdf` genuinely exists -- a real dispatch
+published a "Slides:" link to a PDF that did not exist for a pilot with
+slides deliberately off. This is a blocking finding: a dead resource link
+in a learner-visible card, not a cosmetic issue.
 
 Two things that read as inconsistencies but are not, on their own:
 
