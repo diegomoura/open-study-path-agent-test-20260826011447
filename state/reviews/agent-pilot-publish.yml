@@ -24,14 +24,12 @@ artifacts:
     sha256: 150579cc1adf05cfde775c5d0a4647a8a743fee25f67b46bbd5c6b7724157d57
 
 checks:
-  selected_tool_availability: passed
-  external_projections_resolved: passed
-  idempotent_operations: passed
-  authority_preservation: passed
-  privacy_and_cost_resolved: passed
-  learner_visible_content_boundary: passed
-  readback_verification: passed
-  integration_state_persisted: passed
+  selected_capabilities_resolved: passed
+  external_projection_consistency: passed
+  idempotency_and_reuse: passed
+  learner_navigation: passed
+  privacy_cost_and_authority: passed
+  next_action_consistency: passed
 
 blocking_findings: []
 
@@ -47,6 +45,8 @@ non_blocking_findings:
   - "REVIEWER DISAGREEMENT (recorded, not corrected): the independent reviewer's original pass raised two items as blocking_findings that a closer read of scripts/task_projection_engine.py shows are not defects. (1) canonical_state and the GitHub label/visible_state encode different axes -- canonical_state: \"ready\" means the topic's content is materialized, not that it is eligible for the learner right now; eligibility is a separate computation from direct_prerequisite_ids vs. completed topics (see build_projection_plan()). Issue 24 having canonical_state: \"ready\" (content materialized in generate_detailed) alongside label study:planned (TOPIC-001 not yet completed) is two independently-correct facts, not a contradiction. (2) state/operations/pub-20260826-001.json's external_write_count: 0 reflects only the author's last call to run_publish_projection, not the operation's cumulative history; GitHub issue timestamps (#22/#23/#24 all created ~14:55:4x, before this journal's own started_at of 14:58:59) show the author called the tool more than once in this run -- an earlier, unpersisted call made the real writes, and this later, idempotent, correctly-zero-write call is what got saved. The actual GitHub state (verified directly, matches state/integrations.json's claims) is correct and complete; only the write-count audit trail undercounts. Root cause of (2) -- nothing told the author not to re-invoke the tool after success -- fixed upstream in diegomoura/open-study-path PR #113 (AUTHOR_PUBLISH_TOOL_NOTE now says call it exactly once; REVIEWER_PUBLISH_TOOL_NOTE now explains both of these so a future independent reviewer does not re-raise them as blocking)."
 
   - "AUDIT NOTE (manual post-approval fix, not re-reviewed independently, found during resolution of the two items above): issue 23's (Aula 01) rendered body contained a \"Slides:\" resource line linking to study/slides/TOPIC-001/slides.pdf, which does not exist -- this pilot has study_slides.enabled: false and no study/slides/ directory at all. A real learner would have hit a dead link. Manually removed that one line from issue #23's live GitHub body via the REST API (no other content changed; state/integrations.json, study/integrations.md and state/operations/pub-20260826-001.json never referenced slides and needed no change, so no tracked artifact hash in this manifest changed). Root cause -- AUTHOR_PUBLISH_TOOL_NOTE never said to check study_slides.enabled/real file existence before setting slides_url, the same class of gap Etapa 9's generate_detailed fix (PR #112) already closed for materialization -- fixed upstream in diegomoura/open-study-path PR #114."
+
+  - "AUDIT NOTE (manual post-approval fix, not re-reviewed independently): this manifest's `checks:` keys never matched scripts/review_framework.py's REVIEW_PROFILES[\"publication\"][\"checks\"] (e.g. selected_tool_availability vs. the schema's selected_capabilities_resolved) -- a pre-existing naming mismatch invisible until this manifest was re-touched in the same PR, which is what makes validate_review_framework.py fully re-validate it. Renamed to the six schema-correct keys, all passed, based on evidence already gathered in this manifest's own independent_pass_notes (capability resolution, GitHub readback, idempotent external_id reuse, learner-facing content, routine/privacy scope, correct next-action labels). Also, this manifest's own artifact list includes state/operations/pub-20260826-001.json, which scripts/review_framework.py's phase_allows_artifact() never allowed for the publication phase despite instructions/41-task-backend-projection.md explicitly saying operation journals are in scope for phase review -- fixed upstream in diegomoura/open-study-path PR #115."
 
 independent_pass_notes: >
   Reconstructed evidence independently:
