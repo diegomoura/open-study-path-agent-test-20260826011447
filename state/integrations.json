@@ -4,19 +4,107 @@
     "provider": "github",
     "repository": "diegomoura/open-study-path-agent-test-20260826011447"
   },
-  "selected_capabilities": {},
-  "resources": [],
-  "projection": null,
-  "operations": {},
+  "selected_capabilities": {
+    "task_manager": {
+      "provider": "github_issues",
+      "status": "success",
+      "resolution_status": "resolved"
+    }
+  },
+  "resources": [
+    {
+      "capability": "task_manager",
+      "provider": "github_issues",
+      "type": "project",
+      "id": "diegomoura/open-study-path-agent-test-20260826011447",
+      "url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447",
+      "sync_status": "success",
+      "last_synced_at": "2026-08-28T14:58:59.966537Z"
+    },
+    {
+      "capability": "task_manager",
+      "provider": "github_issues",
+      "type": "orientation",
+      "id": "22",
+      "url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447/issues/22",
+      "canonical_state": "planned",
+      "visible_state": "Planejado",
+      "sync_status": "success",
+      "last_synced_at": "2026-08-28T14:58:59.966537Z"
+    },
+    {
+      "capability": "task_manager",
+      "provider": "github_issues",
+      "type": "issue",
+      "id": "24",
+      "url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447/issues/24",
+      "topic_id": "TOPIC-002",
+      "visible_lesson_number": 2,
+      "title": "Aula 02 · Os três grandes autores",
+      "direct_prerequisite_ids": [
+        "TOPIC-001"
+      ],
+      "content_version": 1,
+      "canonical_state": "ready",
+      "visible_state": "Planejado",
+      "visual_position": 1,
+      "managed_fields_version": 1,
+      "roadmap_fingerprint": "8dcfb9faa6d07bb4f24e481e4e332ee7b8246488c006912569cf181b5e8b016a",
+      "sync_status": "success",
+      "last_synced_at": "2026-08-28T14:58:59.966537Z"
+    },
+    {
+      "capability": "task_manager",
+      "provider": "github_issues",
+      "type": "issue",
+      "id": "23",
+      "url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447/issues/23",
+      "topic_id": "TOPIC-001",
+      "visible_lesson_number": 1,
+      "title": "Aula 01 · O que é o estoicismo",
+      "direct_prerequisite_ids": [],
+      "content_version": 1,
+      "canonical_state": "ready",
+      "visible_state": "Próxima aula",
+      "visual_position": 0,
+      "managed_fields_version": 1,
+      "roadmap_fingerprint": "8dcfb9faa6d07bb4f24e481e4e332ee7b8246488c006912569cf181b5e8b016a",
+      "sync_status": "success",
+      "last_synced_at": "2026-08-28T14:58:59.966537Z"
+    }
+  ],
+  "projection": {
+    "provider": "github_issues",
+    "container_id": "diegomoura/open-study-path-agent-test-20260826011447",
+    "container_url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447",
+    "topic_count": 2,
+    "managed_list_order": null,
+    "roadmap_fingerprint": "8dcfb9faa6d07bb4f24e481e4e332ee7b8246488c006912569cf181b5e8b016a",
+    "readback": {
+      "verified_at": "2026-08-28T14:58:59.966537Z",
+      "lesson_card_count": 2,
+      "managed_card_count": 3,
+      "visible_internal_marker_count": 0,
+      "external_read_count": 1
+    }
+  },
+  "operations": {
+    "pub-20260826-001": {
+      "status": "success",
+      "provider": "github_issues",
+      "updated_at": "2026-08-28T14:58:59.966492Z",
+      "checkpoint_count": 9
+    }
+  },
   "resolution": {
-    "status": "not_started",
+    "status": "resolved",
     "unresolved_capabilities": [],
-    "validated_at": null
+    "validated_at": "2026-08-28T14:58:59.966537Z"
   },
   "sync": {
-    "last_attempt_at": null,
-    "last_success_at": null,
-    "status": "not_started",
+    "last_attempt_at": "2026-08-28T14:58:59.966492Z",
+    "last_success_at": "2026-08-28T14:58:59.966537Z",
+    "status": "success",
     "errors": []
   }
 }
