@@ -2,8 +2,6 @@
 
 Esta é a proposta de arquitetura da sua trilha. Ela mostra **o que você vai aprender**, **em que ordem** e **por que cada etapa importa** para o seu objetivo: entender o pensamento original dos estoicos e aplicar práticas como a dicotomia do controle e o diário reflexivo na sua rotina.
 
-Nesta etapa nada foi materializado ainda: as aulas detalhadas, os exercícios e as avaliações são criados depois, quando você pedir para gerar a trilha. Aqui você aprova o mapa.
-
 ## Seu ponto de partida
 
 Você chega sem estudo formal de filosofia e sem leitura dos textos originais, mas já tem uma intuição correta sobre a ideia central do estoicismo: separar o que está sob o seu controle do que não está. Você aplicou essa ideia bem a uma situação real (um atraso no trânsito).
@@ -65,6 +63,7 @@ flowchart TD
 - **Por que importa para você:** você chega sem contexto formal; começar pela identidade da filosofia evita confundir o estoicismo popular das redes sociais com o pensamento original que você quer entender.
 - **Evidência esperada:** um exercício em que você define o estoicismo com suas palavras e distingue afirmações estoicas de mitos comuns sobre a filosofia.
 - **Esforço estimado:** ~60 min.
+- **Situação:** aula pronta.
 
 ### Aula 02 · Os três grandes autores
 - **ID interno:** TOPIC-002
@@ -73,6 +72,7 @@ flowchart TD
 - **Por que importa para você:** você já reconhece o nome "Meditações" de Marco Aurélio, mas não conhece Sêneca nem Epicteto; conhecer quem escreveu o quê é o que torna a leitura dos originais possível mais adiante.
 - **Evidência esperada:** um exercício de associação e justificativa ligando autor, obra, contexto de vida e o tema pelo qual cada um é mais lembrado.
 - **Esforço estimado:** ~60 min.
+- **Situação:** aula pronta.
 
 ### Aula 03 · A dicotomia do controle
 - **ID interno:** TOPIC-003
@@ -81,6 +81,7 @@ flowchart TD
 - **Por que importa para você:** esta é a prática que você já pediu explicitamente e sobre a qual já tem boa intuição; aqui ela deixa de ser intuição e vira ferramenta precisa, com vocabulário de Epicteto.
 - **Evidência esperada:** exercícios aplicados em que você classifica situações reais e reescreve reações à luz da dicotomia, incluindo pelo menos um caso ambíguo.
 - **Esforço estimado:** ~75 min.
+- **Situação:** aula futura — liberada assim que a Aula 01 for concluída.
 
 ### Aula 04 · Virtude como o único bem
 - **ID interno:** TOPIC-004
@@ -89,6 +90,7 @@ flowchart TD
 - **Por que importa para você:** sem esse pilar, o estoicismo vira só "controle emocional"; ele é o que dá sentido ético às decisões que você quer tomar com mais clareza.
 - **Evidência esperada:** um exercício que analisa dilemas cotidianos usando as virtudes e a categoria dos "indiferentes".
 - **Esforço estimado:** ~75 min.
+- **Situação:** aula futura — liberada assim que a Aula 03 for concluída.
 
 ### Aula 05 · Emoções e juízos
 - **ID interno:** TOPIC-005
@@ -97,6 +99,7 @@ flowchart TD
 - **Por que importa para você:** este é o mecanismo por trás de "lidar melhor com adversidades"; depende da dicotomia (Aula 03) e da noção de bem (Aula 04) para não virar mera repressão de sentimentos.
 - **Evidência esperada:** exercícios em que você mapeia a cadeia fato → juízo → emoção → resposta em situações reais e propõe reformulações.
 - **Esforço estimado:** ~75 min.
+- **Situação:** aula futura — liberada assim que as Aulas 03 e 04 forem concluídas.
 
 ### Aula 06 · O diário reflexivo estoico
 - **ID interno:** TOPIC-006
@@ -105,6 +108,7 @@ flowchart TD
 - **Por que importa para você:** você pediu explicitamente o diário reflexivo como prática de rotina; ele se apoia na dicotomia (Aula 03), por isso vem logo depois dela e pode andar em paralelo às Aulas 04 e 05.
 - **Evidência esperada:** registros de diário de alguns dias, seguindo um roteiro estoico, com uma breve autoanálise do que a prática revelou.
 - **Esforço estimado:** ~60 min (mais a prática distribuída ao longo de alguns dias).
+- **Situação:** aula futura — liberada assim que a Aula 03 for concluída.
 
 ### Aula 07 · Lendo os textos primários
 - **ID interno:** TOPIC-007
@@ -113,6 +117,7 @@ flowchart TD
 - **Por que importa para você:** este é o coração do seu pedido — "entender o pensamento original, não só resumos"; depende de conhecer os autores (Aula 02) e ter a base conceitual (Aulas 03 e 04) para ler com autonomia.
 - **Evidência esperada:** uma leitura guiada e comentada de trechos curtos, em que você explica o argumento do autor e o relaciona aos conceitos já estudados.
 - **Esforço estimado:** ~90 min.
+- **Situação:** aula futura — liberada assim que as Aulas 02 e 04 forem concluídas.
 
 ### Aula 08 · Estoicismo na rotina
 - **ID interno:** TOPIC-008
@@ -121,6 +126,7 @@ flowchart TD
 - **Por que importa para você:** é a aula que reúne tudo e entrega o seu objetivo final — aplicar o estoicismo no dia a dia, com clareza de decisão e disciplina emocional, sem depender de resumos.
 - **Evidência esperada:** um plano pessoal documentado (práticas, gatilhos, revisões) com relato de aplicação em situações reais da sua rotina, avaliado pelos critérios das aulas anteriores.
 - **Esforço estimado:** ~90 min (mais a aplicação continuada).
+- **Situação:** aula futura — liberada assim que as Aulas 05, 06 e 07 forem concluídas.
 
 ## Esforço total
 
@@ -136,7 +142,7 @@ Ela **não** cobre em profundidade a lógica e a física estoicas (as outras dua
 
 ## Materialização
 
-Nesta proposta, todas as aulas estão como **aula futura**: a arquitetura foi definida, mas o conteúdo detalhado ainda não foi criado. Quando você pedir para gerar a trilha, as primeiras aulas ficam **prontas** e as seguintes são preparadas automaticamente conforme você avança.
+As duas primeiras aulas já estão **prontas** para estudo: **Aula 01 · O que é o estoicismo** e **Aula 02 · Os três grandes autores**. As demais aulas continuam como **aula futura**: elas serão preparadas automaticamente, na ordem dos pré-requisitos, conforme você avança e envia as avaliações. Você não precisa pedir a geração manualmente.
 
 <!-- open-study-path:roadmap-graph topics=8 roots=TOPIC-001 -->
-<!-- open-study-path:materialization all=planned -->
+<!-- open-study-path:materialization materialized=TOPIC-001,TOPIC-002 planned=TOPIC-003,TOPIC-004,TOPIC-005,TOPIC-006,TOPIC-007,TOPIC-008 -->

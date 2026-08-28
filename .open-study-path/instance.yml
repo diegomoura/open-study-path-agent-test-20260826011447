@@ -76,4 +76,4 @@ status:
   diagnostic_complete: true
   curriculum_proposed: true
   curriculum_approved: true
-  curriculum_generated: false
+  curriculum_generated: true

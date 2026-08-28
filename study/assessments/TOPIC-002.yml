@@ -1,0 +1,51 @@
+version: 1
+topic_id: TOPIC-002
+title: Os três grandes autores
+passing_score: 80
+critical_misconceptions:
+  - "Epicteto escreveu pessoalmente o Enquirídio como um livro."
+  - "Só pessoas ricas e poderosas praticavam estoicismo em Roma."
+questions:
+  - id: q1
+    outcome_ids: [LO-1]
+    max_points: 20
+    evaluates: conceptual understanding
+    full_credit: Descreve corretamente quem foram Sêneca, Epicteto e Marco Aurélio, incluindo papel social e época de cada um.
+    partial_credit: Descreve corretamente dois dos três autores, ou omite um detalhe social relevante (por exemplo, a escravidão de Epicteto).
+    no_credit: Confunde os três autores entre si ou não consegue descrever quem eles foram.
+  - id: q2
+    outcome_ids: [LO-2]
+    max_points: 20
+    evaluates: classification or analysis
+    full_credit: Associa corretamente cada autor à sua obra principal e explica uma característica do estilo de cada uma (epistolar, manual, diário).
+    partial_credit: Associa corretamente as obras, mas não caracteriza bem o estilo de pelo menos uma delas.
+    no_credit: Associa incorretamente autor e obra em mais de um caso.
+  - id: q3
+    outcome_ids: [LO-1]
+    max_points: 20
+    evaluates: application to a new situation
+    full_credit: Diante de um trecho novo sem indicação de autor, identifica corretamente de qual autor ele provavelmente é, com base em estilo e contexto social, e justifica a escolha.
+    partial_credit: Identifica um autor plausível, mas a justificativa usa um critério fraco ou incompleto.
+    no_credit: Não consegue associar o trecho a nenhum autor de forma justificada.
+  - id: q4
+    outcome_ids: [LO-3]
+    max_points: 20
+    evaluates: misconception detection
+    full_credit: Identifica o equívoco de que o estoicismo era restrito a uma elite social, explica por que ele está errado usando Epicteto como evidência, e reformula corretamente.
+    partial_credit: Identifica que a afirmação é um equívoco, mas a explicação é incompleta ou não cita evidência específica.
+    no_credit: Aceita o equívoco como verdadeiro ou não o identifica.
+  - id: q5
+    outcome_ids: [LO-1, LO-2, LO-3]
+    max_points: 20
+    evaluates: independent evidence and reflection
+    full_credit: Apresenta a tabela ou texto associando os três autores a papel social, obra e estilo, com uma justificativa específica sobre por que a diversidade social importa.
+    partial_credit: Apresenta a associação, mas a justificativa sobre a diversidade social é genérica.
+    no_credit: Não apresenta associação utilizável ou a reflexão contradiz o conteúdo estudado.
+mastery_rules:
+  require_total_score: true
+  require_no_critical_misconception: true
+  recovery_when_not_mastered: true
+recovery:
+  create_focused_github_issue: true
+  create_trello_card: false
+  reassessment_required: true
