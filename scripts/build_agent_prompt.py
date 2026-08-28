@@ -335,6 +335,21 @@ You have exactly one tool for the actual publication:
   Disponível em paralelo. A real dispatch's reviewer caught a republish
   silently dropping this content for an in-progress topic.
 
+  Call this tool exactly once per operation attempt. Its `journal` return
+  value's `external_write_count` reflects only the writes made by *this*
+  call, not the operation's cumulative history -- if you call it again
+  after already getting a `status: "success"` response (to double-check
+  the result, or because you are unsure something landed correctly), the
+  second call's `preflight_match` will correctly find the resources it
+  just created and skip writing them again, and *that* zero-write journal
+  is what you will end up persisting, silently erasing the record that
+  real writes happened at all. A real dispatch did exactly this and left
+  `state/operations/<operation_id>.json` claiming zero external writes for
+  an operation that had in fact created three real GitHub issues. On a
+  `status: "success"` response, immediately do the three writes the next
+  section describes and move on to `finish_phase` -- do not call
+  `run_publish_projection` again to verify or re-check its own result.
+
   When a topic's real, materialized file paths happen to contain its own
   `TOPIC-000`-style ID (true for TOPIC-001, which predates the slug-
   filename convention `generate_detailed`/`evaluate` use for newer
@@ -388,6 +403,27 @@ gap a real Etapa 6d dispatch's reviewer previously caught, so read the
 actual issue body back rather than trusting that the author populated
 these fields. You do not have run_publish_projection: you are checking
 the result, not reproducing or re-running the publication.
+
+Two things that read as inconsistencies but are not, on their own:
+
+- `canonical_state` (in `internal_metadata`/`state/integrations.json`) and
+  the visible GitHub label/column encode different axes. `canonical_state:
+  "ready"` means the lesson's content is materialized -- it does not mean
+  the lesson is eligible for the learner right now. A materialized topic
+  whose prerequisites are not yet complete correctly has `canonical_state:
+  "ready"` *and* label/visible_state `Planejado` at the same time; that is
+  not a contradiction to flag. Only flag it if a topic's label/visible_state
+  says `Próxima aula` or `Disponível em paralelo` while its prerequisites
+  are genuinely still incomplete, or if canonical_state itself is invalid
+  for the topic's real materialization status (e.g. `"ready"` on a topic
+  that was never actually materialized).
+- `state/operations/<operation_id>.json`'s `external_write_count` reflects
+  only the author's *last* call to `run_publish_projection`, not the
+  operation's full history -- a value of `0` on an otherwise-successful
+  operation does not by itself mean nothing was written. Check the actual
+  GitHub issues (which you have read access to) against `state/
+  integrations.json`'s claims; that comparison, not the write-count number,
+  is the real signal of whether the operation did what it claims.
 """
 
 AUTHOR_PROPOSAL_NOTE = """\
