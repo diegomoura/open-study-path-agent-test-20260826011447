@@ -197,12 +197,82 @@ def test_non_study_labels_are_preserved_on_update() -> None:
     assert len([label for label in updated_labels if label.startswith("study:")]) == 1
 
 
+def test_two_simultaneously_eligible_topics_pass_readback() -> None:
+    # Real dispatch (Etapa 9 item 2 trilha, evaluate on PR #28 in the
+    # disposable pilot repo): the first run in this harness's history with
+    # two topics eligible at once (no unmet prerequisites, both
+    # materialized) -- TOPIC-002 as "Disponível em paralelo" and TOPIC-003
+    # as "Próxima aula" -- failed real readback validation with "primary
+    # next lesson does not match the canonical projection" even though the
+    # real GitHub writes were correct. Root cause: GITHUB_STATE_LABELS maps
+    # both "Disponível em paralelo" and "Próxima aula" to the same
+    # study:ready label, and _normalize()'s naive dict-inversion of that
+    # many-to-one mapping always resolved back to "Próxima aula" for
+    # *every* study:ready issue, collapsing the distinction the read-back
+    # check depends on. This never surfaced before because no earlier
+    # dispatch in this harness's history had two topics eligible
+    # simultaneously.
+    transport = FakeGitHubTransport()
+    backend = GitHubIssuesBackend(request_json=transport, repository="o/r")
+    topics = [
+        TopicProjection(
+            topic_id="TOPIC-001",
+            lesson_number=1,
+            title="Introdução",
+            direct_prerequisite_ids=(),
+            content_version=1,
+            canonical_state="completed",
+            materialized=True,
+            lesson_url="https://github.com/o/r/blob/HEAD/study/lessons/aula-01.md",
+            assessment_url="https://github.com/o/r/issues/new?template=assessment-topic-001.yml",
+        ),
+        TopicProjection(
+            topic_id="TOPIC-002",
+            lesson_number=2,
+            title="Concorrência",
+            direct_prerequisite_ids=(),
+            content_version=1,
+            canonical_state="ready",
+            materialized=True,
+            lesson_url="https://github.com/o/r/blob/HEAD/study/lessons/aula-02.md",
+            assessment_url="https://github.com/o/r/issues/new?template=assessment-topic-002.yml",
+        ),
+        TopicProjection(
+            topic_id="TOPIC-003",
+            lesson_number=3,
+            title="Testes",
+            direct_prerequisite_ids=(),
+            content_version=1,
+            canonical_state="ready",
+            materialized=True,
+            lesson_url="https://github.com/o/r/blob/HEAD/study/lessons/aula-03.md",
+            assessment_url="https://github.com/o/r/issues/new?template=assessment-topic-003.yml",
+        ),
+    ]
+    result = publish_projection(
+        topics=topics,
+        backend=backend,
+        operation_id="op-1",
+        course_name="Go do zero",
+    )
+    plan = build_projection_plan(topics, provider="github_issues")
+    errors = validate_readback(plan, result.normalized_snapshot)
+    assert errors == [], errors
+    assert result.journal["status"] == "success"
+
+    primary = {lesson.topic.topic_id for lesson in plan.lessons if lesson.visible_state == "Próxima aula"}
+    parallel = {lesson.topic.topic_id for lesson in plan.lessons if lesson.visible_state == "Disponível em paralelo"}
+    assert len(primary) == 1, plan.lessons
+    assert len(parallel) == 1, plan.lessons
+
+
 def main() -> None:
     tests = [
         test_publish_projection_round_trip_passes_readback,
         test_rerun_with_no_changes_makes_no_write_calls,
         test_ambiguous_title_match_raises_before_any_write,
         test_non_study_labels_are_preserved_on_update,
+        test_two_simultaneously_eligible_topics_pass_readback,
     ]
     for test in tests:
         test()

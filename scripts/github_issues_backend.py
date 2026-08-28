@@ -247,18 +247,41 @@ class GitHubIssuesBackend:
         # touched -- see the module docstring's note on stale issues).
         labels = list(issue["labels"])
         kind = "lesson" if any(label.startswith("study:") for label in labels) else "orientation"
-        state_by_label = {value: key for key, value in GITHUB_STATE_LABELS.items()}
-        visible_state = next(
-            (state_by_label[label] for label in labels if label in state_by_label),
-            "Planejado",
-        )
+        # GITHUB_STATE_LABELS is many-to-one: "Disponível em paralelo" and
+        # "Próxima aula" both render as the same study:ready label, since
+        # GitHub Issues has no third state to distinguish them visually. A
+        # naive dict inversion ({value: key for key, value in ...}) always
+        # resolves that collision to whichever visible_state was inserted
+        # last in GITHUB_STATE_LABELS ("Próxima aula"), so *every*
+        # study:ready issue read back this way -- including ones this run
+        # itself just wrote as "Disponível em paralelo" -- was silently
+        # reported as "Próxima aula" instead. That was invisible until a
+        # real dispatch had two eligible topics at once for the first time
+        # in this harness's history, and validate_readback's primary/
+        # parallel checks (which need to tell them apart) failed outright.
+        # Prefer this run's own internal_metadata (populated by
+        # upsert_managed_resource earlier in this same backend instance's
+        # lifetime, so it reflects exactly what THIS run intended for an
+        # issue it just wrote) when present; only fall back to the lossy
+        # label-based guess for an issue this run never touched, where no
+        # better source of truth exists.
+        metadata = dict(self._metadata_by_number.get(number, {}))
+        metadata_visible_state = metadata.get("visible_state")
+        if isinstance(metadata_visible_state, str) and metadata_visible_state in GITHUB_STATE_LABELS:
+            visible_state = metadata_visible_state
+        else:
+            state_by_label = {value: key for key, value in GITHUB_STATE_LABELS.items()}
+            visible_state = next(
+                (state_by_label[label] for label in labels if label in state_by_label),
+                "Planejado",
+            )
         return {
             "id": str(number),
             "url": issue["url"],
             "kind": kind,
             "managed": True,
             "visible": {"title": issue["title"], "description": issue["body"], "checklist": [], "managed_comments": []},
-            "internal_metadata": dict(self._metadata_by_number.get(number, {})),
+            "internal_metadata": metadata,
             "visible_state": visible_state,
             "labels": labels,
         }
