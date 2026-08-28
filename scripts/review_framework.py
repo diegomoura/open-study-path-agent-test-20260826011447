@@ -254,6 +254,7 @@ def phase_allows_artifact(phase: str, path: str) -> bool:
                 "state/integrations.json",
             }
             or normalized.startswith("study/modules/")
+            or normalized.startswith("state/operations/")
         )
     if phase == "assessment":
         return (
@@ -268,13 +269,16 @@ def phase_allows_artifact(phase: str, path: str) -> bool:
             or normalized.startswith("study/modules/")
             or normalized.startswith("study/flashcards/")
             or normalized.startswith("study/assessments/")
+            or normalized.startswith("state/operations/")
             or (
                 normalized.startswith(".github/ISSUE_TEMPLATE/assessment-topic-")
                 and normalized.endswith(".yml")
             )
         )
     if phase == "progress":
-        return normalized in {"state/progress.json", "state/integrations.json"}
+        return normalized in {"state/progress.json", "state/integrations.json"} or normalized.startswith(
+            "state/operations/"
+        )
     if phase == "replan":
         return (
             normalized in {
