@@ -445,6 +445,22 @@ slides as not applicable to this run:
   do not apply.
 - The learner-facing completion response and any task/assessment copy must
   never promise, reference or link a slide deck or PDF that does not exist.
+- REQUIRED, not optional: if `.open-study-path/instance.yml`'s
+  `study_slides.enabled` is not already `false`, set it to `false` as part
+  of this operation's diff, alongside everything else you write. This pilot
+  toggle (`AGENT_PILOT_ENABLE_SLIDES=false`) and `instance.yml`'s
+  `study_slides.enabled` field are two independent switches that must agree
+  -- `scripts/study_slides.py`'s `slides_deliberately_disabled()` only
+  recognizes an explicit `enabled: false` in `instance.yml` as a deliberate,
+  all-or-nothing decision not to produce slides; it has no way to know
+  about this run's harness-level toggle. Leaving `enabled: true` while
+  producing zero slides artifacts is not a scope choice CI can infer -- it
+  reads as a missing deliverable, and `scripts/validate_study_slides.py`
+  will block the operation for "missing slides" after the fact even though
+  everything else about the run was correct. A real dispatch produced
+  exactly this gap and required a manual post-approval patch to unblock
+  (see the `agent-pilot-generate_detailed.yml` audit note in the
+  disposable pilot's `state/reviews/`); do not repeat it.
 
 Everything else in instructions/30-generate-path.md applies in full:
 dependency-aware topic contracts, beginner-first concept progression,
@@ -480,6 +496,16 @@ the other 17). A topic contract without `slides`/`slides_pdf`/
 module, rubric or Issue Form references or promises a slide deck anywhere,
 that IS a real finding -- nothing may promise an artifact that does not
 exist in this run.
+
+REQUIRED check, not optional: confirm `.open-study-path/instance.yml`'s
+`study_slides.enabled` is explicitly `false` in the author's diff. This is
+the one field `scripts/study_slides.py`'s `slides_deliberately_disabled()`
+reads to tell "deliberately no slides for this run" apart from "slides
+were supposed to happen and are simply missing" -- if it is still `true`
+(or absent/misconfigured) while zero slides artifacts exist, that is a
+blocking finding: `scripts/validate_study_slides.py` will fail CI on it
+regardless of how correct everything else in the operation is, so it must
+be caught here, in review, not discovered later in CI.
 
 Otherwise, apply instructions/36-review-course-content.md in full to every
 materialized topic: outcome traceability, source and provenance checks,
