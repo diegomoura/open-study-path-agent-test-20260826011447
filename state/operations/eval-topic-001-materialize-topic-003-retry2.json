@@ -1,0 +1,41 @@
+{
+  "operation_id": "eval-topic-001-materialize-topic-003-retry2",
+  "operation_type": "publication",
+  "provider": "github_issues",
+  "status": "partial",
+  "error_type": "ReadbackValidationError",
+  "message": "primary next lesson does not match the canonical projection; exactly one unfinished eligible lesson must be Próxima aula; parallel eligible lessons do not match the canonical projection; visible state differs for TOPIC-003",
+  "attempt": 1,
+  "checkpoints": [
+    {"name": "preflight_started", "at": "2026-08-28T19:33:20.362261Z"},
+    {"name": "preflight_matches_resolved", "at": "2026-08-28T19:33:20.962927Z"},
+    {"name": "container_ready", "at": "2026-08-28T19:33:20.962949Z", "container_id": "diegomoura/open-study-path-agent-test-20260826011447"},
+    {"name": "managed_sections_ready", "at": "2026-08-28T19:33:20.962953Z"},
+    {"name": "orientation_ready", "at": "2026-08-28T19:33:20.962977Z"},
+    {"name": "lesson_ready", "at": "2026-08-28T19:33:20.963002Z", "topic_id": "TOPIC-001", "visible_state": "Concluído"},
+    {"name": "lesson_ready", "at": "2026-08-28T19:33:20.963021Z", "topic_id": "TOPIC-002", "visible_state": "Próxima aula"},
+    {"name": "lesson_ready", "at": "2026-08-28T19:33:20.963037Z", "topic_id": "TOPIC-003", "visible_state": "Disponível em paralelo"},
+    {"name": "readback_completed", "at": "2026-08-28T19:33:21.467419Z"},
+    {"name": "partial_failure", "at": "2026-08-28T19:33:21.468006Z", "error": "primary next lesson does not match the canonical projection; exactly one unfinished eligible lesson must be Próxima aula; parallel eligible lessons do not match the canonical projection; visible state differs for TOPIC-003"}
+  ],
+  "external_read_count": 1,
+  "external_write_count": 0,
+  "branch": null,
+  "pull_request": null,
+  "commit_budget": 1,
+  "warnings": [],
+  "errors": [
+    "primary next lesson does not match the canonical projection; exactly one unfinished eligible lesson must be Próxima aula; parallel eligible lessons do not match the canonical projection; visible state differs for TOPIC-003"
+  ],
+  "roadmap_fingerprint": "8dcfb9faa6d07bb4f24e481e4e332ee7b8246488c006912569cf181b5e8b016a",
+  "started_at": "2026-08-28T19:33:20.362245Z",
+  "updated_at": "2026-08-28T19:33:21.468006Z",
+  "completed_at": null,
+  "notes": [
+    "AUDIT NOTE (manual post-approval fix, not re-run): status was corrected from \"error\" to \"partial\" -- publish_projection()'s own exception handling (scripts/task_projection_engine.py) sets journal.status = \"partial\" for a ReadbackValidationError, never \"error\"; this file's original value did not match what the tool actually returned and failed scripts/validate_task_projection.py's status enum. No other field was touched. Root cause of the underlying ReadbackValidationError itself (GITHUB_STATE_LABELS's many-to-one label collision between \"Disponível em paralelo\" and \"Próxima aula\" breaking readback's primary/parallel reconstruction) diagnosed and fixed in diegomoura/open-study-path PR #117. A separate, successful reconciliation run (state/operations/eval-topic-001-materialize-topic-003-reconcile.json) was made after that fix landed, using the real fixed engine locally (no additional paid API dispatch) against the real external_ids already created by this operation's own partial writes -- it passed readback cleanly and produced the state/integrations.json and study/integrations.md this operation itself could not.",
+    "Three run_publish_projection attempts were made in this operation (initial 3-topic call, then two full 8-topic calls with distinct operation_ids) and all three failed deterministically with a ReadbackValidationError contradicting the tool's own just-computed checkpoint values for TOPIC-002 (Próxima aula) and TOPIC-003 (Disponível em paralelo).",
+    "The first attempt (3-topic call, operation_id=eval-topic-001-materialize-topic-003) reported external_write_count=3 before failing on a separate 'lesson resource count does not match the roadmap' check, meaning TOPIC-001/002/003 issues may already have been created or updated in GitHub Issues even though the overall operation returned status=error.",
+    "Per the evaluate-phase harness addendum, state/integrations.json and study/integrations.md were NOT written because status was not 'success' on any attempt. state/progress.json was still updated because GitHub-side mastery recording is independent of task-backend synchronization.",
+    "This needs human or follow-up-agent investigation: confirm actual GitHub Issues state for TOPIC-002/TOPIC-003 tasks, reconcile with state/integrations.json (which currently still reflects only the pre-evaluation 2-topic projection), and re-run the projection once the discrepancy causing the readback mismatch is understood."
+  ]
+}

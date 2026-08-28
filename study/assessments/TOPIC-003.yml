@@ -1,0 +1,51 @@
+version: 1
+topic_id: TOPIC-003
+title: A dicotomia do controle
+passing_score: 80
+critical_misconceptions:
+  - "Já que não controlo o resultado, não faz sentido nem tentar."
+  - "Tudo que envolve outras pessoas está completamente fora do meu controle, incluindo minhas próprias palavras e ações direcionadas a elas."
+questions:
+  - id: q1
+    outcome_ids: [LO-1]
+    max_points: 20
+    evaluates: conceptual understanding
+    full_credit: Explica a dicotomia do controle usando o vocabulário de Epicteto (sob nosso poder / fora do nosso poder, eph' hēmin / ouk eph' hēmin), menciona a prohairesis ou o julgamento como núcleo do controlável, e dá um exemplo relevante.
+    partial_credit: Explica a distinção geral entre controlável e incontrolável, mas não usa ou relaciona o vocabulário de Epicteto, ou omite o exemplo.
+    no_credit: Confunde as duas categorias ou não apresenta uma definição coerente.
+  - id: q2
+    outcome_ids: [LO-2]
+    max_points: 20
+    evaluates: classification or analysis
+    full_credit: Classifica corretamente uma situação mista/ambígua em parte sob controle e parte fora de controle, nomeando explicitamente o caso como misto e propondo um objetivo internalizado coerente.
+    partial_credit: Identifica corretamente apenas uma das partes (controlável ou incontrolável) da situação mista, ou não propõe um objetivo internalizado.
+    no_credit: Trata a situação mista como totalmente controlável ou totalmente incontrolável.
+  - id: q3
+    outcome_ids: [LO-1]
+    max_points: 20
+    evaluates: application to a new situation
+    full_credit: Aplica a dicotomia a uma situação nova de adversidade, separando claramente o que está e o que não está sob controle, e propõe uma ação coerente com a aceitação ativa.
+    partial_credit: A aplicação é plausível, mas confunde levemente aceitar um resultado com deixar de agir, ou não usa o vocabulário da aula.
+    no_credit: Não aplica o conceito ou propõe uma ação que contradiz a dicotomia do controle.
+  - id: q4
+    outcome_ids: [LO-3]
+    max_points: 20
+    evaluates: misconception detection
+    full_credit: Identifica o mau uso da dicotomia representado pela afirmação "já que não controlo o resultado, não faz sentido nem tentar", explica que a preparação e a ação continuam sob controle, e propõe a reformulação correta.
+    partial_credit: Identifica que a afirmação é um equívoco, mas a explicação é incompleta ou não distingue claramente preparação de resultado.
+    no_credit: Aceita a afirmação como uma aplicação correta da dicotomia.
+  - id: q5
+    outcome_ids: [LO-1, LO-2, LO-3]
+    max_points: 20
+    evaluates: independent evidence and reflection
+    full_credit: Apresenta a classificação de três situações reais, incluindo pelo menos um caso misto com objetivo internalizado, e reescreve a reação correspondente usando o vocabulário da aula.
+    partial_credit: Apresenta a evidência pedida, mas não inclui um caso misto, ou a justificativa é genérica.
+    no_credit: Não apresenta evidência utilizável ou a reflexão contradiz o conteúdo estudado.
+mastery_rules:
+  require_total_score: true
+  require_no_critical_misconception: true
+  recovery_when_not_mastered: true
+recovery:
+  create_focused_github_issue: true
+  create_trello_card: false
+  reassessment_required: true
