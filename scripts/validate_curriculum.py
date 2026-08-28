@@ -388,9 +388,34 @@ def check_topics(config: dict[str, Any]) -> None:
         expected_rubric = f"study/assessments/{topic_id}.yml"
         suffix = topic_id.split("-")[-1].lower()
         expected_form = f".github/ISSUE_TEMPLATE/assessment-topic-{suffix}.yml"
-        if metadata["module"] != expected_module or metadata["assessment"] != expected_rubric or metadata["assessment_form"] != expected_form:
+        declared_module = metadata["module"]
+        # Etapa 6d follow-up: a real dispatch's own read-back validation
+        # requires the materialized module's own file path to avoid
+        # containing its topic_id (a metadata-leak the learner-facing
+        # resource URL must never expose -- see AUTHOR_DETAILED_NOTE/
+        # AUTHOR_EVALUATE_NOTE in scripts/build_agent_prompt.py), so content
+        # materialized after that fix uses a slug filename derived from the
+        # topic's title (e.g. study/modules/a-dicotomia-do-controle.md)
+        # instead of study/modules/{topic_id}.md. Content materialized
+        # before that fix (e.g. TOPIC-001) still legitimately uses the
+        # {topic_id}.md convention. Accept either: what matters is that the
+        # frontmatter's declared module path is a real .md file directly
+        # under study/modules/, not that it follows one specific naming
+        # scheme -- a real evaluate dispatch materializing TOPIC-003 with a
+        # correct slug filename still failed this check outright when it
+        # only accepted the older convention.
+        module_is_consistent = (
+            declared_module == expected_module
+            or (
+                isinstance(declared_module, str)
+                and declared_module.startswith("study/modules/")
+                and declared_module.endswith(".md")
+                and "/" not in declared_module.removeprefix("study/modules/")
+            )
+        )
+        if not module_is_consistent or metadata["assessment"] != expected_rubric or metadata["assessment_form"] != expected_form:
             fail(f"topic {topic_id} artifact paths are inconsistent")
-        artifacts = [ROOT / expected_module, ROOT / expected_rubric, ROOT / expected_form]
+        artifacts = [ROOT / declared_module, ROOT / expected_rubric, ROOT / expected_form]
 
         if metadata["content_status"] == "materialized":
             if not isinstance(metadata["content_version"], int) or metadata["content_version"] < 1:
