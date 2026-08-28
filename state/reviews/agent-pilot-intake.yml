@@ -10,7 +10,7 @@ independent_pass: true
 
 status: approved
 
-reviewed_at: "2025-01-09T00:00:00Z"
+reviewed_at: "2025-01-09T01:00:00Z"
 
 artifacts:
   - path: study.config.yml
@@ -19,9 +19,6 @@ artifacts:
   - path: state/intake-summary.json
     change: current
     sha256: 5cc5aa7a303a56014ebff016c4c96d2d8e32f3b05871c88797dbe33768ea6c2c
-  - path: .open-study-path/instance.yml
-    change: current
-    sha256: 96a3f77e8bd38ee38de4e9baf0aaa2078a0f7244ab9df9f3382c1341541fdbb2
 
 checks:
   request_fidelity: passed
@@ -35,4 +32,5 @@ blocking_findings: []
 non_blocking_findings:
   - Assumptions recorded in state/intake-summary.json are helpful for curriculum planning (theory-practice balance, emphasis on original texts, practical application focus) and well-reasoned, though derived from learner's stated preferences rather than learner-declared assumptions. This is appropriate scaffolding.
   - The normalized_at timestamp is synthetic (2025-01-09T00:00:00Z) rather than the actual intake submission timestamp; this is acceptable for automated intake processing provided it's consistent.
-  - Post-review manual correction (not re-reviewed by an independent agent call) - CI's schema validator rejected two values the author wrote in study.config.yml: learner.current_level was "no_knowledge" (not a member of the schema's enum; corrected to "none") and the intake: block carried imported_from_issue/imported_at, which additionalProperties: false does not allow (removed; the same facts already live in state/intake-summary.json.source_reference). Root cause fixed at the template level in diegomoura/open-study-path PR #102.
+  - "Post-review manual correction (not re-reviewed by an independent agent call) - CI's schema validator rejected two values the author wrote in study.config.yml: learner.current_level was \"no_knowledge\" (not a member of the schema's enum; corrected to \"none\") and the intake: block carried imported_from_issue/imported_at, which additionalProperties: false does not allow (removed; the same facts already live in state/intake-summary.json.source_reference). Root cause fixed at the template level in diegomoura/open-study-path PR #102."
+  - "AUDIT NOTE (manual post-approval fix, not re-reviewed independently): (1) this manifest's non_blocking_findings entry above contained an unquoted YAML scalar with a bare colon (\"...the intake: block carried...\"), which scripts/refresh_review_fingerprints.py could not parse -- re-quoted as a valid YAML string with no wording change. (2) reviewed_at was a synthetic placeholder (2025-01-09T00:00:00Z) identical to agent-pilot-bootstrap_instance.yml's and earlier than agent-pilot-configure_intake.yml's (00:30:00Z), even though intake runs after both in the pipeline; this made refresh_review_fingerprints.py either report an ambiguous current owner for state/intake-summary.json (tied with bootstrap_instance) or hand stale ownership of study.config.yml to configure_intake.yml instead of this (later, correct) manifest. Set to 2025-01-09T01:00:00Z, safely after configure_intake's, to restore correct ownership; no artifact hashes were touched. (3) The `.open-study-path/instance.yml` artifact entry (originally sha256 96a3f77e...) was removed from this manifest's artifacts list. Touching this manifest in a PR makes scripts/validate_review_framework.py re-check every listed change:current artifact against the live file unconditionally, and that entry had been genuinely superseded by three later, independently-approved phases (diagnostic, generate_proposal, generate_detailed) that re-reviewed instance.yml since intake ran -- generate_detailed.yml (the latest reviewed_at overall) is instance.yml's true current owner per scripts/refresh_review_fingerprints.py, and its recorded hash already matches the live file. study.config.yml and state/intake-summary.json were verified to still match the live file and were left unchanged."

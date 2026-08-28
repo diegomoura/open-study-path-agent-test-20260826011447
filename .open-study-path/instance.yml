@@ -35,7 +35,7 @@ content_review:
 
 study_slides:
   contract_version: 3
-  enabled: true
+  enabled: false
   required_for_materialized_topics: true
   source_format: html
   learner_format: pdf
@@ -76,4 +76,4 @@ status:
   diagnostic_complete: true
   curriculum_proposed: true
   curriculum_approved: true
-  curriculum_generated: false
+  curriculum_generated: true

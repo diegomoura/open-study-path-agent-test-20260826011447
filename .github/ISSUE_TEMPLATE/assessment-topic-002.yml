@@ -1,0 +1,76 @@
+name: Avaliação — TOPIC-002 — Os três grandes autores
+description: Mostre como você compreendeu e aplicou esta etapa.
+title: "[Avaliação] TOPIC-002 — Os três grandes autores"
+labels:
+  - assessment
+  - assessment:submitted
+body:
+  - type: markdown
+    attributes:
+      value: |
+        <!-- open-study-path:assessment topic_id=TOPIC-002 version=1 -->
+        ## Mostre o que você aprendeu
+
+        Responda com suas próprias palavras e use exemplos sempre que puder. Não buscamos respostas decoradas: queremos entender como você está pensando e aplicando o conteúdo.
+
+        Depois de enviar, volte ao chat e escreva:
+
+        `Terminei Os três grandes autores. Avalie minhas respostas.`
+
+  - type: input
+    id: evidence
+    attributes:
+      label: Sua evidência, quando houver
+      description: Inclua o link ou uma referência curta para o arquivo, documento, comentário ou projeto relacionado.
+      placeholder: https://...
+    validations:
+      required: false
+
+  - type: textarea
+    id: q1
+    attributes:
+      label: Questão 1 — quem foram os três autores?
+      description: Descreva quem foram Sêneca, Epicteto e Marco Aurélio, incluindo o papel social e a época de cada um.
+      placeholder: Sêneca foi...
+    validations:
+      required: true
+
+  - type: textarea
+    id: q2
+    attributes:
+      label: Questão 2 — associe autor, obra e estilo
+      description: Associe cada autor à sua obra principal e explique uma característica do estilo de cada uma (epistolar, manual, diário).
+    validations:
+      required: true
+
+  - type: textarea
+    id: q3
+    attributes:
+      label: Questão 3 — identifique o autor de um trecho novo
+      description: "Um trecho diz: 'Não te perturbes com o que os outros pensam ou fazem; ocupa-te apenas do que depende de ti.' Qual autor provavelmente escreveu algo nesse estilo, e por quê?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: q4
+    attributes:
+      label: Questão 4 — encontre e corrija o equívoco
+      description: "Analise a afirmação: 'O estoicismo era uma filosofia só para gente rica e poderosa, como senadores e imperadores.' Explique por que ela é um equívoco e como reformulá-la corretamente."
+    validations:
+      required: true
+
+  - type: textarea
+    id: q5
+    attributes:
+      label: Questão 5 — mostre sua evidência e reflita
+      description: Apresente sua tabela ou texto associando os três autores a papel social, obra e estilo, com sua justificativa sobre por que a diversidade social importa.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Antes de enviar
+      options:
+        - label: Revisei minhas respostas e estou pronto para receber feedback.
+          required: true

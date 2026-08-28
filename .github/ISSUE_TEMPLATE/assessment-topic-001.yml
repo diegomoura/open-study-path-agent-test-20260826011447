@@ -1,0 +1,76 @@
+name: Avaliação — TOPIC-001 — O que é o estoicismo
+description: Mostre como você compreendeu e aplicou esta etapa.
+title: "[Avaliação] TOPIC-001 — O que é o estoicismo"
+labels:
+  - assessment
+  - assessment:submitted
+body:
+  - type: markdown
+    attributes:
+      value: |
+        <!-- open-study-path:assessment topic_id=TOPIC-001 version=1 -->
+        ## Mostre o que você aprendeu
+
+        Responda com suas próprias palavras e use exemplos sempre que puder. Não buscamos respostas decoradas: queremos entender como você está pensando e aplicando o conteúdo.
+
+        Depois de enviar, volte ao chat e escreva:
+
+        `Terminei O que é o estoicismo. Avalie minhas respostas.`
+
+  - type: input
+    id: evidence
+    attributes:
+      label: Sua evidência, quando houver
+      description: Inclua o link ou uma referência curta para o arquivo, documento, comentário ou projeto relacionado.
+      placeholder: https://...
+    validations:
+      required: false
+
+  - type: textarea
+    id: q1
+    attributes:
+      label: Questão 1 — o que é o estoicismo?
+      description: Defina o estoicismo com suas próprias palavras, incluindo o papel da virtude e da razão, e dê um exemplo.
+      placeholder: O estoicismo é...
+    validations:
+      required: true
+
+  - type: textarea
+    id: q2
+    attributes:
+      label: Questão 2 — situe o estoicismo no tempo
+      description: Explique, com pelo menos dois marcos, como o estoicismo foi de Atenas (Zenão de Cítio) até o estoicismo romano.
+    validations:
+      required: true
+
+  - type: textarea
+    id: q3
+    attributes:
+      label: Questão 3 — aplique a uma situação nova
+      description: Descreva uma situação difícil da sua vida (real ou hipotética) e explique como a ideia estoica central se aplicaria a ela.
+    validations:
+      required: true
+
+  - type: textarea
+    id: q4
+    attributes:
+      label: Questão 4 — encontre e corrija o mito
+      description: "Analise a afirmação: 'Um verdadeiro estoico nunca demonstra tristeza ou raiva.' Explique por que ela é um mito e como reformulá-la corretamente."
+    validations:
+      required: true
+
+  - type: textarea
+    id: q5
+    attributes:
+      label: Questão 5 — mostre sua evidência e reflita
+      description: Apresente sua definição pessoal do estoicismo e a classificação (verdadeira/parcialmente verdadeira/mito) de três afirmações populares que você escolheu, com justificativa.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Antes de enviar
+      options:
+        - label: Revisei minhas respostas e estou pronto para receber feedback.
+          required: true

@@ -1,0 +1,51 @@
+version: 1
+topic_id: TOPIC-001
+title: O que é o estoicismo
+passing_score: 80
+critical_misconceptions:
+  - "Estoicismo é não sentir nenhuma emoção."
+  - "Estoicismo é aceitar tudo passivamente, sem agir."
+questions:
+  - id: q1
+    outcome_ids: [LO-1]
+    max_points: 20
+    evaluates: conceptual understanding
+    full_credit: Define o estoicismo com precisão, mencionando virtude, razão e a atenção ao que está sob controle, com um exemplo relevante.
+    partial_credit: Define o estoicismo de forma genérica, mas omite a virtude ou confunde-a com controle emocional puro.
+    no_credit: Repete apenas o mito popular do "não sentir nada" ou não apresenta uma definição coerente.
+  - id: q2
+    outcome_ids: [LO-2]
+    max_points: 20
+    evaluates: classification or analysis
+    full_credit: Situa corretamente o estoicismo na linha do tempo (origem em Atenas, expansão helenística, estoicismo romano) e nomeia pelo menos dois marcos corretamente.
+    partial_credit: Situa o estoicismo em Roma ou Grécia, mas comete um erro de ordem ou omite um marco importante da linha do tempo.
+    no_credit: Não consegue situar o estoicismo no tempo ou inverte a ordem histórica principal.
+  - id: q3
+    outcome_ids: [LO-1]
+    max_points: 20
+    evaluates: application to a new situation
+    full_credit: Aplica a ideia central do estoicismo (foco no que se controla, virtude) a uma situação nova e propõe uma ação coerente.
+    partial_credit: A aplicação é plausível, mas confunde levemente "aceitar" com "não agir" ou não usa o vocabulário da aula.
+    no_credit: Não aplica o conceito ou propõe uma ação que contradiz a ideia central do estoicismo.
+  - id: q4
+    outcome_ids: [LO-3]
+    max_points: 20
+    evaluates: misconception detection
+    full_credit: Identifica corretamente o mito popular apresentado, explica por que ele está errado e propõe a formulação correta (aceitação ativa, não resignação passiva).
+    partial_credit: Identifica que a afirmação é um mito, mas não explica bem por que ou corrige apenas parcialmente.
+    no_credit: Aceita o mito como verdadeiro ou introduz outro equívoco crítico.
+  - id: q5
+    outcome_ids: [LO-1, LO-2, LO-3]
+    max_points: 20
+    evaluates: independent evidence and reflection
+    full_credit: Apresenta sua definição pessoal e a análise de três afirmações populares, com justificativas específicas e consistentes com o conteúdo da aula.
+    partial_credit: Apresenta a evidência pedida, mas a justificativa é genérica ou pouco conectada aos critérios da etapa.
+    no_credit: Não apresenta evidência utilizável ou a reflexão contradiz o conteúdo estudado.
+mastery_rules:
+  require_total_score: true
+  require_no_critical_misconception: true
+  recovery_when_not_mastered: true
+recovery:
+  create_focused_github_issue: true
+  create_trello_card: false
+  reassessment_required: true
