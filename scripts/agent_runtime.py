@@ -103,7 +103,15 @@ DEFAULT_MAX_TOKENS = 4096
 # on how much a runaway response could cost before this safety rail catches
 # it.
 PHASE_MAX_TOKENS: dict[str, int] = {
-    "generate_detailed": 16384,
+    # Etapa 9 item 2 real dispatch finding: the preemptive 16384 (set at
+    # this table's introduction, reasoning by analogy to replan/
+    # generate_proposal below) was not enough -- a real generate_detailed
+    # dispatch hit stop_reason "max_tokens" and never reached finish_phase.
+    # Raised straight to 32768, matching evaluate's already-confirmed value
+    # below for the same class of large single-turn write (a full lesson
+    # module plus its assessment), rather than picking another preemptive
+    # number that might just need raising again on the next real dispatch.
+    "generate_detailed": 32768,
     # Same class of real dispatch finding as generate_detailed (Etapa 5b):
     # the diagnostic reviewer, writing a full review artifact against real
     # placement evidence (5 required checks), hit stop_reason "max_tokens"
