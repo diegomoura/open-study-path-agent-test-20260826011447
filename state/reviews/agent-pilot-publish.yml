@@ -1,0 +1,109 @@
+contract_version: 1
+
+operation_id: pub-20260826-001
+
+phase: publication
+
+reviewer_role: publication_reviewer
+
+independent_pass: true
+
+status: approved
+
+reviewed_at: "2026-08-28T15:15:00Z"
+
+artifacts:
+  - path: state/integrations.json
+    change: current
+    sha256: e9587c4a88c0d2599032dc5e56f56908ba173d26c31085f036ca77a24c08fa4e
+  - path: state/operations/pub-20260826-001.json
+    change: current
+    sha256: 755840363cd75a5f0275a062cf9178c565053806fdd48a053b8957ca247140f7
+  - path: study/integrations.md
+    change: current
+    sha256: 150579cc1adf05cfde775c5d0a4647a8a743fee25f67b46bbd5c6b7724157d57
+
+checks:
+  selected_capabilities_resolved: passed
+  external_projection_consistency: passed
+  idempotency_and_reuse: passed
+  learner_navigation: passed
+  privacy_cost_and_authority: passed
+  next_action_consistency: passed
+
+blocking_findings: []
+
+non_blocking_findings:
+  - "study/integrations.md was simplified significantly from the prior version (which included a detailed table and operational details). The new version is concise and learner-appropriate, correctly stating task-tracking provider (GitHub Issues), label usage, routine status (decide_later), and GitHub as source of truth. The change is appropriate for a learner-facing document."
+  
+  - "Issue 23 (Aula 01) correctly implements the full ready-lesson template: learning outcomes, time estimate, resources (Slides, Aula, Avaliação), deliverable description, completion criteria, granular session checklist (4 items spanning 10–25 min each), and the literal required completion command. Issue 24 (Aula 02) appropriately defers most of these sections because it is a planned uneligible lesson, but includes prerequisite notice and the required sections for a future-state card as specified."
+  
+  - "The readback verification shows zero visible-internal-marker-count, confirming no `<!--`, `TOPIC-NNN`, `content_version`, `open-study-path` or metadata leak into visible fields. Roadmap fingerprint matches across operation, projection, and both lesson records."
+  
+  - "Routine preferences were respected: no calendar or Todoist capabilities were written despite being optional, consistent with learner's `decide_later` and `ask_per_provider` selections."
+
+  - "REVIEWER DISAGREEMENT (recorded, not corrected): the independent reviewer's original pass raised two items as blocking_findings that a closer read of scripts/task_projection_engine.py shows are not defects. (1) canonical_state and the GitHub label/visible_state encode different axes -- canonical_state: \"ready\" means the topic's content is materialized, not that it is eligible for the learner right now; eligibility is a separate computation from direct_prerequisite_ids vs. completed topics (see build_projection_plan()). Issue 24 having canonical_state: \"ready\" (content materialized in generate_detailed) alongside label study:planned (TOPIC-001 not yet completed) is two independently-correct facts, not a contradiction. (2) state/operations/pub-20260826-001.json's external_write_count: 0 reflects only the author's last call to run_publish_projection, not the operation's cumulative history; GitHub issue timestamps (#22/#23/#24 all created ~14:55:4x, before this journal's own started_at of 14:58:59) show the author called the tool more than once in this run -- an earlier, unpersisted call made the real writes, and this later, idempotent, correctly-zero-write call is what got saved. The actual GitHub state (verified directly, matches state/integrations.json's claims) is correct and complete; only the write-count audit trail undercounts. Root cause of (2) -- nothing told the author not to re-invoke the tool after success -- fixed upstream in diegomoura/open-study-path PR #113 (AUTHOR_PUBLISH_TOOL_NOTE now says call it exactly once; REVIEWER_PUBLISH_TOOL_NOTE now explains both of these so a future independent reviewer does not re-raise them as blocking)."
+
+  - "AUDIT NOTE (manual post-approval fix, not re-reviewed independently, found during resolution of the two items above): issue 23's (Aula 01) rendered body contained a \"Slides:\" resource line linking to study/slides/TOPIC-001/slides.pdf, which does not exist -- this pilot has study_slides.enabled: false and no study/slides/ directory at all. A real learner would have hit a dead link. Manually removed that one line from issue #23's live GitHub body via the REST API (no other content changed; state/integrations.json, study/integrations.md and state/operations/pub-20260826-001.json never referenced slides and needed no change, so no tracked artifact hash in this manifest changed). Root cause -- AUTHOR_PUBLISH_TOOL_NOTE never said to check study_slides.enabled/real file existence before setting slides_url, the same class of gap Etapa 9's generate_detailed fix (PR #112) already closed for materialization -- fixed upstream in diegomoura/open-study-path PR #114."
+
+  - "AUDIT NOTE (manual post-approval fix, not re-reviewed independently): this manifest's `checks:` keys never matched scripts/review_framework.py's REVIEW_PROFILES[\"publication\"][\"checks\"] (e.g. selected_tool_availability vs. the schema's selected_capabilities_resolved) -- a pre-existing naming mismatch invisible until this manifest was re-touched in the same PR, which is what makes validate_review_framework.py fully re-validate it. Renamed to the six schema-correct keys, all passed, based on evidence already gathered in this manifest's own independent_pass_notes (capability resolution, GitHub readback, idempotent external_id reuse, learner-facing content, routine/privacy scope, correct next-action labels). Also, this manifest's own artifact list includes state/operations/pub-20260826-001.json, which scripts/review_framework.py's phase_allows_artifact() never allowed for the publication phase despite instructions/41-task-backend-projection.md explicitly saying operation journals are in scope for phase review -- fixed upstream in diegomoura/open-study-path PR #115."
+
+independent_pass_notes: >
+  Reconstructed evidence independently:
+  
+  (1) Verified approved curriculum precondition: state/reviews/agent-pilot-generate_detailed.yml shows
+  TOPIC-001 and TOPIC-002 as materialized with approved content reviews.
+  
+  (2) Verified task-backend resolution: study.config.yml integrations.task_manager.provider is
+  github_issues; routine.mode is decide_later; account_connections is ask_per_provider. Only
+  GitHub Issues capability was required for this operation.
+  
+  (3) Read each GitHub Issue directly via API (issues/22, /23, /24) and verified:
+  - Issue 23 title format: "Aula 01 · O que é o estoicismo" ✓
+  - Issue 24 title format: "Aula 02 · Os três grandes autores" ✓
+  - Issue 22 title: "📌 Leia antes de começar" (orientation) ✓
+  - Issue 23 label: study:ready ✓
+  - Issue 24 label: study:planned ✓
+  - Issue 22 labels: none (orientation) ✓
+  
+  (4) Verified learner-visible issue 23 contains all required sections per
+  instructions/40-publish-tasks.md and instructions/41-task-backend-projection.md:
+  - "O que você vai aprender:" ✓
+  - "Tempo sugerido:" (60 minutos) ✓
+  - "Recursos" with Slides, Aula, Avaliação links ✓
+  - "O que você vai produzir:" ✓
+  - "Para concluir:" (completion criteria) ✓
+  - Required literal command: "Terminei O que é o estoicismo. Avalie minhas respostas." ✓
+  - "Sua sessão de estudo" checklist with 4 granular actions (10, 20, 15, 15 min) ✓
+  
+  (5) Verified learner-visible issue 24 appropriately defers full content template and includes:
+  - "Pré-requisitos desta aula" statement explaining dependency ✓
+  - Prerequisite list (TOPIC-001) ✓
+  - Essential metadata omitted (no naked TOPIC-002, no content_version, no prerequisite arrays) ✓
+  
+  (6) Computed real SHA-256 for all three changed files using compute_sha256 tool;
+  fingerprints match diff context (state/integrations.json, state/operations/pub-20260826-001.json,
+  study/integrations.md).
+  
+  (7) Re-examined the "canonical_state: ready" + label study:planned pairing on issue 24 by
+  reading scripts/task_projection_engine.py's build_projection_plan() directly: canonical_state
+  encodes content materialization, not learner eligibility, which is a separate computation over
+  direct_prerequisite_ids vs. completed topics. The two facts are independently correct, not a
+  contradiction; this is a reviewer false positive, recorded as a disagreement in
+  non_blocking_findings rather than corrected.
+
+  (8) Re-examined pub-20260826-001.json's external_write_count: 0 by reconstructing the operation
+  timeline from CI step timestamps and each issue's real created_at: issues #22/#23/#24 were all
+  created at ~14:55:4x, before this journal's own started_at of 14:58:59 -- the author called
+  run_publish_projection more than once in the run; an earlier, unpersisted call made the real
+  writes, and this later, idempotent, correctly-zero-write call is what got saved as the journal.
+  The actual GitHub state matches state/integrations.json's claims and is correct and complete;
+  only the write-count audit trail undercounts. Not a defect in the persisted state itself --
+  recorded as a reviewer disagreement, root cause fixed upstream (PR #113) so future runs don't
+  repeat it.
+
+  (9) While resolving (7) and (8), found a real defect neither original finding had caught:
+  issue 23's rendered body linked "Slides:" to study/slides/TOPIC-001/slides.pdf, which does not
+  exist in this study_slides.enabled: false pilot. Manually removed that one line from the live
+  GitHub issue body via the REST API; no tracked artifact in this manifest referenced slides, so
+  no hash here changed. Root cause fixed upstream (PR #114).
