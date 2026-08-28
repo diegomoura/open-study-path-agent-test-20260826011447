@@ -1,32 +1,34 @@
 ---
 id: TOPIC-003
 title: A dicotomia do controle
-status: planned
-content_status: planned
-content_version: 0
-materialized_at: null
+status: available
+content_status: materialized
+content_version: 1
+materialized_at: "2026-08-29"
 difficulty: beginner
 estimated_hours: 1.25
 prerequisites:
   - TOPIC-001
 learning_outcomes:
   - id: LO-1
-    statement: Formalizar a distinção entre o que depende de nós (juízos, escolhas, ações) e o que não depende (resultados, opinião alheia, o corpo, o passado), usando o vocabulário de Epicteto.
+    statement: Formalizar a dicotomia do controle com o vocabulário original de Epicteto — o que está "sob nosso poder" (eph' hēmin) e o que não está (ouk eph' hēmin) — incluindo a prohairesis como núcleo do controlável.
     required_concepts:
-      - dicotomia do controle
-      - juízo
-      - indiferentes
+      - dicotomia do controle (eph' hēmin / ouk eph' hēmin)
+      - prohairesis
+      - Enquirídio, capítulo 1
   - id: LO-2
-    statement: Reconhecer casos ambíguos, em que uma situação mistura elementos controláveis e incontroláveis.
+    statement: Reconhecer e decompor casos ambíguos ou parcialmente controláveis usando a tricotomia do controle.
     required_concepts:
-      - ambiguidade prática
-      - esforço versus resultado
+      - caso misto (ambíguo)
+      - tricotomia do controle
+      - objetivo internalizado
   - id: LO-3
-    statement: Reformular reações a adversidades cotidianas aplicando a dicotomia do controle.
+    statement: Aplicar a dicotomia para reformular reações a adversidades reais, distinguindo aceitar um resultado de deixar de agir sobre o que depende de si.
     required_concepts:
-      - reformulação estoica
-      - resposta versus reação automática
-module: study/modules/TOPIC-003.md
+      - mau uso da dicotomia como desculpa para passividade
+      - aceitação ativa versus resignação passiva
+      - ação plena na parte controlável
+module: study/modules/a-dicotomia-do-controle.md
 assessment: study/assessments/TOPIC-003.yml
 assessment_form: .github/ISSUE_TEMPLATE/assessment-topic-003.yml
 ---
@@ -35,50 +37,50 @@ assessment_form: .github/ISSUE_TEMPLATE/assessment-topic-003.yml
 
 ## O que você vai aprender
 
-Você vai transformar sua intuição sobre "focar no que dá para controlar" em uma ferramenta estoica precisa: a dicotomia do controle de Epicteto, incluindo como reconhecer casos ambíguos e como reformular reações a adversidades reais.
+Ao final desta etapa, você conseguirá formalizar a dicotomia do controle com o vocabulário original de Epicteto, reconhecer casos ambíguos em que parte de uma situação está sob seu controle e parte não está, e usar essa ferramenta para reformular reações a adversidades reais sem transformá-la em desculpa para não agir.
 
 ## Por que isso importa para você
 
-Esta é a prática que você pediu explicitamente e sobre a qual já tem boa intuição — você já a aplicou bem a um atraso no trânsito. Aqui ela deixa de ser intuição informal e vira ferramenta formal, com vocabulário e critérios claros, que sustentará o diário reflexivo, a leitura dos originais e o restante da trilha.
+Você já pediu explicitamente a dicotomia do controle como prática de rotina, e já demonstrou boa intuição sobre ela (o exemplo do atraso no trânsito). Esta etapa transforma essa intuição em uma ferramenta precisa, com vocabulário próprio, incluindo o tratamento dos casos difíceis — aqueles em que a resposta não é simplesmente "sob controle" ou "fora de controle".
 
 ## O que você já precisa saber
 
-Esta etapa depende diretamente da **Aula 01 · O que é o estoicismo**: você precisa já saber o que é o estoicismo e sua ideia geral de virtude e razão antes de formalizar a dicotomia do controle.
+Esta etapa depende diretamente da **Aula 01 · O que é o estoicismo**: você precisa já conhecer a ideia geral de virtude e a introdução à dicotomia do controle para aprofundá-la aqui.
 
 ## Seu plano para esta etapa
 
-- [ ] Recuperar a intuição sobre controle discutida na Aula 01 (10 min)
-- [ ] Estudar a dicotomia do controle segundo Epicteto (20 min)
-- [ ] Praticar a classificação de situações ambíguas (20 min)
-- [ ] Reescrever reações reais usando a dicotomia e enviar a avaliação (25 min)
+- [ ] Recuperar a dicotomia intuitiva que você já usa (10 min)
+- [ ] Estudar a dicotomia formal com o vocabulário de Epicteto (20 min)
+- [ ] Praticar a classificação de casos ambíguos com a tricotomia do controle (20 min)
+- [ ] Reescrever reações a adversidades reais e enviar a avaliação (20 min)
 
 ## Aula
 
-Esta aula será preparada automaticamente quando você concluir os pré-requisitos desta etapa. Você não precisa pedir a geração manualmente.
+A aula completa desta etapa já está pronta: [A dicotomia do controle](../modules/a-dicotomia-do-controle.md). Ela ensina o vocabulário original de Epicteto, a tricotomia do controle para casos ambíguos e como evitar o mau uso da dicotomia como desculpa para não agir.
 
 ## Prática
 
-A prática desta etapa ficará dentro da própria aula, com exercícios de classificação de situações reais e ambíguas e reformulação de reações. Não haverá um exercício separado.
+A prática desta etapa está dentro da própria aula: classificação de situações, prática guiada com pistas e uma produção independente de classificação e reescrita de reações reais. Não há um exercício separado para esta etapa.
 
 ## O que você vai produzir
 
-Uma classificação de situações reais (controláveis, incontroláveis e ambíguas) e a reescrita de pelo menos uma reação real usando a dicotomia do controle.
+A classificação de três situações reais (com pelo menos um caso misto/ambíguo), o objetivo internalizado do caso misto, e a reescrita da sua reação usando o vocabulário da aula.
 
 ## Como mostrar o que aprendeu
 
-Quando a aula estiver pronta, você enviará sua classificação e suas reescritas pelo formulário de avaliação, explicando o critério usado em cada caso.
+Envie sua classificação e reescrita pelo formulário de avaliação, explicando seu raciocínio, especialmente no caso misto/ambíguo.
 
 ## Para concluir esta etapa
 
-- [ ] Explicar a dicotomia do controle sem depender das notas.
-- [ ] Classificar corretamente situações controláveis, incontroláveis e ambíguas.
-- [ ] Reformular pelo menos uma reação real usando a dicotomia.
-- [ ] Reconhecer por que "esforço" está sob controle mas "resultado" nem sempre está.
+- [ ] Explicar a dicotomia do controle com o vocabulário de Epicteto, sem depender das notas.
+- [ ] Reconhecer um caso misto e aplicar a tricotomia do controle a ele.
+- [ ] Usar o objetivo internalizado para reformular uma meta parcialmente controlável.
+- [ ] Reconhecer e corrigir o uso da dicotomia como desculpa para não agir.
 - [ ] Alcançar a pontuação mínima da avaliação sem um equívoco crítico.
 
 ## Avaliação
 
-Quando a aula estiver pronta e você a concluir, envie a avaliação e escreva:
+Quando terminar a aula, abra a avaliação desta etapa e, depois de enviar, escreva:
 
 `Terminei A dicotomia do controle. Avalie minhas respostas.`
 
@@ -86,9 +88,10 @@ Quando a aula estiver pronta e você a concluir, envie a avaliação e escreva:
 
 ### Essenciais
 
-- Epicteto — "Enquirídio" (Enchiridion), capítulo 1, tradução de Elizabeth Carter — https://classics.mit.edu/Epictetus/epicench.html
-- Stanford Encyclopedia of Philosophy — "Stoicism", seção sobre ética e "coisas que dependem de nós" — https://plato.stanford.edu/entries/stoicism/
+- Epicteto — "Enquirídio", Capítulo 1, tradução de Elizabeth Carter — https://classics.mit.edu/Epictetus/epicench.html
+- Stanford Encyclopedia of Philosophy — "Epictetus" — https://plato.stanford.edu/entries/epictetus/
 
 ### Para aprofundar
 
-- Modern Stoicism — exercícios práticos de dicotomia do controle — https://modernstoicism.com/
+- Epicteto — "Discursos" (índice), tradução de George Long — https://classics.mit.edu/Epictetus/discourses.html
+- William B. Irvine — "A Guide to the Good Life: The Ancient Art of Stoic Joy" (Oxford University Press, 2008), capítulo sobre a dicotomia do controle

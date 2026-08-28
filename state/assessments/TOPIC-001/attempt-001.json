@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "topic_id": "TOPIC-001",
+  "topic_title": "O que é o estoicismo",
+  "issue_number": 26,
+  "issue_url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447/issues/26",
+  "attempt": 1,
+  "evaluated_at": "2026-08-29T10:00:00Z",
+  "evaluator_method": "response_by_response_rubric_grading",
+  "rubric_source": "study/assessments/TOPIC-001.yml",
+  "passing_score": 80,
+  "responses": [
+    {
+      "question_id": "q1",
+      "outcome_ids": ["LO-1"],
+      "points_earned": 20,
+      "max_points": 20,
+      "demonstrated": "Define o estoicismo mencionando o fundador (Zenão de Cítio), a virtude, a razão e a dicotomia entre o que está e o que não está sob controle. Explica corretamente que o objetivo não é suprimir emoções e ilustra com um exemplo concreto e relevante (perder um emprego).",
+      "gap_or_misconception": "Nenhuma lacuna relevante identificada.",
+      "improvement_suggestion": "Poderia amarrar explicitamente o exemplo à palavra 'virtude' para deixar ainda mais direta a conexão entre ação e caráter."
+    },
+    {
+      "question_id": "q2",
+      "outcome_ids": ["LO-2"],
+      "points_earned": 20,
+      "max_points": 20,
+      "demonstrated": "Situa corretamente a origem em Atenas por volta de 300 a.C. com Zenão de Cítio no Pórtico Pintado, menciona a fase de sistematização com Crisipo, e nomeia corretamente os três autores romanos (Sêneca, Epicteto, Marco Aurélio) com seus papéis sociais, cobrindo cerca de 500 anos de história.",
+      "gap_or_misconception": "Nenhuma lacuna relevante identificada.",
+      "improvement_suggestion": "Poderia citar o nome 'período helenístico' explicitamente, mas isso não compromete a precisão histórica da resposta."
+    },
+    {
+      "question_id": "q3",
+      "outcome_ids": ["LO-1"],
+      "points_earned": 20,
+      "max_points": 20,
+      "demonstrated": "Aplica corretamente a dicotomia do controle a uma situação nova (ser preterido em uma promoção), separando o que pode e o que não pode ser controlado, e propõe uma ação coerente que não nega a frustração nem a transforma em ressentimento paralisante.",
+      "gap_or_misconception": "Nenhuma lacuna relevante identificada.",
+      "improvement_suggestion": "A resposta já está completa; para aprofundar, poderia nomear explicitamente a palavra 'virtude' ao descrever a ação coerente."
+    },
+    {
+      "question_id": "q4",
+      "outcome_ids": ["LO-3"],
+      "points_earned": 20,
+      "max_points": 20,
+      "demonstrated": "Identifica corretamente o mito de que um estoico nunca demonstra tristeza ou raiva, explica que o estoicismo não prega ausência de emoção e reformula corretamente a ideia como o exame dos julgamentos por trás da emoção, mantendo a reação alinhada à virtude.",
+      "gap_or_misconception": "Nenhuma lacuna relevante identificada.",
+      "improvement_suggestion": "Resposta completa e precisa; nenhuma correção necessária."
+    },
+    {
+      "question_id": "q5",
+      "outcome_ids": ["LO-1", "LO-2", "LO-3"],
+      "points_earned": 20,
+      "max_points": 20,
+      "demonstrated": "Apresenta uma definição pessoal coerente com o conteúdo da aula e classifica corretamente três afirmações populares (mito, mito, verdadeiro), cada uma com justificativa específica e conectada ao conteúdo estudado.",
+      "gap_or_misconception": "Nenhuma lacuna relevante identificada.",
+      "improvement_suggestion": "Resposta completa; para ir além, poderia incluir uma quarta afirmação parcialmente verdadeira para explorar nuances."
+    }
+  ],
+  "total_score": 100,
+  "mastered": true,
+  "critical_misconceptions_detected": [],
+  "critical_misconceptions_checked": [
+    "Estoicismo é não sentir nenhuma emoção.",
+    "Estoicismo é aceitar tudo passivamente, sem agir."
+  ],
+  "deliverable_present": true,
+  "deliverable_notes": "Definição pessoal e classificação justificada de três afirmações populares, conforme pedido na etapa.",
+  "recovery_required": false
+}

@@ -1,10 +1,76 @@
 {
   "version": 1,
-  "status": "not_started",
-  "started_at": null,
-  "updated_at": null,
-  "total_estimated_hours": 0,
-  "completed_hours": 0,
-  "topics": [],
-  "achievements": []
+  "status": "in_progress",
+  "started_at": "2026-08-28T19:21:43Z",
+  "updated_at": "2026-08-29T10:10:00Z",
+  "total_estimated_hours": 9.5,
+  "completed_hours": 1,
+  "topics": [
+    {
+      "topic_id": "TOPIC-001",
+      "title": "O que é o estoicismo",
+      "content_version": 1,
+      "status": "completed",
+      "mastered": true,
+      "attempts": 1,
+      "last_score": 100,
+      "passing_score": 80,
+      "last_attempt_at": "2026-08-29T10:00:00Z",
+      "completed_at": "2026-08-29T10:00:00Z",
+      "assessment_issue": {
+        "number": 26,
+        "url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447/issues/26"
+      },
+      "attempt_record": "state/assessments/TOPIC-001/attempt-001.json",
+      "external_task": {
+        "provider": "github_issues",
+        "external_id": "23",
+        "url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447/issues/23",
+        "sync_status": "stale_pending_resync",
+        "last_synced_at": "2026-08-28T14:58:59.966537Z",
+        "note": "GitHub-side mastery is recorded; the authoritative task card still needs to be moved to 'Concluído' by a follow-up publish/sync run because run_publish_projection returned a readback validation error for this operation."
+      }
+    },
+    {
+      "topic_id": "TOPIC-002",
+      "title": "Os três grandes autores",
+      "content_version": 1,
+      "status": "available",
+      "mastered": false,
+      "attempts": 0,
+      "external_task": {
+        "provider": "github_issues",
+        "external_id": "24",
+        "url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447/issues/24",
+        "sync_status": "stale_pending_resync",
+        "last_synced_at": "2026-08-28T14:58:59.966537Z",
+        "note": "Should become 'Próxima aula' now that TOPIC-001 is mastered; pending a successful publish/sync run."
+      }
+    },
+    {
+      "topic_id": "TOPIC-003",
+      "title": "A dicotomia do controle",
+      "content_version": 1,
+      "status": "available",
+      "mastered": false,
+      "attempts": 0,
+      "materialized_at": "2026-08-29",
+      "external_task": {
+        "provider": "github_issues",
+        "external_id": null,
+        "url": null,
+        "sync_status": "not_synced",
+        "last_synced_at": null,
+        "note": "Lesson, rubric, assessment form and content review were authored and are ready in the repository. Task-board publication is blocked pending resolution of the run_publish_projection readback validation error recorded in state/operations/eval-topic-001-materialize-topic-003-retry2.json."
+      }
+    }
+  ],
+  "achievements": [
+    {
+      "type": "topic_mastered",
+      "topic_id": "TOPIC-001",
+      "at": "2026-08-29T10:00:00Z",
+      "score": 100
+    }
+  ]
 }

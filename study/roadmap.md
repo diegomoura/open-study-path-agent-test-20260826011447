@@ -63,7 +63,7 @@ flowchart TD
 - **Por que importa para você:** você chega sem contexto formal; começar pela identidade da filosofia evita confundir o estoicismo popular das redes sociais com o pensamento original que você quer entender.
 - **Evidência esperada:** um exercício em que você define o estoicismo com suas palavras e distingue afirmações estoicas de mitos comuns sobre a filosofia.
 - **Esforço estimado:** ~60 min.
-- **Situação:** aula pronta.
+- **Situação:** aula pronta — concluída com sucesso.
 
 ### Aula 02 · Os três grandes autores
 - **ID interno:** TOPIC-002
@@ -81,7 +81,7 @@ flowchart TD
 - **Por que importa para você:** esta é a prática que você já pediu explicitamente e sobre a qual já tem boa intuição; aqui ela deixa de ser intuição e vira ferramenta precisa, com vocabulário de Epicteto.
 - **Evidência esperada:** exercícios aplicados em que você classifica situações reais e reescreve reações à luz da dicotomia, incluindo pelo menos um caso ambíguo.
 - **Esforço estimado:** ~75 min.
-- **Situação:** aula futura — liberada assim que a Aula 01 for concluída.
+- **Situação:** aula pronta.
 
 ### Aula 04 · Virtude como o único bem
 - **ID interno:** TOPIC-004
@@ -142,7 +142,7 @@ Ela **não** cobre em profundidade a lógica e a física estoicas (as outras dua
 
 ## Materialização
 
-As duas primeiras aulas já estão **prontas** para estudo: **Aula 01 · O que é o estoicismo** e **Aula 02 · Os três grandes autores**. As demais aulas continuam como **aula futura**: elas serão preparadas automaticamente, na ordem dos pré-requisitos, conforme você avança e envia as avaliações. Você não precisa pedir a geração manualmente.
+As três primeiras aulas já estão **prontas** para estudo: **Aula 01 · O que é o estoicismo** (concluída), **Aula 02 · Os três grandes autores** e **Aula 03 · A dicotomia do controle**. As demais aulas continuam como **aula futura**: elas serão preparadas automaticamente, na ordem dos pré-requisitos, conforme você avança e envia as avaliações. Você não precisa pedir a geração manualmente.
 
 <!-- open-study-path:roadmap-graph topics=8 roots=TOPIC-001 -->
-<!-- open-study-path:materialization materialized=TOPIC-001,TOPIC-002 planned=TOPIC-003,TOPIC-004,TOPIC-005,TOPIC-006,TOPIC-007,TOPIC-008 -->
+<!-- open-study-path:materialization materialized=TOPIC-001,TOPIC-002,TOPIC-003 planned=TOPIC-004,TOPIC-005,TOPIC-006,TOPIC-007,TOPIC-008 -->

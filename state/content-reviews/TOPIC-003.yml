@@ -1,0 +1,54 @@
+version: 1
+topic_id: TOPIC-003
+content_version: 1
+reviewed_at: "2026-08-29T10:05:00Z"
+reviewer_role: course_content_reviewer
+review_mode: independent_pass
+status: approved
+
+checks:
+  scope_alignment: passed
+  prerequisite_integrity: passed
+  outcome_coverage: passed
+  lesson_assessment_alignment: passed
+  deliverable_alignment: passed
+  learner_navigation: passed
+  level_progression: passed
+  source_quality: passed
+  practice_consistency: passed
+
+prerequisites_reviewed:
+  - TOPIC-001
+
+navigation:
+  direct_prerequisites_only: true
+  does_not_assume_linear_order: true
+
+outcome_coverage:
+  - outcome_id: LO-1
+    status: covered
+    assessment_questions: [q1, q3, q5]
+  - outcome_id: LO-2
+    status: covered
+    assessment_questions: [q2, q5]
+  - outcome_id: LO-3
+    status: covered
+    assessment_questions: [q4, q5]
+
+blocking_findings: []
+non_blocking_findings:
+  - code: SAME_PASS_AUTHORSHIP
+    message: >-
+      Este arquivo foi escrito no mesmo turno em que o conteúdo materializado
+      foi gerado (dentro da operação de avaliação do TOPIC-001), não por uma
+      chamada de revisor genuinamente separada e isolada como o revisor de
+      conteúdo usado em generate_detailed. A verificação independente real
+      para esta materialização é a inspeção própria do revisor de avaliação
+      (next_materialization_consistency), em uma chamada isolada separada.
+  - code: SOURCE_ACCESS
+    message: >-
+      A fonte explicativa (William B. Irvine, "A Guide to the Good Life")
+      é de acesso pago ou por biblioteca; a aula oferece um resumo
+      autocontido dos conceitos derivados dela (tricotomia do controle e
+      objetivo internalizado) para não depender desse acesso, mas não é
+      bloqueante para a materialização desta etapa.

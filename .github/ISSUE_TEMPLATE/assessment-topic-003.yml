@@ -1,0 +1,76 @@
+name: Avaliação — TOPIC-003 — A dicotomia do controle
+description: Mostre como você compreendeu e aplicou esta etapa.
+title: "[Avaliação] TOPIC-003 — A dicotomia do controle"
+labels:
+  - assessment
+  - assessment:submitted
+body:
+  - type: markdown
+    attributes:
+      value: |
+        <!-- open-study-path:assessment topic_id=TOPIC-003 version=1 -->
+        ## Mostre o que você aprendeu
+
+        Responda com suas próprias palavras e use exemplos sempre que puder. Não buscamos respostas decoradas: queremos entender como você está pensando e aplicando o conteúdo.
+
+        Depois de enviar, volte ao chat e escreva:
+
+        `Terminei A dicotomia do controle. Avalie minhas respostas.`
+
+  - type: input
+    id: evidence
+    attributes:
+      label: Sua evidência, quando houver
+      description: Inclua o link ou uma referência curta para o arquivo, documento, comentário ou projeto relacionado.
+      placeholder: https://...
+    validations:
+      required: false
+
+  - type: textarea
+    id: q1
+    attributes:
+      label: Questão 1 — o que está e o que não está sob nosso poder?
+      description: Explique a dicotomia do controle usando o vocabulário de Epicteto (sob nosso poder / fora do nosso poder), com um exemplo.
+      placeholder: Sob nosso poder está...
+    validations:
+      required: true
+
+  - type: textarea
+    id: q2
+    attributes:
+      label: Questão 2 — classifique um caso misto
+      description: "Analise: 'Você está se preparando para uma cirurgia importante.' Classifique o que está sob controle, o que está fora de controle, e proponha um objetivo internalizado para a parte que depende de você."
+    validations:
+      required: true
+
+  - type: textarea
+    id: q3
+    attributes:
+      label: Questão 3 — aplique a uma situação nova de adversidade
+      description: Descreva uma situação difícil (real ou hipotética) e explique como a dicotomia do controle se aplicaria a ela, propondo uma ação coerente.
+    validations:
+      required: true
+
+  - type: textarea
+    id: q4
+    attributes:
+      label: Questão 4 — encontre e corrija o equívoco
+      description: "Analise a afirmação: 'Já que não controlo o resultado, não faz sentido nem tentar.' Explique por que ela é um mau uso da dicotomia e como reformulá-la corretamente."
+    validations:
+      required: true
+
+  - type: textarea
+    id: q5
+    attributes:
+      label: Questão 5 — mostre sua evidência e reflita
+      description: Classifique três situações reais da sua vida (incluindo pelo menos um caso misto, com o objetivo internalizado correspondente) e reescreva sua reação usando o vocabulário da aula.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Antes de enviar
+      options:
+        - label: Revisei minhas respostas e estou pronto para receber feedback.
+          required: true
