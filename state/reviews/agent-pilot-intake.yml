@@ -10,7 +10,7 @@ independent_pass: true
 
 status: approved
 
-reviewed_at: "2025-01-09T00:00:00Z"
+reviewed_at: "2025-01-09T01:00:00Z"
 
 artifacts:
   - path: study.config.yml
@@ -35,4 +35,5 @@ blocking_findings: []
 non_blocking_findings:
   - Assumptions recorded in state/intake-summary.json are helpful for curriculum planning (theory-practice balance, emphasis on original texts, practical application focus) and well-reasoned, though derived from learner's stated preferences rather than learner-declared assumptions. This is appropriate scaffolding.
   - The normalized_at timestamp is synthetic (2025-01-09T00:00:00Z) rather than the actual intake submission timestamp; this is acceptable for automated intake processing provided it's consistent.
-  - Post-review manual correction (not re-reviewed by an independent agent call) - CI's schema validator rejected two values the author wrote in study.config.yml: learner.current_level was "no_knowledge" (not a member of the schema's enum; corrected to "none") and the intake: block carried imported_from_issue/imported_at, which additionalProperties: false does not allow (removed; the same facts already live in state/intake-summary.json.source_reference). Root cause fixed at the template level in diegomoura/open-study-path PR #102.
+  - "Post-review manual correction (not re-reviewed by an independent agent call) - CI's schema validator rejected two values the author wrote in study.config.yml: learner.current_level was \"no_knowledge\" (not a member of the schema's enum; corrected to \"none\") and the intake: block carried imported_from_issue/imported_at, which additionalProperties: false does not allow (removed; the same facts already live in state/intake-summary.json.source_reference). Root cause fixed at the template level in diegomoura/open-study-path PR #102."
+  - "AUDIT NOTE (manual post-approval fix, not re-reviewed independently): (1) this manifest's non_blocking_findings entry above contained an unquoted YAML scalar with a bare colon (\"...the intake: block carried...\"), which scripts/refresh_review_fingerprints.py could not parse -- re-quoted as a valid YAML string with no wording change. (2) reviewed_at was a synthetic placeholder (2025-01-09T00:00:00Z) identical to agent-pilot-bootstrap_instance.yml's and earlier than agent-pilot-configure_intake.yml's (00:30:00Z), even though intake runs after both in the pipeline; this made refresh_review_fingerprints.py either report an ambiguous current owner for state/intake-summary.json (tied with bootstrap_instance) or hand stale ownership of study.config.yml to configure_intake.yml instead of this (later, correct) manifest. Set to 2025-01-09T01:00:00Z, safely after configure_intake's, to restore correct ownership; no artifact hashes were touched."
