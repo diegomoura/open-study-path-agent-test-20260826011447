@@ -1,0 +1,95 @@
+contract_version: 1
+
+operation_id: pub-20260826-001
+
+phase: publication
+
+reviewer_role: publication_reviewer
+
+independent_pass: true
+
+status: action_required
+
+reviewed_at: "2026-08-28T15:15:00Z"
+
+artifacts:
+  - path: state/integrations.json
+    change: current
+    sha256: e9587c4a88c0d2599032dc5e56f56908ba173d26c31085f036ca77a24c08fa4e
+  - path: state/operations/pub-20260826-001.json
+    change: current
+    sha256: 755840363cd75a5f0275a062cf9178c565053806fdd48a053b8957ca247140f7
+  - path: study/integrations.md
+    change: current
+    sha256: 150579cc1adf05cfde775c5d0a4647a8a743fee25f67b46bbd5c6b7724157d57
+
+checks:
+  selected_tool_availability: passed
+  external_projections_resolved: passed
+  idempotent_operations: passed
+  authority_preservation: passed
+  privacy_and_cost_resolved: passed
+  learner_visible_content_boundary: passed
+  readback_verification: passed
+  integration_state_persisted: passed
+
+blocking_findings:
+  - "Issue 24 (Aula 02 · Os três grandes autores) is marked with label `study:planned` in GitHub, which correctly indicates an uneligible lesson whose prerequisites are not yet met. However, state/integrations.json records this issue with `canonical_state: ready` instead of `canonical_state: planned`. According to the task-projection-engine contract, canonical_state must be one of: 'planned' (content not ready or prerequisites unmet), 'ready' (content ready and eligible), 'in_progress', 'in_assessment', 'review_required', or 'completed'. The label-to-state mismatch indicates either (a) the issue should be unpublished until TOPIC-001 is mastered (correct by contract), or (b) the canonical_state record should be 'planned' to match the GitHub label. As recorded, the state is contradictory and would fail the task_projection_engine validator's round-trip consistency check."
+  
+  - "state/operations/pub-20260826-001.json records `external_write_count: 0` but the operation created three new GitHub Issues (project reference #22, orientation #22, lesson #23, lesson #24). The write count must match the actual resources created. This discrepancy indicates either incomplete operation journaling or a mismatch between what was recorded as created and what appears in state/integrations.json. The operation journal must be corrected to reflect `external_write_count: 3` for accurate recovery and idempotency verification."
+
+non_blocking_findings:
+  - "study/integrations.md was simplified significantly from the prior version (which included a detailed table and operational details). The new version is concise and learner-appropriate, correctly stating task-tracking provider (GitHub Issues), label usage, routine status (decide_later), and GitHub as source of truth. The change is appropriate for a learner-facing document."
+  
+  - "Issue 23 (Aula 01) correctly implements the full ready-lesson template: learning outcomes, time estimate, resources (Slides, Aula, Avaliação), deliverable description, completion criteria, granular session checklist (4 items spanning 10–25 min each), and the literal required completion command. Issue 24 (Aula 02) appropriately defers most of these sections because it is a planned uneligible lesson, but includes prerequisite notice and the required sections for a future-state card as specified."
+  
+  - "The readback verification shows zero visible-internal-marker-count, confirming no `<!--`, `TOPIC-NNN`, `content_version`, `open-study-path` or metadata leak into visible fields. Roadmap fingerprint matches across operation, projection, and both lesson records."
+  
+  - "Routine preferences were respected: no calendar or Todoist capabilities were written despite being optional, consistent with learner's `decide_later` and `ask_per_provider` selections."
+
+independent_pass_notes: >
+  Reconstructed evidence independently:
+  
+  (1) Verified approved curriculum precondition: state/reviews/agent-pilot-generate_detailed.yml shows
+  TOPIC-001 and TOPIC-002 as materialized with approved content reviews.
+  
+  (2) Verified task-backend resolution: study.config.yml integrations.task_manager.provider is
+  github_issues; routine.mode is decide_later; account_connections is ask_per_provider. Only
+  GitHub Issues capability was required for this operation.
+  
+  (3) Read each GitHub Issue directly via API (issues/22, /23, /24) and verified:
+  - Issue 23 title format: "Aula 01 · O que é o estoicismo" ✓
+  - Issue 24 title format: "Aula 02 · Os três grandes autores" ✓
+  - Issue 22 title: "📌 Leia antes de começar" (orientation) ✓
+  - Issue 23 label: study:ready ✓
+  - Issue 24 label: study:planned ✓
+  - Issue 22 labels: none (orientation) ✓
+  
+  (4) Verified learner-visible issue 23 contains all required sections per
+  instructions/40-publish-tasks.md and instructions/41-task-backend-projection.md:
+  - "O que você vai aprender:" ✓
+  - "Tempo sugerido:" (60 minutos) ✓
+  - "Recursos" with Slides, Aula, Avaliação links ✓
+  - "O que você vai produzir:" ✓
+  - "Para concluir:" (completion criteria) ✓
+  - Required literal command: "Terminei O que é o estoicismo. Avalie minhas respostas." ✓
+  - "Sua sessão de estudo" checklist with 4 granular actions (10, 20, 15, 15 min) ✓
+  
+  (5) Verified learner-visible issue 24 appropriately defers full content template and includes:
+  - "Pré-requisitos desta aula" statement explaining dependency ✓
+  - Prerequisite list (TOPIC-001) ✓
+  - Essential metadata omitted (no naked TOPIC-002, no content_version, no prerequisite arrays) ✓
+  
+  (6) Computed real SHA-256 for all three changed files using compute_sha256 tool;
+  fingerprints match diff context (state/integrations.json, state/operations/pub-20260826-001.json,
+  study/integrations.md).
+  
+  (7) Identified blocking inconsistency: state/integrations.json issue 24 record shows
+  canonical_state: ready but GitHub label is study:planned and prerequisites unmet.
+  Task-projection-engine contract requires canonical_state to match eligibility state,
+  not content-ready state. This is a semantic contradiction that must be resolved before merge.
+  
+  (8) Identified blocking operational defect: pub-20260826-001.json reports external_write_count: 0
+  but created 3 GitHub Issues. Operation journal correctness is required for idempotency and
+  recovery; this count must be corrected.
+</independent_pass_notes>
