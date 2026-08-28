@@ -937,7 +937,20 @@ issue for the recovery plan still needs to be opened by hand.
    the completed task and the newly available one to GitHub Issues in one
    pass and the generated `study/integrations.md` records the actual
    configured routine mode (required verbatim by
-   `scripts/integration_resolution.py`'s real validator). On
+   `scripts/integration_resolution.py`'s real validator). As with
+   `publish`'s own author, when re-building each existing topic's entry
+   for this `topics` list, set `slides_url=None` unless
+   `.open-study-path/instance.yml`'s `study_slides.enabled` is `true` and
+   that topic's `study/slides/<topic_id>/slides.pdf` genuinely exists --
+   never construct a plausible-looking slides path from convention; a
+   real `publish` dispatch did exactly that for a slides-off pilot and
+   published a dead link. Call `run_publish_projection` exactly once for
+   this operation attempt: its `journal` return value's
+   `external_write_count` reflects only that one call, not this
+   operation's full history, and a real `publish` dispatch that
+   re-invoked the tool after already getting `status: "success"` ended up
+   persisting a second, idempotent, zero-write journal that silently
+   erased the record that real writes had happened at all. On
    `status="success"`, write `state/integrations.json` and
    `study/integrations.md` from the returned payload, and update
    `state/progress.json`'s entry for the newly materialized topic to set
@@ -957,18 +970,17 @@ issue for the recovery plan still needs to be opened by hand.
 REVIEWER_EVALUATE_NOTE = """\
 ## Evaluate tool addendum (Etapa 6d)
 
-Your own `artifacts:` list must NOT include `state/operations/*.json` or
-`state/content-reviews/*.yml` paths, even though both are real files this
-operation legitimately changed. `review_framework.py`'s
-`phase_allows_artifact("assessment", ...)` does not cover either path --
-they are validated by their own dedicated contracts
-(`scripts/validate_task_projection.py` for operation journals,
-`scripts/course_content_review.py` for content reviews), not by this
-generic review's artifact-coverage mechanism. A real Etapa 6d dispatch
-listed both and failed CI with "cannot approve out-of-scope artifact" for
-each. List every other real artifact this operation changed as usual;
-just leave these two path prefixes out of this specific file's own
-`artifacts:` block.
+Your own `artifacts:` list must include `state/operations/*.json` if this
+operation changed one -- `review_framework.py`'s
+`phase_allows_artifact("assessment", ...)` now covers that path prefix
+(diegomoura/open-study-path PR #115; it did not before, and omitting it
+was correct until then). It must still NOT include
+`state/content-reviews/*.yml` paths, even though they are real files this
+operation legitimately changed: that prefix is deliberately excluded from
+`is_generated_artifact()` entirely (validated instead by its own
+dedicated contract, `scripts/course_content_review.py`), so it needs no
+review coverage at all and never will, unlike the operations journal.
+List every other real artifact this operation changed as usual.
 
 Your `checks:` block must use these six keys verbatim -- copy them exactly
 from `review_framework.py`'s `REVIEW_PROFILES["assessment"]["checks"]`
