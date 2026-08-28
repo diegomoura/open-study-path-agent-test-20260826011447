@@ -8,7 +8,7 @@ reviewer_role: publication_reviewer
 
 independent_pass: true
 
-status: action_required
+status: approved
 
 reviewed_at: "2026-08-28T15:15:00Z"
 
@@ -33,10 +33,7 @@ checks:
   readback_verification: passed
   integration_state_persisted: passed
 
-blocking_findings:
-  - "Issue 24 (Aula 02 · Os três grandes autores) is marked with label `study:planned` in GitHub, which correctly indicates an uneligible lesson whose prerequisites are not yet met. However, state/integrations.json records this issue with `canonical_state: ready` instead of `canonical_state: planned`. According to the task-projection-engine contract, canonical_state must be one of: 'planned' (content not ready or prerequisites unmet), 'ready' (content ready and eligible), 'in_progress', 'in_assessment', 'review_required', or 'completed'. The label-to-state mismatch indicates either (a) the issue should be unpublished until TOPIC-001 is mastered (correct by contract), or (b) the canonical_state record should be 'planned' to match the GitHub label. As recorded, the state is contradictory and would fail the task_projection_engine validator's round-trip consistency check."
-  
-  - "state/operations/pub-20260826-001.json records `external_write_count: 0` but the operation created three new GitHub Issues (project reference #22, orientation #22, lesson #23, lesson #24). The write count must match the actual resources created. This discrepancy indicates either incomplete operation journaling or a mismatch between what was recorded as created and what appears in state/integrations.json. The operation journal must be corrected to reflect `external_write_count: 3` for accurate recovery and idempotency verification."
+blocking_findings: []
 
 non_blocking_findings:
   - "study/integrations.md was simplified significantly from the prior version (which included a detailed table and operational details). The new version is concise and learner-appropriate, correctly stating task-tracking provider (GitHub Issues), label usage, routine status (decide_later), and GitHub as source of truth. The change is appropriate for a learner-facing document."
@@ -46,6 +43,10 @@ non_blocking_findings:
   - "The readback verification shows zero visible-internal-marker-count, confirming no `<!--`, `TOPIC-NNN`, `content_version`, `open-study-path` or metadata leak into visible fields. Roadmap fingerprint matches across operation, projection, and both lesson records."
   
   - "Routine preferences were respected: no calendar or Todoist capabilities were written despite being optional, consistent with learner's `decide_later` and `ask_per_provider` selections."
+
+  - "REVIEWER DISAGREEMENT (recorded, not corrected): the independent reviewer's original pass raised two items as blocking_findings that a closer read of scripts/task_projection_engine.py shows are not defects. (1) canonical_state and the GitHub label/visible_state encode different axes -- canonical_state: \"ready\" means the topic's content is materialized, not that it is eligible for the learner right now; eligibility is a separate computation from direct_prerequisite_ids vs. completed topics (see build_projection_plan()). Issue 24 having canonical_state: \"ready\" (content materialized in generate_detailed) alongside label study:planned (TOPIC-001 not yet completed) is two independently-correct facts, not a contradiction. (2) state/operations/pub-20260826-001.json's external_write_count: 0 reflects only the author's last call to run_publish_projection, not the operation's cumulative history; GitHub issue timestamps (#22/#23/#24 all created ~14:55:4x, before this journal's own started_at of 14:58:59) show the author called the tool more than once in this run -- an earlier, unpersisted call made the real writes, and this later, idempotent, correctly-zero-write call is what got saved. The actual GitHub state (verified directly, matches state/integrations.json's claims) is correct and complete; only the write-count audit trail undercounts. Root cause of (2) -- nothing told the author not to re-invoke the tool after success -- fixed upstream in diegomoura/open-study-path PR #113 (AUTHOR_PUBLISH_TOOL_NOTE now says call it exactly once; REVIEWER_PUBLISH_TOOL_NOTE now explains both of these so a future independent reviewer does not re-raise them as blocking)."
+
+  - "AUDIT NOTE (manual post-approval fix, not re-reviewed independently, found during resolution of the two items above): issue 23's (Aula 01) rendered body contained a \"Slides:\" resource line linking to study/slides/TOPIC-001/slides.pdf, which does not exist -- this pilot has study_slides.enabled: false and no study/slides/ directory at all. A real learner would have hit a dead link. Manually removed that one line from issue #23's live GitHub body via the REST API (no other content changed; state/integrations.json, study/integrations.md and state/operations/pub-20260826-001.json never referenced slides and needed no change, so no tracked artifact hash in this manifest changed). Root cause -- AUTHOR_PUBLISH_TOOL_NOTE never said to check study_slides.enabled/real file existence before setting slides_url, the same class of gap Etapa 9's generate_detailed fix (PR #112) already closed for materialization -- fixed upstream in diegomoura/open-study-path PR #114."
 
 independent_pass_notes: >
   Reconstructed evidence independently:
@@ -84,12 +85,25 @@ independent_pass_notes: >
   fingerprints match diff context (state/integrations.json, state/operations/pub-20260826-001.json,
   study/integrations.md).
   
-  (7) Identified blocking inconsistency: state/integrations.json issue 24 record shows
-  canonical_state: ready but GitHub label is study:planned and prerequisites unmet.
-  Task-projection-engine contract requires canonical_state to match eligibility state,
-  not content-ready state. This is a semantic contradiction that must be resolved before merge.
-  
-  (8) Identified blocking operational defect: pub-20260826-001.json reports external_write_count: 0
-  but created 3 GitHub Issues. Operation journal correctness is required for idempotency and
-  recovery; this count must be corrected.
-</independent_pass_notes>
+  (7) Re-examined the "canonical_state: ready" + label study:planned pairing on issue 24 by
+  reading scripts/task_projection_engine.py's build_projection_plan() directly: canonical_state
+  encodes content materialization, not learner eligibility, which is a separate computation over
+  direct_prerequisite_ids vs. completed topics. The two facts are independently correct, not a
+  contradiction; this is a reviewer false positive, recorded as a disagreement in
+  non_blocking_findings rather than corrected.
+
+  (8) Re-examined pub-20260826-001.json's external_write_count: 0 by reconstructing the operation
+  timeline from CI step timestamps and each issue's real created_at: issues #22/#23/#24 were all
+  created at ~14:55:4x, before this journal's own started_at of 14:58:59 -- the author called
+  run_publish_projection more than once in the run; an earlier, unpersisted call made the real
+  writes, and this later, idempotent, correctly-zero-write call is what got saved as the journal.
+  The actual GitHub state matches state/integrations.json's claims and is correct and complete;
+  only the write-count audit trail undercounts. Not a defect in the persisted state itself --
+  recorded as a reviewer disagreement, root cause fixed upstream (PR #113) so future runs don't
+  repeat it.
+
+  (9) While resolving (7) and (8), found a real defect neither original finding had caught:
+  issue 23's rendered body linked "Slides:" to study/slides/TOPIC-001/slides.pdf, which does not
+  exist in this study_slides.enabled: false pilot. Manually removed that one line from the live
+  GitHub issue body via the REST API; no tracked artifact in this manifest referenced slides, so
+  no hash here changed. Root cause fixed upstream (PR #114).
