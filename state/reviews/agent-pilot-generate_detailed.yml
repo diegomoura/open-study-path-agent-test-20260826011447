@@ -9,7 +9,7 @@ reviewed_at: "2026-08-26T19:30:00Z"
 artifacts:
   - path: .open-study-path/instance.yml
     change: current
-    sha256: 0c7f7aaab92d8bd107b95277457bd706bb23154cc3073a4395a3dcc81784f389
+    sha256: 6410b030735e277afcbe540d32bc59027111a7a79baa62153f0a99a6d28e3be8
   - path: study/roadmap.md
     change: current
     sha256: 33b37465e5754ab72e5d63ddee681bd357bae7144356ac1bd8396ea62ee570f2
@@ -74,6 +74,7 @@ non_blocking_findings:
   - "TOPIC-002 learning outcome LO-1's statement bundles a biographical-identification claim with a 'why this diversity is rare in the history of philosophy' clause that is really the theme of LO-3; the LO-1 outcome marker and assessment question (q1) only exercise the biographical half. Not blocking because the identification capability is fully taught and assessed and the rarity/diversity claim is genuinely taught and assessed under LO-3 elsewhere in the same lesson, but a future content_version should tighten LO-1's statement to match only what its own marker and question test."
   - "TOPIC-001's source table is entirely text-based (two academic encyclopedia entries, one primary translation, two web articles) with no video/audio alternative format; acceptable per docs/content-quality-and-sources.md ('não force variedade quando ela não ajuda') given the primary+academic combination already present, and already self-flagged in state/content-reviews/TOPIC-001.yml as a non-blocking note for a future revision."
   - "Per this run's explicit scope addendum, study slides (study/slides/, state/slide-reviews/, slides/slides_pdf/slides_review topic-contract fields, and the 'Slides da aula' PDF link) were intentionally skipped for both materialized topics as a deliberate pilot omission; this review does not evaluate that dimension and defers it entirely to a future operation, consistent with the addendum's instruction that this is not a finding for this run."
+  - "AUDIT NOTE (manual post-review fix, not independently re-reviewed): the approved run above left .open-study-path/instance.yml's study_slides.enabled as true even though this pilot deliberately generated no slides, which is inconsistent with the AGENT_PILOT_ENABLE_SLIDES=false harness default and caused scripts/validate_study_slides.py to block CI on 'missing slides' after the fact. .open-study-path/instance.yml was manually edited post-approval to set study_slides.enabled: false (no other content changed); the sha256 recorded above for that file reflects the corrected version, not what the author/reviewer actually saw. Root cause fixed upstream in diegomoura/open-study-path's AUTHOR_DETAILED_NOTE/REVIEWER_DETAILED_NOTE (scripts/build_agent_prompt.py) so future runs reconcile this automatically; this file's correction was applied manually to avoid re-spending a paid dispatch on an already-approved, otherwise-correct operation."
 
 independent_pass_notes: >
   Reconstructed evidence directly from repository state rather than the author's summary:
