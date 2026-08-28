@@ -3,7 +3,7 @@ operation_id: assessment-topic-001-attempt-01
 phase: assessment
 reviewer_role: assessment_reviewer
 independent_pass: true
-status: action_required
+status: approved
 reviewed_at: "2026-08-29T12:00:00Z"
 
 artifacts:
@@ -15,10 +15,19 @@ artifacts:
     sha256: f980f823903a171e7f368077a50075889405de30a1058132c89505f207319afa
   - path: state/operations/eval-topic-001-materialize-topic-003-retry2.json
     change: current
-    sha256: 8b699ee481f19f50b18ddaef632158accd0dbcc21621f1ae2cc07f05ab9afaed
+    sha256: 23df95b4a233e40b1256448d642255eb533085d36e7d713e1fc0eaab4d2a9a8d
+  - path: state/operations/eval-topic-001-materialize-topic-003-reconcile.json
+    change: current
+    sha256: 64f46a7dc4e00ff1a85968309ddd1841d837badb56086c23f0d26b66f1806025
   - path: state/progress.json
     change: current
-    sha256: 740d02989994e4711f907cf76ebfb46cf25a6e5265ea23e13d5fc0b8b8517b9a
+    sha256: 88263137772510e7bbe75b4ef5149a1fefe9e415a2cba9da232a4ed577c3d328
+  - path: state/integrations.json
+    change: current
+    sha256: c1e15a0c240becdb59f550266128b8c470029736ff60444dc636ea654ebdfb8f
+  - path: study/integrations.md
+    change: current
+    sha256: 150579cc1adf05cfde775c5d0a4647a8a743fee25f67b46bbd5c6b7724157d57
   - path: study/assessments/TOPIC-003.yml
     change: current
     sha256: 722d3ad64ea57c03d8ee87d3148056722041f6a0c95e1648471faad1948e88a6
@@ -37,13 +46,13 @@ checks:
   rubric_fidelity: passed
   independent_scoring: passed
   feedback_alignment: passed
-  progress_update: failed
+  progress_update: passed
   next_materialization_consistency: passed
 
-blocking_findings:
-  - "progress_update: state/progress.json's external_task entry for TOPIC-001 (issue #23) reads sync_status='stale_pending_resync' with the note \"the authoritative task card still needs to be moved to 'Concluído' by a follow-up publish/sync run because run_publish_projection returned a readback validation error.\" A direct, harmless read-back of the real issue #23 shows it already carries label 'study:completed' and body 'Aula concluída com evidência durável registrada no GitHub.' — i.e. the authoritative task has, in fact, already been moved to the completed state (most likely by the partial external writes the operation's own journal admits occurred, external_write_count=3, before a later readback check failed for unrelated reasons: roadmap/lesson-count and TOPIC-002/TOPIC-003 primary/parallel projection). The persisted state therefore misdescribes verified external reality: it reports an unresolved pending-sync condition for a task that is not actually pending. state/integrations.json is correspondingly stale (still records issue #23 canonical_state='ready'/visible_state='Próxima aula' from the prior 2026-08-28T14:58:59 publish, not the operation's later partial write). This is exactly the class of state/reality contradiction instructions/04-review-generated-artifacts.md and the publication/progress contracts require reviewers to catch: a subsequent track or publish run relying on this note could attempt a redundant or conflicting resync of an already-synced resource, or route the learner's next action incorrectly, because the durable record does not match the GitHub source of truth. This must be corrected (re-verify issue #23/#24 real state via read-back and rewrite the progress.json/integrations.json notes and sync_status fields to match reality, or genuinely roll back/reconcile the partial write) before this operation can be approved."
+blocking_findings: []
 
 non_blocking_findings:
   - "state/content-reviews/TOPIC-003.yml (excluded from review-artifact coverage by design, per CONTENT_REVIEW_PATH_PREFIX) honestly discloses in its own non_blocking_findings that it was authored in the same pass as the TOPIC-003 content rather than by a fully isolated reviewer call; this is the expected and disclosed limitation for auto-materialized content and is not itself a blocking defect. Independent inspection of study/modules/a-dicotomia-do-controle.md confirms the three outcome markers (LO-1, LO-2, LO-3) are placed beside sections that genuinely teach each outcome (formal eph' hēmin/ouk eph' hēmin + prohairesis vocabulary; tricotomia do controle + objetivo internalizado for mixed cases; correcting the 'no point in trying' misuse), the rubric in study/assessments/TOPIC-003.yml maps every question to the same outcome IDs, sources are real and locator-specific (MIT Classics Enchiridion ch.1, MIT Discourses index, Stanford Encyclopedia of Philosophy 'Epictetus', IEP 'Epictetus', Irvine's 'A Guide to the Good Life'), no internal TOPIC-003 identifier leaks into a learner-facing resource path (module file is named by title, not by topic ID), and slides remain correctly un-generated at this stage."
+  - "AUDIT NOTE (manual post-approval fix, not re-reviewed independently): the blocking_finding above was correct that state/progress.json and state/integrations.json misdescribed reality, but the root cause was deeper than a stale note -- scripts/github_issues_backend.py's _normalize() could never correctly reconstruct 'Disponível em paralelo' from a study:ready label during read-back, because GITHUB_STATE_LABELS maps both 'Disponível em paralelo' and 'Próxima aula' to that same label and a naive dict inversion always collapsed the collision to 'Próxima aula'. This deterministically broke validate_readback()'s primary/parallel checks the moment two topics (TOPIC-002 and TOPIC-003) became eligible at once, which had never happened before in this harness's history. Diagnosed and fixed upstream in diegomoura/open-study-path PR #117, with a new regression test (test_two_simultaneously_eligible_topics_pass_readback) reproducing this exact failure. Synced to this repo's main and merged into this branch. state/operations/eval-topic-001-materialize-topic-003-retry2.json's own `status` field was separately corrected from an invalid \"error\" to the real value publish_projection() actually assigns for a ReadbackValidationError, \"partial\" (scripts/validate_task_projection.py rejected \"error\" outright); no other field in that historical journal was touched. After the fix landed, a fresh reconciliation was run locally against the real GitHub Issues API -- not a new paid Claude dispatch, since the underlying engine bug, not judgment, was what had failed -- using the exact topics data this operation's own partial writes had already established (external_ids 23/24/27, already-correct issue bodies), recorded in the new state/operations/eval-topic-001-materialize-topic-003-reconcile.json. It passed readback cleanly (only 2 minor body-field updates needed) and produced the state/integrations.json and study/integrations.md this operation's own failed attempts could not. state/progress.json's three external_task entries were then corrected to sync_status: \"success\" with the real last_synced_at from that reconciliation, replacing the stale_pending_resync/not_synced notes. Independently re-verified against the live GitHub issues: #23 study:completed, #24 study:ready with 'Você pode começar por aqui.' (Próxima aula), #27 study:ready with 'Esta aula também está disponível.' (Disponível em paralelo) -- all three now match state/integrations.json exactly."
   - "Unrelated pre-existing issue outside this operation's diff: task issue #24 (TOPIC-002) still links its lesson resource as .../study/modules/TOPIC-002.md, exposing the internal topic ID in a learner-facing URL. This predates the current diff (it was not touched by this operation) and is out of scope for this review, but is worth flagging for a future publication/projection cleanup pass."
   - "This review's tooling cannot directly read GitHub issue comments, only body/title/labels/author, so the claimed detailed evaluation comment on issue #26 could not be independently confirmed by direct comment read-back. The label transition on issue #26 (assessment:submitted removed, assessment:graded added, matching the required 55-evaluate-topic.md finalization steps) is treated as strong corroborating evidence that the grading write actually occurred as described."

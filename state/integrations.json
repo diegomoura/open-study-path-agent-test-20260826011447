@@ -19,7 +19,7 @@
       "id": "diegomoura/open-study-path-agent-test-20260826011447",
       "url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447",
       "sync_status": "success",
-      "last_synced_at": "2026-08-28T14:58:59.966537Z"
+      "last_synced_at": "2026-08-28T19:52:56.991431Z"
     },
     {
       "capability": "task_manager",
@@ -30,7 +30,28 @@
       "canonical_state": "planned",
       "visible_state": "Planejado",
       "sync_status": "success",
-      "last_synced_at": "2026-08-28T14:58:59.966537Z"
+      "last_synced_at": "2026-08-28T19:52:56.991431Z"
+    },
+    {
+      "capability": "task_manager",
+      "provider": "github_issues",
+      "type": "issue",
+      "id": "27",
+      "url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447/issues/27",
+      "topic_id": "TOPIC-003",
+      "visible_lesson_number": 3,
+      "title": "Aula 03 · A dicotomia do controle",
+      "direct_prerequisite_ids": [
+        "TOPIC-001"
+      ],
+      "content_version": 1,
+      "canonical_state": "ready",
+      "visible_state": "Disponível em paralelo",
+      "visual_position": 2,
+      "managed_fields_version": 1,
+      "roadmap_fingerprint": "d5e739b2348044b36ecd1829c8874299b1c4902dbdc5f5338374dfd6a2363226",
+      "sync_status": "success",
+      "last_synced_at": "2026-08-28T19:52:56.991431Z"
     },
     {
       "capability": "task_manager",
@@ -46,12 +67,12 @@
       ],
       "content_version": 1,
       "canonical_state": "ready",
-      "visible_state": "Planejado",
+      "visible_state": "Próxima aula",
       "visual_position": 1,
       "managed_fields_version": 1,
-      "roadmap_fingerprint": "8dcfb9faa6d07bb4f24e481e4e332ee7b8246488c006912569cf181b5e8b016a",
+      "roadmap_fingerprint": "d5e739b2348044b36ecd1829c8874299b1c4902dbdc5f5338374dfd6a2363226",
       "sync_status": "success",
-      "last_synced_at": "2026-08-28T14:58:59.966537Z"
+      "last_synced_at": "2026-08-28T19:52:56.991431Z"
     },
     {
       "capability": "task_manager",
@@ -64,46 +85,46 @@
       "title": "Aula 01 · O que é o estoicismo",
       "direct_prerequisite_ids": [],
       "content_version": 1,
-      "canonical_state": "ready",
-      "visible_state": "Próxima aula",
+      "canonical_state": "completed",
+      "visible_state": "Concluído",
       "visual_position": 0,
       "managed_fields_version": 1,
-      "roadmap_fingerprint": "8dcfb9faa6d07bb4f24e481e4e332ee7b8246488c006912569cf181b5e8b016a",
+      "roadmap_fingerprint": "d5e739b2348044b36ecd1829c8874299b1c4902dbdc5f5338374dfd6a2363226",
       "sync_status": "success",
-      "last_synced_at": "2026-08-28T14:58:59.966537Z"
+      "last_synced_at": "2026-08-28T19:52:56.991431Z"
     }
   ],
   "projection": {
     "provider": "github_issues",
     "container_id": "diegomoura/open-study-path-agent-test-20260826011447",
     "container_url": "https://github.com/diegomoura/open-study-path-agent-test-20260826011447",
-    "topic_count": 2,
+    "topic_count": 3,
     "managed_list_order": null,
-    "roadmap_fingerprint": "8dcfb9faa6d07bb4f24e481e4e332ee7b8246488c006912569cf181b5e8b016a",
+    "roadmap_fingerprint": "d5e739b2348044b36ecd1829c8874299b1c4902dbdc5f5338374dfd6a2363226",
     "readback": {
-      "verified_at": "2026-08-28T14:58:59.966537Z",
-      "lesson_card_count": 2,
-      "managed_card_count": 3,
+      "verified_at": "2026-08-28T19:52:56.991431Z",
+      "lesson_card_count": 3,
+      "managed_card_count": 4,
       "visible_internal_marker_count": 0,
       "external_read_count": 1
     }
   },
   "operations": {
-    "pub-20260826-001": {
+    "eval-topic-001-materialize-topic-003-reconcile": {
       "status": "success",
       "provider": "github_issues",
-      "updated_at": "2026-08-28T14:58:59.966492Z",
-      "checkpoint_count": 9
+      "updated_at": "2026-08-28T19:52:56.991314Z",
+      "checkpoint_count": 10
     }
   },
   "resolution": {
     "status": "resolved",
     "unresolved_capabilities": [],
-    "validated_at": "2026-08-28T14:58:59.966537Z"
+    "validated_at": "2026-08-28T19:52:56.991431Z"
   },
   "sync": {
-    "last_attempt_at": "2026-08-28T14:58:59.966492Z",
-    "last_success_at": "2026-08-28T14:58:59.966537Z",
+    "last_attempt_at": "2026-08-28T19:52:56.991314Z",
+    "last_success_at": "2026-08-28T19:52:56.991431Z",
     "status": "success",
     "errors": []
   }

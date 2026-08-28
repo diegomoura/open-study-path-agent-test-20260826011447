@@ -1,0 +1,71 @@
+{
+  "operation_id": "eval-topic-001-materialize-topic-003-reconcile",
+  "provider": "github_issues",
+  "operation_type": "publication",
+  "status": "success",
+  "attempt": 1,
+  "checkpoints": [
+    {
+      "name": "preflight_started",
+      "at": "2026-08-28T19:52:54.646038Z"
+    },
+    {
+      "name": "preflight_matches_resolved",
+      "at": "2026-08-28T19:52:55.043345Z"
+    },
+    {
+      "name": "container_ready",
+      "at": "2026-08-28T19:52:55.043380Z",
+      "container_id": "diegomoura/open-study-path-agent-test-20260826011447"
+    },
+    {
+      "name": "managed_sections_ready",
+      "at": "2026-08-28T19:52:55.043387Z"
+    },
+    {
+      "name": "orientation_ready",
+      "at": "2026-08-28T19:52:55.043425Z"
+    },
+    {
+      "name": "lesson_ready",
+      "at": "2026-08-28T19:52:55.043462Z",
+      "topic_id": "TOPIC-001",
+      "visible_state": "Concluído"
+    },
+    {
+      "name": "lesson_ready",
+      "at": "2026-08-28T19:52:55.816814Z",
+      "topic_id": "TOPIC-002",
+      "visible_state": "Próxima aula"
+    },
+    {
+      "name": "lesson_ready",
+      "at": "2026-08-28T19:52:56.492996Z",
+      "topic_id": "TOPIC-003",
+      "visible_state": "Disponível em paralelo"
+    },
+    {
+      "name": "readback_completed",
+      "at": "2026-08-28T19:52:56.990550Z"
+    },
+    {
+      "name": "readback_validated",
+      "at": "2026-08-28T19:52:56.991307Z"
+    },
+    {
+      "name": "durable_state_persisted",
+      "at": "2026-08-28T19:52:56.991457Z"
+    }
+  ],
+  "external_read_count": 1,
+  "external_write_count": 2,
+  "branch": null,
+  "pull_request": null,
+  "commit_budget": 1,
+  "warnings": [],
+  "errors": [],
+  "roadmap_fingerprint": "d5e739b2348044b36ecd1829c8874299b1c4902dbdc5f5338374dfd6a2363226",
+  "started_at": "2026-08-28T19:52:54.645977Z",
+  "updated_at": "2026-08-28T19:52:56.991457Z",
+  "completed_at": "2026-08-28T19:52:56.991314Z"
+}
