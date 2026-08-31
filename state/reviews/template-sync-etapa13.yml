@@ -1,0 +1,27 @@
+contract_version: 1
+operation_id: template-sync-etapa13-migration-review-tooling
+phase: migration
+reviewer_role: migration_reviewer
+independent_pass: true
+status: approved
+reviewed_at: '2026-08-31T20:46:42Z'
+artifacts:
+- path: README.md
+  change: current
+  sha256: ffe7b7c3f2706ff5f3e25f594a2efa2692d5f94d2b04edaf437f337762c44357
+checks:
+  source_target_identity: passed
+  compatibility: passed
+  state_preservation: passed
+  idempotency: passed
+  rollback_and_failure_safety: passed
+blocking_findings: []
+non_blocking_findings:
+- 'Synced from open-study-path template PR #122 (already independently reviewed and
+  CI-green there before merge).'
+- Only scripts/sync_migration_review.py, scripts/test_sync_migration_review.py and
+  docs/claude-agent-pilot-etapa13-sync-migration-review.md changed -- no instance
+  state (state/*.json, study/*), README.md, study.config.yml, or .github/ISSUE_TEMPLATE/create-study-path.yml
+  touched.
+- This is the tool that produced this very review artifact -- see docs/claude-agent-pilot-etapa13-sync-migration-review.md
+  for why it is needed for this sync.
