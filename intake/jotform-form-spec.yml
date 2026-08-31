@@ -202,11 +202,12 @@ fields:
     section: integrations
     label: Onde gostaria de acompanhar suas etapas?
     help_text: >-
-      Trello é o padrão para uma visão em cards. Se ele não for conectado, GitHub
-      Issues é o primeiro fallback. Apenas um backend manterá o estado operacional.
+      GitHub Issues é o padrão. Trello e Todoist ficam disponíveis como
+      upgrade opcional caso você prefira uma visão em cards ou lembretes
+      separados. Apenas um backend manterá o estado operacional.
     type: single_choice
     required: true
-    default: auto
+    default: github_issues
     options: [auto, trello, github_issues, todoist]
 
   - key: study_routine_mode

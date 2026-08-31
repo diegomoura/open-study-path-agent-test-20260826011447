@@ -51,7 +51,7 @@ A fixed block requires days or dates, start time, duration, timezone and selecte
 
 ### Trello, GitHub Issues, Todoist and Markdown
 
-Trello is preferred for rich courses because it can show the complete roadmap, links, checklists, review and completion states. When Trello is not connected, GitHub Issues is the first operational fallback. Todoist may replace them for a short path or act only as flexible reminder support. Repository Markdown remains the final internal fallback.
+A new instance defaults to GitHub Issues with no external task backend proposed. Trello is the richer optional upgrade for visual execution with several stages; Todoist may replace it for a short path or act only as flexible reminder support. Offer Trello, Todoist or another provider only when the learner explicitly asks or opts in during intake -- never pre-select or recommend one by default. When Trello is explicitly selected but not connected, GitHub Issues is the first operational fallback. Repository Markdown remains the final internal fallback.
 
 Every selected task backend projects all approved roadmap topics, not only the lessons already materialized. Visible titles use `Aula NN · <título>`. The number comes from stable roadmap order and helps navigation, while direct prerequisites control readiness.
 

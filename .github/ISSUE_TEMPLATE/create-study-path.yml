@@ -202,13 +202,13 @@ body:
     id: task_manager
     attributes:
       label: Onde gostaria de acompanhar suas etapas?
-      description: O agente prioriza Trello para uma visão em cards. Se ele não for conectado, GitHub Issues é o primeiro fallback; o repositório continua sendo o último fallback interno.
+      description: O padrão é GitHub Issues. Trello e Todoist ficam disponíveis como upgrade opcional caso você prefira uma visão em cards ou lembretes separados.
       options:
         - Deixar o agente recomendar
         - Trello
         - GitHub Issues
         - Todoist
-      default: 0
+      default: 2
     validations:
       required: true
 

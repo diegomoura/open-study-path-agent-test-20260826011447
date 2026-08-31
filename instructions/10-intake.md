@@ -58,7 +58,7 @@ When the form was reported as submitted:
 6. when more than one remains, list candidate number, title and creation time and ask the owner to choose;
 7. never select an arbitrary newest repository issue.
 
-After import, persist the exact source reference, apply `intake:imported` and retain `study-request` for auditability. Treat attachments as optional and do not copy them into the repository by default.
+After import, persist the exact source reference, apply `intake:imported` and retain `study-request` for auditability. Treat attachments as optional and do not copy them into the repository by default. The source reference and every other import-audit fact (issue number, title, timestamp) belong only in `state/intake-summary.json.source_reference` -- `study.config.yml`'s `intake:` block is a closed schema (`additionalProperties: false`) describing the provider's setup, not the specific submission, and does not accept audit fields. A real dispatch added `imported_from_issue`/`imported_at` there and failed CI's schema validation for exactly this reason.
 
 ## Manual YAML
 
@@ -78,7 +78,7 @@ Do not recommend, connect or probe external tools during intake. Keep delegated 
 
 When the learner chooses not to connect other accounts, normalize `integration_preferences.account_connections: no_external_accounts`. Do not later suggest, probe or write to providers that require another account; use GitHub Issues or the repository-native Markdown fallback. Otherwise use `ask_per_provider`, preserving explicit tool constraints in `integration_preferences.notes`.
 
-Internal invariants such as GitHub authority, formative-practice limits, Mermaid canonical status, Trello preference with GitHub Issues and then Markdown as task fallbacks, one primary task backend and `github_to_airtable` analytics are normalized without requiring the learner to repeat them. Do not surface those terms in the success response.
+Internal invariants such as GitHub authority, formative-practice limits, Mermaid canonical status, GitHub Issues as the default task backend with Trello and Todoist as optional upgrades and Markdown as the final fallback, one primary task backend and `github_to_airtable` analytics are normalized without requiring the learner to repeat them. Do not surface those terms in the success response.
 
 Update `.open-study-path/instance.yml` with completed intake status.
 

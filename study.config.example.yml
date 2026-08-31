@@ -40,7 +40,7 @@ intake:
   persist_raw_submission: false
 
 integration_preferences:
-  experience: guided_recommendations
+  experience: minimal
   account_connections: ask_per_provider
   already_uses: []
   willing_to_connect: []
@@ -72,7 +72,7 @@ integrations:
       - web_research
 
   task_manager:
-    provider: auto
+    provider: github_issues
     preferred: trello
     alternatives:
       - github_issues
@@ -98,35 +98,35 @@ integrations:
     required: false
 
   habit_tracking:
-    provider: auto
+    provider: none
     preferred: habitify
-    enabled: auto
+    enabled: disabled
     required: false
     affects_mastery: false
     max_default_habits: 3
 
   visual_workspace:
     canonical: mermaid
-    external_provider: auto
+    external_provider: none
     preferred_external: whimsical
-    enabled: auto
+    enabled: disabled
     required: false
 
   artifact_workspace:
-    provider: auto
+    provider: none
     preferred: google_drive
     alternatives:
       - notion
       - sharepoint
       - dropbox
       - none
-    enabled: auto
+    enabled: disabled
     required: false
 
   analytics_projection:
-    provider: auto
+    provider: none
     preferred: airtable
-    enabled: auto
+    enabled: disabled
     required: false
     direction: github_to_airtable
     affects_mastery: false

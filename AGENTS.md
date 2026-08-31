@@ -104,7 +104,7 @@ Read `docs/integration-capabilities.md`, `study.config.yml`, `study/integrations
 
 GitHub stores curriculum, lessons, assessments and verified progress. Exactly one task backend tracks execution.
 
-- Trello is preferred for rich courses; GitHub Issues is the first fallback, Todoist may be a task backend or reminder-only, and repository Markdown is the final internal fallback.
+- The default backend is GitHub Issues, proposed to nobody proactively; Trello and Todoist are optional upgrades activated only on explicit request or connection, with repository Markdown as the final internal fallback.
 - The task backend projects every approved roadmap topic exactly once, including future lessons without learner-resource links.
 - Persist the current ordered roadmap fingerprint with the board or project and reject a stale or different curriculum as the current projection.
 - `integration_preferences.routine.mode: fixed_calendar` uses one calendar provider and its event notification.
