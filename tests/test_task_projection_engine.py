@@ -51,7 +51,6 @@ def topic(
         materialized=materialized,
         external_id=external_id,
         lesson_url=(f"https://github.example/aula-{number}" if materialized else None),
-        slides_url=(f"https://github.example/slides-{number}.pdf" if materialized else None),
         assessment_url=(f"https://github.example/avaliacao-{number}" if materialized else None),
     )
 
@@ -304,7 +303,6 @@ class TaskProjectionEngineTests(unittest.TestCase):
             materialized=True,
             external_id=None,
             lesson_url="https://github.com/OWNER/REPO/blob/main/study/modules/TOPIC-001.md",
-            slides_url=None,
             assessment_url="https://github.com/OWNER/REPO/blob/main/study/assessments/TOPIC-001.yml",
             learning_summary="Explicar a diferença entre rodar e compilar um programa em Go.",
             estimated_minutes=60,
@@ -362,17 +360,12 @@ class TaskProjectionEngineTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             render_learner_integration_summary(leaking_state)
 
-    def test_publish_succeeds_for_materialized_topic_without_slides(self):
-        # Real finding from a real Etapa 6d evaluate dispatch:
-        # run_publish_projection returned status="error" (ReadbackValidationError)
-        # for a genuinely correct, fully materialized topic, because
-        # validate_readback unconditionally required a slides URL for every
-        # materialized, non-Planejado lesson -- but this entire pilot (and
-        # any real instance with study_slides.enabled: false) never has one.
-        # The author correctly refused to fabricate a slides URL rather than
-        # pass this false requirement. This is the exact scenario, run
-        # through the real engine end to end, confirming it now succeeds.
-        no_slides_topic = TopicProjection(
+    def test_publish_succeeds_for_materialized_topic(self):
+        # Regression coverage for run_publish_projection succeeding on a
+        # genuinely correct, fully materialized topic with only lesson and
+        # assessment resources (study slides were removed entirely; see
+        # docs/claude-agent-pilot-etapa10-remove-slides.md).
+        materialized_topic = TopicProjection(
             topic_id="TOPIC-001",
             lesson_number=1,
             title="Tema 1",
@@ -382,12 +375,11 @@ class TaskProjectionEngineTests(unittest.TestCase):
             materialized=True,
             external_id=None,
             lesson_url="https://github.example/aula-1",
-            slides_url=None,
             assessment_url="https://github.example/avaliacao-1",
         )
         backend = FakeBackend("github_issues")
         result = publish_projection(
-            topics=(no_slides_topic,), backend=backend, operation_id="no-slides-v1"
+            topics=(materialized_topic,), backend=backend, operation_id="materialized-v1"
         )
         self.assertEqual("success", result.journal["status"])
 
@@ -417,7 +409,6 @@ class TaskProjectionEngineTests(unittest.TestCase):
             materialized=True,
             external_id=None,
             lesson_url="https://github.example/aula-1",
-            slides_url=None,
             assessment_url="https://github.example/avaliacao-1",
         )
         backend = FakeBackend("github_issues")
@@ -454,7 +445,6 @@ class TaskProjectionEngineTests(unittest.TestCase):
             materialized=True,
             external_id=None,
             lesson_url="https://github.example/aula-1",
-            slides_url=None,
             assessment_url="https://github.example/avaliacao-1",
         )
         backend = FakeBackend("github_issues")
@@ -511,7 +501,6 @@ class TaskProjectionEngineTests(unittest.TestCase):
             materialized=True,
             external_id=None,
             lesson_url="https://github.example/aula-1",
-            slides_url=None,
             assessment_url="https://github.example/avaliacao-1",
             learning_summary="Diferenciar tipagem estática de dinâmica na prática.",
             estimated_minutes=45,
@@ -626,7 +615,6 @@ class TaskProjectionEngineTests(unittest.TestCase):
             materialized=True,
             external_id=None,
             lesson_url="https://github.example/aula-1",
-            slides_url=None,
             assessment_url="https://github.example/avaliacao-1",
             learning_summary="Explicar a diferença entre rodar e compilar um programa em Go.",
             estimated_minutes=60,

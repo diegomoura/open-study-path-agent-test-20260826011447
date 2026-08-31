@@ -53,8 +53,6 @@ sobrescrevendo o dial só para aquele agente.
 | `curriculum_reviewer` | generate | revisor | opus | **sim** |
 | `content_author` | generate / evaluate | autor | sonnet | **sim** |
 | `content_reviewer` | generate / evaluate | revisor | sonnet | **sim** |
-| `slide_generator` | generate / evaluate | autor | sonnet | não |
-| `slide_reviewer` | generate / evaluate | revisor | sonnet | não |
 | `publish` | publish | autor | haiku | não |
 | `integration_preflight` | publish | revisor | haiku | não |
 | `evaluate` | evaluate | autor | sonnet | **sim** |

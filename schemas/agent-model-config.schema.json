@@ -21,8 +21,6 @@
         "curriculum_reviewer": {"$ref": "#/$defs/tier_or_null"},
         "content_author": {"$ref": "#/$defs/tier_or_null"},
         "content_reviewer": {"$ref": "#/$defs/tier_or_null"},
-        "slide_generator": {"$ref": "#/$defs/tier_or_null"},
-        "slide_reviewer": {"$ref": "#/$defs/tier_or_null"},
         "publish": {"$ref": "#/$defs/tier_or_null"},
         "integration_preflight": {"$ref": "#/$defs/tier_or_null"},
         "evaluate": {"$ref": "#/$defs/tier_or_null"},

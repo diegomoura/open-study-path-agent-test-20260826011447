@@ -6,11 +6,11 @@ Run this instruction automatically inside a successful topic-evaluation operatio
 
 Keep the approved roadmap complete while generating detailed teaching content only slightly ahead of the learner. This preserves coherence, reduces oversized pull requests and lets future lessons incorporate verified assessment evidence and integration fallbacks.
 
-Every newly materialized lesson must pass `instructions/36-review-course-content.md` before slide authoring. Its derived slide deck must then pass `instructions/37-review-study-slides.md`, render successfully to PDF and pass deterministic slide validation before merge. Materialization, course-content review, slide review and PDF rendering are distinct responsibilities inside the same operation.
+Every newly materialized lesson must pass `instructions/36-review-course-content.md` before merge. Materialization and course-content review are distinct responsibilities inside the same operation.
 
 ## Configuration
 
-Read `content_generation`, `content_review` and `study_slides` from `.open-study-path/instance.yml`, plus `study.config.yml`, `study/integrations.md` and `state/integrations.json`.
+Read `content_generation` and `content_review` from `.open-study-path/instance.yml`, plus `study.config.yml`, `study/integrations.md` and `state/integrations.json`.
 
 Defaults when missing:
 
@@ -21,12 +21,7 @@ Defaults when missing:
 - `adapt_future_modules_from_assessments: true`;
 - `visual_learning.mermaid_enabled: true`;
 - `visual_learning.minimum_diagrams_per_materialized_module: 1`;
-- `visual_learning.diagrams_must_be_explained: true`;
-- `study_slides.enabled: true` for instances created from the current template;
-- `study_slides.learner_format: pdf`;
-- `study_slides.html_visibility: internal_only`;
-- `study_slides.generated_images_enabled: false`;
-- `study_slides.mermaid_required: true`.
+- `visual_learning.diagrams_must_be_explained: true`.
 
 For `adaptive_rolling_window`, a curriculum at or below both full-upfront thresholds may materialize every topic during initial generation. Larger curricula must maintain a rolling window.
 
@@ -53,12 +48,11 @@ Use all of these sources:
 - intake and diagnostic evidence;
 - verified assessment results and recovery history;
 - `templates/module.md`, `templates/assessment-rubric.yml`, `templates/topic-assessment-issue-form.yml` and `templates/content-review.yml`;
-- `templates/study-slides/` and `templates/slide-review.yml`;
 - `templates/integrations-plan.md` and `docs/integration-capabilities.md`;
-- `docs/mermaid-visual-learning.md` and `docs/study-slides.md`;
-- previously approved modules and slide decks as consistency references.
+- `docs/mermaid-visual-learning.md`;
+- previously approved modules as consistency references.
 
-A previous module or slide deck is not the sole template. Do not copy its structure mechanically when the next capability requires a different teaching or visual approach.
+A previous module is not the sole template. Do not copy its structure mechanically when the next capability requires a different teaching or visual approach.
 
 Assessment evidence may adapt examples, emphasis, prerequisite retrieval, practice difficulty, visual representations and formative-practice emphasis. It must not silently rewrite the approved objective, prerequisites, learning outcomes, required concepts, deliverable, effort or mastery criteria. A structural pedagogical change belongs to replan.
 
@@ -66,7 +60,7 @@ Assessment evidence may adapt examples, emphasis, prerequisite retrieval, practi
 
 When the next topic contains empirical or scientific claims and Consensus is selected, perform a harmless optional availability probe. Use it to discover supporting research only when available. If unavailable, continue with primary sources, official documentation and web research.
 
-Every selected reference must be persisted with a precise locator in the module. An external research response is not itself a durable citation and cannot change the approved topic contract. Slides summarize the reviewed module and never perform an additional research pass.
+Every selected reference must be persisted with a precise locator in the module. An external research response is not itself a durable citation and cannot change the approved topic contract.
 
 ## Required repository changes
 
@@ -81,18 +75,14 @@ For every selected topic:
 7. set the topic's `content_status` to `materialized`;
 8. increment `content_version` and set `materialized_at`;
 9. create or refresh `state/content-reviews/TOPIC-000.yml` only after the independent course-content review passes for the current content version;
-10. generate semantic slide HTML, CSS, Mermaid source files and generated SVG under `study/slides/TOPIC-000/` from that reviewed lesson;
-11. create or refresh `state/slide-reviews/TOPIC-000.yml` only after the independent slide review passes for the same content version;
-12. render and commit `study/slides/TOPIC-000/slides.pdf` and `slides.meta.json`;
-13. add the direct PDF link block to the module without exposing internal slide sources;
-14. update the roadmap's materialization status without changing the approved graph;
-15. update `study/integrations.md` only when verified evidence changes a recommendation, fallback or topic-specific integration use.
+10. update the roadmap's materialization status without changing the approved graph;
+11. update `study/integrations.md` only when verified evidence changes a recommendation, fallback or topic-specific integration use.
 
 The module must contain three to seven focused execution actions, normally 10–25 minutes each. The topic should normally represent 45–90 minutes of coherent learning. Split a topic before approval when it exceeds 120 minutes and can be separated into independently assessable capabilities.
 
 For nontechnical subjects, use Mermaid for decision paths, causal relationships, conceptual maps, timelines or state changes. For programming, AWS and other technical subjects, choose architecture, dependency, sequence, state, class or data-flow views. Complex topics should use multiple focused diagrams rather than one crowded diagram.
 
-Every lesson diagram must render in GitHub, be introduced in context and be followed by an explanation of what the learner should notice. Every slide deck must contain at least one focused Mermaid diagram rendered to static SVG in the PDF. Do not create decorative diagrams, generated raster illustrations or images of complete slides.
+Every lesson diagram must render in GitHub, be introduced in context and be followed by an explanation of what the learner should notice. Do not create decorative or purely illustrative diagrams.
 
 ## Independent course-content review
 
@@ -106,37 +96,22 @@ After lesson, practice and assessment authoring:
 6. correct blocking findings and rerun the review;
 7. write the approved evidence to `state/content-reviews/` for the exact current content version.
 
-A stale review, missing outcome, mismatched prerequisite list or unresolved blocking finding prevents the slide-authoring handoff.
-
-## Independent study-slide review and rendering
-
-After the course-content review passes:
-
-1. build twelve to twenty-four focused slides from the reviewed lesson using `templates/study-slides/`;
-2. represent every topic outcome through honest `data-outcome-ids` values;
-3. keep the deck concise, high-contrast and free from external runtime dependencies;
-4. include at least one useful Mermaid source rendered to static SVG and split crowded diagrams;
-5. switch to `instructions/37-review-study-slides.md` and compare the visual summary with the reviewed lesson;
-6. correct every blocking finding and write approved evidence under `state/slide-reviews/`;
-7. run `node scripts/render_study_slides.mjs --topic TOPIC-000`;
-8. run `python scripts/validate_study_slides.py` and correct overflow, Mermaid, page-count, link, freshness or PDF errors.
-
-The learner sees only the PDF. Do not link the HTML, CSS, Mermaid source, generated SVG and render metadata or review evidence. A stale review, failed render, missing PDF, source mismatch or unresolved blocking finding prevents merge.
+A stale review, missing outcome, mismatched prerequisite list or unresolved blocking finding prevents merge.
 
 ## Pull request and validation
 
 Create a small draft pull request limited to:
 
 - the selected topic contracts;
-- their new modules, slide sources, PDFs, render metadata, optional flashcard files, rubrics and assessment Issue Forms;
-- their current course-content and slide-review artifacts;
+- their new modules, optional flashcard files, rubrics and assessment Issue Forms;
+- their current course-content review artifacts;
 - the roadmap materialization status;
 - integration-plan changes justified by the new topic or verified evidence;
 - the shared assessment-operation review artifact.
 
-Run the curriculum validator, course-content review validator, study-slide tests and validator, PDF renderer check and all required checks. Review Mermaid syntax, source precision, flashcard quality, outcome traceability and integration authority alongside the rest of the content. Correct the branch. Under `workflow.curriculum_merge_policy: agent_review_then_merge`, mark ready and merge when CI passes and no new pedagogical or integration-policy decision is required.
+Run the curriculum validator, course-content review validator and all required checks. Review Mermaid syntax, source precision, flashcard quality, outcome traceability and integration authority alongside the rest of the content. Correct the branch. Under `workflow.curriculum_merge_policy: agent_review_then_merge`, mark ready and merge when CI passes and no new pedagogical or integration-policy decision is required.
 
-Do not ask the owner for a separate generation, review, rendering or merge command.
+Do not ask the owner for a separate generation, review or merge command.
 
 ## Capability synchronization
 
@@ -144,12 +119,11 @@ After repository materialization succeeds, synchronize selected providers from t
 
 ### Authoritative task backend
 
-- update the existing topic task with the slide PDF first, then module, one primary practice resource and assessment form;
+- update the existing topic task with the module first, then one primary practice resource and assessment form;
 - replace the planning checklist with the granular execution plan;
 - move only newly dependency-ready topics to the provider's ready state;
 - preserve the direct prerequisite list in task state and learner copy;
-- never create a second authoritative task in another provider;
-- never expose internal slide sources or review evidence.
+- never create a second authoritative task in another provider.
 
 ### Auxiliary Todoist reminders
 
@@ -169,7 +143,7 @@ Create or reuse at most the configured number of Habitify habits. Persist `autho
 
 ### External visuals and artifacts
 
-Update Whimsical or another external visual only when the plan identifies a concrete use; Mermaid remains canonical. Create or update Drive/Notion/SharePoint/Dropbox deliverable artifacts only when the topic requires them. The generated slide PDF remains in GitHub and is not synchronized to an external workspace by default.
+Update Whimsical or another external visual only when the plan identifies a concrete use; Mermaid remains canonical. Create or update Drive/Notion/SharePoint/Dropbox deliverable artifacts only when the topic requires them.
 
 ### Airtable projection
 
@@ -183,10 +157,8 @@ Keep precise course-discovery links from the approved module. Update email summa
 
 Before every write, inspect `state/integrations.json` and exact matching provider resources. Reuse or update resources and record capability, provider, type, external ID, URL, topic, content version, authority, sync status and timestamp.
 
-Re-running the renderer without changed slide or lesson sources must preserve semantic metadata and require no new slide review. Any changed lesson, HTML, CSS or JavaScript invalidates the slide review and requires a newly rendered PDF in the same operation.
-
-A missing optional connector records a deferred or fallback sync and does not block the next topic. A missing required authoritative task provider may pause only that external synchronization; it must not hide or invalidate the ready module, slide PDF and GitHub assessment.
+A missing optional connector records a deferred or fallback sync and does not block the next topic. A missing required authoritative task provider may pause only that external synchronization; it must not hide or invalidate the ready module and GitHub assessment.
 
 ## Completion
 
-Return the topic-evaluation result together with the next available slide PDF, module, authoritative task and assessment form. Mention the internal materialization PR only as an artifact. Briefly name any optional fallbacks used, but do not ask for another command before the learner starts the next topic.
+Return the topic-evaluation result together with the next available module, authoritative task and assessment form. Mention the internal materialization PR only as an artifact. Briefly name any optional fallbacks used, but do not ask for another command before the learner starts the next topic.

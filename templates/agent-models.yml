@@ -25,8 +25,6 @@ model_overrides:
   curriculum_reviewer: null
   content_author: null
   content_reviewer: null
-  slide_generator: null
-  slide_reviewer: null
   publish: null
   integration_preflight: null
   evaluate: null

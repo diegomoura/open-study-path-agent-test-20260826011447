@@ -10,7 +10,7 @@ Do not attempt `gh`, `git clone`, `curl`, raw GitHub URLs or unauthenticated net
 
 A local checkout is optional acceleration, not a prerequisite. When command execution, DNS or package installation is unavailable, stop probing that unavailable path and continue through the connector and inherited GitHub Actions.
 
-Read reusable slide assets from the instance repository. Do not download templates from the canonical repository during an instance operation; inherited files are already versioned locally.
+Do not download templates from the canonical repository during an instance operation; inherited files are already versioned locally.
 
 Do not use fixed `sleep` loops to poll checks. Re-read the workflow or pull request through the connector with bounded attempts. A queued or in-progress check is a pending technical state, not curriculum success and not a learner decision.
 
@@ -24,12 +24,11 @@ Perform one bounded preflight before authoring:
 4. choose one execution path and do not alternate repeatedly between connector, shell and unauthenticated network attempts.
 
 The curriculum agent does not install Chromium or Mermaid. When the render toolchain is unavailable locally, use the CI render handoff.
-
 ## Build the complete diff before publishing
 
 1. Read the active instance configuration, approved intake, diagnostic summary, roadmap, templates and validators.
 2. Assemble the complete allowed phase diff in memory or an isolated workspace.
-3. Finish every selected topic contract, lesson, assessment, review, semantic slide source and Mermaid source before the first repository write.
+3. Finish every selected topic contract, lesson, assessment, review and Mermaid source before the first repository write.
 4. Calculate review fingerprints in one deterministic pass after authored files are final.
 5. Open the pull request only after the complete initial diff exists on its branch.
 
@@ -52,21 +51,6 @@ If a branch was accidentally built through dozens of serial commits, reconstruct
 
 Every intermediate and final commit must respect the phase's allowed-diff contract.
 
-## Slide authoring boundary
-
-The authoring pass creates only lightweight, reviewable sources:
-
-```text
-study/slides/TOPIC-000/
-  index.html
-  slides.css
-  diagrams/*.mmd
-```
-
-Do not author `slides.js`, `slides.zip`, PNG diagrams or complete-slide images. Do not place a Mermaid runtime in learner artifacts. The generated SVG, PDF and render metadata are deterministic build outputs.
-
-A normal 45–90 minute lesson derives 12–24 topic-specific slides according to its estimated effort. The deck must preserve required concepts, at least two worked examples, outcome coverage and the real explanatory depth of the lesson. A fixed ten-slide shell or generic filler does not satisfy the contract.
-
 ## Local validation when available
 
 When a usable local environment already exists, run the lightweight suite before the first push:
@@ -82,33 +66,16 @@ python scripts/validate_instance_operation_scope.py
 python scripts/validate_generation_efficiency.py
 python scripts/test_generation_terminal_state.py
 python scripts/test_curriculum_placeholder_detection.py
-python scripts/test_study_slides.py
-python scripts/validate_study_slides.py
 python scripts/validate_curriculum_safe.py
 ```
 
 Never run `scripts/validate_curriculum.py` directly for learner content. The safe validator is the active contract.
 
-When the pinned renderer dependencies are already available, the repository owner may additionally run:
-
-```text
-node scripts/render_study_slides.mjs
-node scripts/render_study_slides.mjs --check
-```
-
 The curriculum agent must not install Chromium in chat. GitHub Actions is the final rendering environment and final confirmation, not the primary trial-and-error linter.
 
 ## CI render handoff
 
-A runtime without local Chromium or Mermaid CLI may open the draft pull request after all pedagogical artifacts, semantic slide sources and both specialized reviews are complete.
-
-The inherited workflow installs the pinned renderer, converts every `diagrams/*.mmd` file to static SVG, blocks external requests, checks slide overflow, renders one 1280×720 PDF page per slide and compares the result with committed artifacts.
-
-When generated SVGs, `slides.pdf` or `slides.meta.json` are missing or stale, the workflow uploads the internal artifact `study-slide-render-output` containing only those generated paths under `.open-study-path/rendered-slides/`.
-
-Download that workflow artifact through the GitHub connector, visually inspect the PDFs, add all generated SVG/PDF/metadata files to the existing branch in one batched commit, refresh affected review fingerprints once and rerun current-head checks.
-
-The artifact is an internal transfer mechanism with short retention. It is never a learner resource. Do not attach it to the learner response and do not ask the learner to build or print slides manually.
+A runtime without local Chromium or Mermaid CLI may open the draft pull request after all pedagogical artifacts and the specialized review are complete.
 
 ## Independent review before final validation
 
@@ -116,9 +83,7 @@ After authoring, run specialized reviews in this order:
 
 1. curriculum architecture through `instructions/35-review-curriculum.md`;
 2. complete lesson, practice and assessment through `instructions/36-review-course-content.md`;
-3. derived visual explanation through `instructions/37-review-study-slides.md`;
-4. static SVG and PDF rendering validation;
-5. `instructions/04-review-generated-artifacts.md` using the phase review profile.
+3. `instructions/04-review-generated-artifacts.md` using the phase review profile.
 
 Create or update the shared review only after actively checking the complete operation output. Cover every generated path changed by the pull request with current SHA-256 evidence. Correct blocking findings before approval.
 
@@ -177,9 +142,7 @@ The operation is complete only when the current unchanged head has:
 
 - an allowed, coherent diff;
 - a bounded commit history;
-- complete curriculum, course-content and study-slide reviews;
-- current static SVG diagrams, `slides.pdf` and `slides.meta.json` for every materialized topic;
-- direct learner-facing PDF links with no ZIP/HTML instructions;
+- complete curriculum and course-content reviews;
 - approved shared review coverage;
 - passing required checks;
 - a mergeable pull request with no unresolved review thread;

@@ -69,7 +69,6 @@ PHASE_EXTRA_AUTHOR_FILES: dict[str, list[str]] = {
         "instructions/41-task-backend-projection.md",
         "instructions/42-integration-preflight.md",
         "docs/learner-facing-language.md",
-        "docs/study-slides.md",
     ],
     "generate_proposal": [
         "instructions/35-review-curriculum.md",
@@ -309,25 +308,10 @@ You have exactly one tool for the actual publication:
   read_file first, then construct `topics` as a list of objects matching
   TopicProjection's fields (topic_id, lesson_number, title,
   direct_prerequisite_ids, content_version, canonical_state, materialized,
-  slides_url, lesson_url, practice_url, assessment_url). For every topic
+  lesson_url, practice_url, assessment_url). For every topic
   already published in an earlier run, read its known `external_id` from
   `state/integrations.json` first and pass it back in -- this is what lets
   the engine update the same issue instead of creating a duplicate.
-
-  If `.open-study-path/instance.yml`'s `study_slides.enabled` is not
-  explicitly `true`, or a topic's `study/slides/<topic_id>/slides.pdf` does
-  not actually exist in the repository (check with read_file or an
-  equivalent existence check before writing the field, never assume the
-  path from convention), pass `slides_url=None` for that topic -- do not
-  construct a plausible-looking slides path the same way you build
-  `lesson_url` from the module's real path. A real dispatch rendered a
-  "Slides:" resource line in a published, learner-visible GitHub issue
-  pointing at `study/slides/TOPIC-001/slides.pdf` for a pilot that had
-  `study_slides.enabled: false` and no `study/slides/` directory at all --
-  a dead link the learner would have clicked. `lesson_url`,
-  `practice_url` and `assessment_url` come from files/templates that this
-  pilot always materializes, so they do not need this same check; only
-  `slides_url` is conditional on the toggle.
 
   Also populate `learning_summary` (plain-language capability summary,
   becomes "O que você vai aprender:"), `estimated_minutes` (integer,
@@ -419,13 +403,6 @@ actual issue body back rather than trusting that the author populated
 these fields. You do not have run_publish_projection: you are checking
 the result, not reproducing or re-running the publication.
 
-Also confirm the "Recursos" block never lists a "Slides:" line unless
-`.open-study-path/instance.yml`'s `study_slides.enabled` is `true` and
-`study/slides/<topic_id>/slides.pdf` genuinely exists -- a real dispatch
-published a "Slides:" link to a PDF that did not exist for a pilot with
-slides deliberately off. This is a blocking finding: a dead resource link
-in a learner-visible card, not a cosmetic issue.
-
 Two things that read as inconsistencies but are not, on their own:
 
 - `canonical_state` (in `internal_metadata`/`state/integrations.json`) and
@@ -456,9 +433,9 @@ This run covers only the `proposal` suboperation of the `generate` phase
 materialized yet. instructions/28-propose-path.md already says this
 explicitly, but it bears repeating given how much of the parent
 instructions/30-generate-path.md's surrounding content (materialized
-modules, slides, assessments, rubrics) is reachable from the same
+modules, assessments, rubrics) is reachable from the same
 instructions/ directory: do not create `study/topics/`, `study/modules/`,
-`study/slides/`, `study/assessments/`, `.github/ISSUE_TEMPLATE/assessment-
+`study/assessments/`, `.github/ISSUE_TEMPLATE/assessment-
 topic-*.yml`, or any other materialization artifact in this run. The only
 files you may write are `study/roadmap.md` and `.open-study-path/
 instance.yml` -- write_file rejects anything else regardless of what you
@@ -486,41 +463,7 @@ content findings that don't apply.
 AUTHOR_DETAILED_NOTE = """\
 ## Detailed-generation scope addendum (Etapa 5b)
 
-Slides are off for this pilot -- do not create `study/slides/`,
-`state/slide-reviews/`, or run instructions/37-review-study-slides.md; do
-not read docs/study-slides.md. write_file rejects any path under
-`study/slides/` or `state/slide-reviews/` regardless of what you attempt, so
-treat every instruction in instructions/30-generate-path.md that refers to
-slides as not applicable to this run:
-
-- Topic contracts (`study/topics/`) do not record `slides` or
-  `slides_review` fields. `slides_pdf` also does not apply -- omit it too.
-- The module's "Complete-content contract" (18 required elements) drops
-  element 18 ("one direct Slides da aula PDF link") for this run -- there is
-  no PDF. 17 elements apply.
-- Outcome traceability step 7 ("represent every outcome in slides through
-  honest data-outcome-ids") and step 8 (slide review before PDF rendering)
-  do not apply.
-- The learner-facing completion response and any task/assessment copy must
-  never promise, reference or link a slide deck or PDF that does not exist.
-- REQUIRED, not optional: if `.open-study-path/instance.yml`'s
-  `study_slides.enabled` is not already `false`, set it to `false` as part
-  of this operation's diff, alongside everything else you write. This pilot
-  toggle (`AGENT_PILOT_ENABLE_SLIDES=false`) and `instance.yml`'s
-  `study_slides.enabled` field are two independent switches that must agree
-  -- `scripts/study_slides.py`'s `slides_deliberately_disabled()` only
-  recognizes an explicit `enabled: false` in `instance.yml` as a deliberate,
-  all-or-nothing decision not to produce slides; it has no way to know
-  about this run's harness-level toggle. Leaving `enabled: true` while
-  producing zero slides artifacts is not a scope choice CI can infer -- it
-  reads as a missing deliverable, and `scripts/validate_study_slides.py`
-  will block the operation for "missing slides" after the fact even though
-  everything else about the run was correct. A real dispatch produced
-  exactly this gap and required a manual post-approval patch to unblock
-  (see the `agent-pilot-generate_detailed.yml` audit note in the
-  disposable pilot's `state/reviews/`); do not repeat it.
-
-Everything else in instructions/30-generate-path.md applies in full:
+Everything in instructions/30-generate-path.md applies in full:
 dependency-aware topic contracts, beginner-first concept progression,
 outcome traceability via hidden markers, the source and provenance
 contract, the 100-point rubric, the GitHub Issue Form per materialized
@@ -546,26 +489,7 @@ for doing it.
 REVIEWER_DETAILED_NOTE = """\
 ## Detailed-generation scope addendum (Etapa 5b)
 
-Slides are off for this pilot run -- do not check for `study/slides/`,
-`state/slide-reviews/`, or a "Slides da aula" PDF link in the module (the
-18th element of the complete-content contract does not apply here; verify
-the other 17). A topic contract without `slides`/`slides_pdf`/
-`slides_review` fields is correct for this run, not a finding. If the
-module, rubric or Issue Form references or promises a slide deck anywhere,
-that IS a real finding -- nothing may promise an artifact that does not
-exist in this run.
-
-REQUIRED check, not optional: confirm `.open-study-path/instance.yml`'s
-`study_slides.enabled` is explicitly `false` in the author's diff. This is
-the one field `scripts/study_slides.py`'s `slides_deliberately_disabled()`
-reads to tell "deliberately no slides for this run" apart from "slides
-were supposed to happen and are simply missing" -- if it is still `true`
-(or absent/misconfigured) while zero slides artifacts exist, that is a
-blocking finding: `scripts/validate_study_slides.py` will fail CI on it
-regardless of how correct everything else in the operation is, so it must
-be caught here, in review, not discovered later in CI.
-
-Otherwise, apply instructions/36-review-course-content.md in full to every
+Apply instructions/36-review-course-content.md in full to every
 materialized topic: outcome traceability, source and provenance checks,
 beginner-first progression where the learner's level warrants it, and
 whether the lookahead-window scope (not the whole roadmap) was respected.
@@ -865,9 +789,7 @@ issue for the recovery plan still needs to be opened by hand.
    `instructions/57-materialize-next-content.md` and
    `38-finalize-generated-bundle.md` -- the same content bar
    `generate_detailed` already applies (beginner-first pedagogy, sourced
-   content, Mermaid diagrams, no placeholder text). Slides stay disabled
-   in this pilot, same as `generate_detailed` -- do not create
-   `study/topics/*.md` frontmatter pointing at a `slides_url`. `lesson_url`
+   content, Mermaid diagrams, no placeholder text). `lesson_url`
    must be a real, working link to the actual materialized module in this
    repository -- never a placeholder domain. A real Etapa 6d dispatch
    published a task card whose "Aula" link was a literal
@@ -937,14 +859,8 @@ issue for the recovery plan still needs to be opened by hand.
    the completed task and the newly available one to GitHub Issues in one
    pass and the generated `study/integrations.md` records the actual
    configured routine mode (required verbatim by
-   `scripts/integration_resolution.py`'s real validator). As with
-   `publish`'s own author, when re-building each existing topic's entry
-   for this `topics` list, set `slides_url=None` unless
-   `.open-study-path/instance.yml`'s `study_slides.enabled` is `true` and
-   that topic's `study/slides/<topic_id>/slides.pdf` genuinely exists --
-   never construct a plausible-looking slides path from convention; a
-   real `publish` dispatch did exactly that for a slides-off pilot and
-   published a dead link. Call `run_publish_projection` exactly once for
+   `scripts/integration_resolution.py`'s real validator). Call
+   `run_publish_projection` exactly once for
    this operation attempt: its `journal` return value's
    `external_write_count` reflects only that one call, not this
    operation's full history, and a real `publish` dispatch that
@@ -1041,7 +957,7 @@ the same bar `36-review-course-content.md` already holds `generate_detailed`
 to (outcome markers actually beside the content that teaches each one --
 not beside a restatement of the objective, a real Etapa 6d dispatch's own
 mistake this exact check is meant to catch -- sourced content, Mermaid
-diagrams, no placeholder text, slides still disabled, no literal internal
+diagrams, no placeholder text, no literal internal
 `topic_id` string inside any resource URL); and `run_publish_projection`'s
 real read-back validation actually passed (check
 `state/integrations.json`/`study/integrations.md` were written from a

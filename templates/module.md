@@ -6,12 +6,6 @@
 
 Explique em poucas linhas o que a pessoa vai aprender, por que isso importa para o objetivo dela, quanto tempo reservar e o que produzir ao final. Este arquivo deve ser uma aula autocontida, não apenas uma lista de tarefas.
 
-<!-- open-study-path:slides-link:start -->
-## Slides da aula
-
-[Ver os slides desta aula em PDF](https://github.com/OWNER/REPOSITORY/raw/HEAD/study/slides/TOPIC-000/slides.pdf)
-<!-- open-study-path:slides-link:end -->
-
 ## Sua sessão de estudo
 
 Divida a experiência em três a sete ações pequenas e verificáveis. Cada ação deve normalmente durar entre 10 e 25 minutos. Os tempos são sugestões, não limites rígidos.

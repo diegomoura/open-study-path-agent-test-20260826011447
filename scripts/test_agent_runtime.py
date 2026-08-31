@@ -673,7 +673,6 @@ def test_run_publish_projection_routes_through_dispatch_and_reports_success() ->
                         "lesson_number": 1,
                         "title": "Introdução",
                         "materialized": True,
-                        "slides_url": "https://github.com/o/r/raw/HEAD/study/slides/aula-01/slides.pdf",
                         "lesson_url": "https://github.com/o/r/blob/HEAD/study/lessons/aula-01.md",
                         "assessment_url": "https://github.com/o/r/blob/HEAD/study/assessments/aula-01.md",
                     }
@@ -713,13 +712,12 @@ def test_run_publish_projection_reports_invalid_topic_input_without_crashing() -
 def test_generate_proposal_allowlist_matches_proposal_outputs() -> None:
     # instructions/28-propose-path.md "Outputs": only the roadmap and the
     # instance marker -- everything instructions/30-generate-path.md later
-    # materializes (topics, modules, slides, assessments) must stay outside
+    # materializes (topics, modules, assessments) must stay outside
     # this suboperation's allowlist.
     assert is_write_allowed("generate_proposal", "study/roadmap.md")
     assert is_write_allowed("generate_proposal", ".open-study-path/instance.yml")
     assert not is_write_allowed("generate_proposal", "study/topics/TOPIC-001.md")
     assert not is_write_allowed("generate_proposal", "study/modules/TOPIC-001.md")
-    assert not is_write_allowed("generate_proposal", "study/slides/TOPIC-001/slides.pdf")
     assert not is_write_allowed("generate_proposal", "study/assessments/TOPIC-001.md")
     assert not is_write_allowed("generate_proposal", "state/reviews/agent-pilot-generate-proposal.yml")
 
@@ -750,13 +748,7 @@ def test_pricing_table_covers_every_resolvable_model() -> None:
         )
 
 
-def test_generate_detailed_allowlist_excludes_slides_by_default() -> None:
-    # Etapa 5b: slides are off by default in this pilot (docs/claude-agent-
-    # pilot-etapa5.md, section 7). study/slides/ and state/slide-reviews/
-    # must never be write-allowed, regardless of the env var -- the
-    # allowlist itself doesn't grow when the toggle flips; main() refuses to
-    # even start a generate_detailed run when it's on (see
-    # test_slides_toggle_enabled_reads_env_var below).
+def test_generate_detailed_allowlist_covers_expected_outputs() -> None:
     assert is_write_allowed("generate_detailed", "study/topics/TOPIC-001.md")
     assert is_write_allowed("generate_detailed", "study/modules/TOPIC-001.md")
     assert is_write_allowed("generate_detailed", "study/assessments/TOPIC-001.md")
@@ -764,32 +756,9 @@ def test_generate_detailed_allowlist_excludes_slides_by_default() -> None:
     assert is_write_allowed("generate_detailed", ".github/ISSUE_TEMPLATE/assessment-topic-001.yml")
     assert is_write_allowed("generate_detailed", "study/roadmap.md")
     assert is_write_allowed("generate_detailed", "study/integrations.md")
-    assert not is_write_allowed("generate_detailed", "study/slides/TOPIC-001/index.html")
-    assert not is_write_allowed("generate_detailed", "study/slides/TOPIC-001/slides.pdf")
-    assert not is_write_allowed("generate_detailed", "state/slide-reviews/TOPIC-001.yml")
     # Prefix matching must not spill onto unrelated Issue Form files --
     # confirms the intake form is never shadowed by this phase's allowlist.
     assert not is_write_allowed("generate_detailed", ".github/ISSUE_TEMPLATE/create-study-path.yml")
-
-
-def test_slides_toggle_enabled_reads_env_var() -> None:
-    import agent_runtime as ar
-
-    original = os.environ.get(ar.SLIDES_ENV_VAR)
-    try:
-        os.environ.pop(ar.SLIDES_ENV_VAR, None)
-        assert ar.slides_toggle_enabled() is False
-        for value in ("true", "1", "yes", "on", "True", "ON"):
-            os.environ[ar.SLIDES_ENV_VAR] = value
-            assert ar.slides_toggle_enabled() is True, value
-        for value in ("false", "0", "no", "off", ""):
-            os.environ[ar.SLIDES_ENV_VAR] = value
-            assert ar.slides_toggle_enabled() is False, value
-    finally:
-        if original is None:
-            os.environ.pop(ar.SLIDES_ENV_VAR, None)
-        else:
-            os.environ[ar.SLIDES_ENV_VAR] = original
 
 
 def test_generate_detailed_gets_a_higher_tool_iteration_budget() -> None:
@@ -922,6 +891,123 @@ def test_diagnostic_finish_phase_guard_does_not_apply_to_other_phases() -> None:
         # No comment was posted (bootstrap_instance has no such tool at all)
         # -- finish_phase must still work normally for every other phase.
         assert tools.finish_phase("done", "next") == "phase marked finished"
+
+
+def test_diagnostic_post_issue_comment_appends_loop_prevention_marker() -> None:
+    from agent_runtime import DIAGNOSTIC_AUTHOR_COMMENT_MARKER
+
+    posted: dict[str, object] = {}
+
+    def fake_request(method, path, payload):
+        posted["method"] = method
+        posted["path"] = path
+        posted["payload"] = payload
+        return {}
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        tools = RepoTools(
+            root=root,
+            phase="diagnostic",
+            role="author",
+            github_request=fake_request,
+            github_repository="o/r",
+        )
+        tools.post_issue_comment(5, "Pergunta 1: como vai?")
+        body = posted["payload"]["body"]
+        assert body.startswith("Pergunta 1: como vai?")
+        assert DIAGNOSTIC_AUTHOR_COMMENT_MARKER in body
+        # Idempotent: calling again with a body that already carries the
+        # marker (e.g. a retried call) must not duplicate it.
+        tools.post_issue_comment(5, body)
+        assert posted["payload"]["body"].count(DIAGNOSTIC_AUTHOR_COMMENT_MARKER) == 1
+
+
+def test_non_diagnostic_post_issue_comment_never_gets_the_marker() -> None:
+    from agent_runtime import DIAGNOSTIC_AUTHOR_COMMENT_MARKER
+
+    posted: dict[str, object] = {}
+
+    def fake_request(method, path, payload):
+        posted["payload"] = payload
+        return {}
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        tools = RepoTools(
+            root=root,
+            phase="intake",
+            role="author",
+            github_request=fake_request,
+            github_repository="o/r",
+        )
+        tools.list_intake_issues()  # populate _issue_summaries so label calls don't explode
+        tools.post_issue_comment(5, "comentario qualquer")
+        assert DIAGNOSTIC_AUTHOR_COMMENT_MARKER not in posted["payload"]["body"]
+
+
+def test_configure_intake_finish_phase_accepts_no_changes_needed_with_reason() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        tools = RepoTools(root=root, phase="configure_intake", role="author")
+        result = tools.finish_phase(
+            "Already fully configured",
+            "Preencha o formulario.",
+            no_changes_needed=True,
+            reason="Verified form marker, both labels and every instance.yml status field.",
+        )
+        assert result == "phase marked finished"
+        assert tools.finish_payload["no_changes_needed"] is True
+        assert "form marker" in tools.finish_payload["reason"]
+
+
+def test_configure_intake_finish_phase_rejects_no_changes_needed_without_reason() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        tools = RepoTools(root=root, phase="configure_intake", role="author")
+        try:
+            tools.finish_phase("summary", "next", no_changes_needed=True, reason="   ")
+            assert False, "expected AllowlistViolation"
+        except AllowlistViolation:
+            pass
+
+
+def test_no_changes_needed_is_rejected_outside_its_phase_allowlist() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        # intake's ambiguous/no-candidate case must keep failing the workflow's
+        # no-diff guard, not gain a way to opt out of it.
+        tools = RepoTools(
+            root=root,
+            phase="intake",
+            role="author",
+            github_request=lambda *a, **k: {},
+            github_repository="o/r",
+        )
+        try:
+            tools.finish_phase("summary", "next", no_changes_needed=True, reason="looks fine")
+            assert False, "expected AllowlistViolation"
+        except AllowlistViolation:
+            pass
+
+
+def test_finish_phase_default_always_sets_no_changes_needed_false() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        tools = RepoTools(root=root, phase="bootstrap_instance", role="author")
+        tools.finish_phase("done", "next")
+        assert tools.finish_payload["no_changes_needed"] is False
+        assert tools.finish_payload["reason"] == ""
+
+
+def test_no_changes_needed_tool_property_only_offered_to_allowed_phases() -> None:
+    def finish_phase_schema(phase: str) -> dict:
+        tool = next(t for t in author_tools(phase) if t["name"] == "finish_phase")
+        return tool["input_schema"]["properties"]
+
+    assert "no_changes_needed" in finish_phase_schema("configure_intake")
+    assert "no_changes_needed" not in finish_phase_schema("intake")
+    assert "no_changes_needed" not in finish_phase_schema("bootstrap_instance")
 
 
 def test_diagnostic_gets_a_higher_max_tokens_budget() -> None:
@@ -1191,6 +1277,15 @@ def test_evaluate_gets_a_higher_tool_iteration_and_token_budget() -> None:
     assert max_tokens_for("evaluate") > DEFAULT_MAX_TOKENS
 
 
+def test_generate_proposal_gets_a_higher_tool_iteration_and_token_budget() -> None:
+    # Etapa 9 item 2: a real dispatch (never real-dispatch-validated before
+    # this) hit "did not finish within 20 tool round trips" and failed
+    # outright -- same untouched-default gap generate_detailed, diagnostic
+    # and replan each independently hit first.
+    assert max_tool_iterations_for("generate_proposal") > MAX_TOOL_ITERATIONS
+    assert max_tokens_for("generate_proposal") > DEFAULT_MAX_TOKENS
+
+
 def main() -> None:
     tests = [
         test_write_allowlist_matches_setup_execution_contract,
@@ -1221,8 +1316,7 @@ def main() -> None:
         test_generate_proposal_allowlist_matches_proposal_outputs,
         test_generate_proposal_has_no_github_issues_tools,
         test_pricing_table_covers_every_resolvable_model,
-        test_generate_detailed_allowlist_excludes_slides_by_default,
-        test_slides_toggle_enabled_reads_env_var,
+        test_generate_detailed_allowlist_covers_expected_outputs,
         test_generate_detailed_gets_a_higher_tool_iteration_budget,
         test_agent_budget_exceeded_carries_tool_call_diagnostics,
         test_transcript_captures_stop_reason_for_unfinished_runs,
@@ -1231,6 +1325,13 @@ def main() -> None:
         test_diagnostic_author_gets_comment_tools_reviewer_does_not,
         test_diagnostic_finish_phase_requires_a_posted_comment,
         test_diagnostic_finish_phase_guard_does_not_apply_to_other_phases,
+        test_diagnostic_post_issue_comment_appends_loop_prevention_marker,
+        test_non_diagnostic_post_issue_comment_never_gets_the_marker,
+        test_configure_intake_finish_phase_accepts_no_changes_needed_with_reason,
+        test_configure_intake_finish_phase_rejects_no_changes_needed_without_reason,
+        test_no_changes_needed_is_rejected_outside_its_phase_allowlist,
+        test_finish_phase_default_always_sets_no_changes_needed_false,
+        test_no_changes_needed_tool_property_only_offered_to_allowed_phases,
         test_diagnostic_gets_a_higher_max_tokens_budget,
         test_track_allowlist_matches_progress_review_profile,
         test_track_gets_only_the_narrow_read_github_issue_tool,
@@ -1246,6 +1347,7 @@ def main() -> None:
         test_evaluate_reviewer_model_is_sonnet_and_structural,
         test_apply_topic_assessment_result_transforms_canonical_state,
         test_evaluate_gets_a_higher_tool_iteration_and_token_budget,
+        test_generate_proposal_gets_a_higher_tool_iteration_and_token_budget,
     ]
     for test in tests:
         test()

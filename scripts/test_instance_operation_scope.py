@@ -18,7 +18,7 @@ def main() -> None:
     assert not is_protected("study/modules/TOPIC-001.md")
 
     assert is_curriculum("study/topics/TOPIC-001.md")
-    assert is_curriculum("study/slides/TOPIC-001/slides.zip")
+    assert is_curriculum("study/modules/TOPIC-001.md")
     assert is_curriculum(".github/ISSUE_TEMPLATE/assessment-topic-001.yml")
     assert not is_curriculum("state/reviews/generate-v1.yml")
 

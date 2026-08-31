@@ -143,7 +143,6 @@ class TopicProjection:
     sync_status: str = "not_started"
     last_synced_at: str | None = None
     lesson_url: str | None = None
-    slides_url: str | None = None
     practice_url: str | None = None
     assessment_url: str | None = None
     # Etapa 6d follow-up (task-card-content gap): the engine previously had
@@ -607,7 +606,6 @@ def validate_visible_fields(
 def _resource_lines(topic: TopicProjection) -> list[str]:
     lines: list[str] = []
     ordered = (
-        ("Slides", topic.slides_url),
         ("Aula", topic.lesson_url),
         ("Prática", topic.practice_url),
         ("Avaliação", topic.assessment_url),
@@ -797,7 +795,6 @@ def build_projection_plan(
             "roadmap_fingerprint": fingerprint,
             "ready_role": ready_role,
             "resource_urls": {
-                "slides": topic.slides_url,
                 "lesson": topic.lesson_url,
                 "practice": topic.practice_url,
                 "assessment": topic.assessment_url,
@@ -952,19 +949,6 @@ def validate_readback(
         if urls != expected_urls:
             errors.append(f"resource URLs differ for {lesson.topic.topic_id}")
         if lesson.topic.materialized and lesson.visible_state != "Planejado":
-            # "slides" deliberately excluded from this mandatory-presence
-            # check: unlike lesson/assessment, every real instance with
-            # study_slides.enabled: false (this entire pilot, since Etapa 4)
-            # never has a slides_url for any topic, materialized or not --
-            # that is the correct, expected state, not a missing resource.
-            # A real evaluate dispatch's own run_publish_projection call hit
-            # this exact false requirement and correctly refused to
-            # fabricate a slides URL rather than pass this check. The
-            # separate `urls != expected_urls` comparison above already
-            # catches a genuine mismatch if slides really were expected
-            # (topic.slides_url set) and the backend dropped them, so
-            # dropping "slides" from this list does not weaken that
-            # protection.
             for key in ("lesson", "assessment"):
                 if not expected_urls.get(key):
                     errors.append(

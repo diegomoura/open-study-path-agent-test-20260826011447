@@ -36,7 +36,6 @@ OTHER_FORMATS_HEADING = "## Outras formas de aprender"
 
 SPECIALIZED_REVIEW_PREFIXES = (
     "state/content-reviews/",
-    "state/slide-reviews/",
 )
 
 # A precise URL or DOI is already a durable locator. Section, page and numbered
@@ -114,25 +113,8 @@ def regeneration_targets(changed_paths: Iterable[str]) -> tuple[str, ...]:
             topic = match.group(1)
             targets.update(
                 {
-                    f"study/slides/{topic}/slides.pdf",
-                    f"study/slides/{topic}/slides.meta.json",
                     f"state/content-reviews/{topic}.yml",
-                    f"state/slide-reviews/{topic}.yml",
                 }
             )
             continue
-
-        match = re.fullmatch(
-            r"study/slides/(TOPIC-\d+)/(?:index\.html|slides\.css|slides\.js)",
-            path,
-        )
-        if match:
-            topic = match.group(1)
-            targets.update(
-                {
-                    f"study/slides/{topic}/slides.pdf",
-                    f"study/slides/{topic}/slides.meta.json",
-                    f"state/slide-reviews/{topic}.yml",
-                }
-            )
     return tuple(sorted(targets))

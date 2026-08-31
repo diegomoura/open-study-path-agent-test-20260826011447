@@ -9,10 +9,8 @@ Read before generating:
 - `docs/content-quality-and-sources.md`;
 - `docs/mermaid-visual-learning.md`;
 - `docs/integration-capabilities.md`;
-- `docs/study-slides.md`;
 - `instructions/35-review-curriculum.md`;
-- `instructions/36-review-course-content.md`;
-- `instructions/37-review-study-slides.md`.
+- `instructions/36-review-course-content.md`.
 
 ## Planning contract
 
@@ -86,21 +84,17 @@ For `adaptive_rolling_window`:
 2. generate all detailed content only when the curriculum is within both configured full-upfront thresholds;
 3. otherwise materialize only the first deterministic lookahead window;
 4. choose it in topological order;
-5. keep future contracts `content_status: planned` without broken module, slide, rubric or form links.
+5. keep future contracts `content_status: planned` without broken module, rubric or form links.
 
 For every materialized topic, create:
 
 - a complete module under `study/modules/`;
-- internal semantic slide sources and a rendered PDF under `study/slides/TOPIC-000/`;
 - a 100-point rubric under `study/assessments/`;
 - a GitHub Issue Form under `.github/ISSUE_TEMPLATE/`;
 - positive content version and materialization date;
-- a current independent review under `state/content-reviews/`;
-- a current independent slide review under `state/slide-reviews/`.
+- a current independent review under `state/content-reviews/`.
 
 Do not create flashcards, Markdown decks, TSV exports or Quizlet sets. Retrieval practice must be taught inside the lesson through prerequisite recall, guided questions, independent application and `## Confira sem consultar`.
-
-The topic contract records `slides`, `slides_pdf` and `slides_review`. The module links only the PDF through the stable authenticated GitHub raw route. HTML, CSS, Mermaid source, generated SVG and render metadata and slide-review evidence are internal.
 
 ## Outcome traceability
 
@@ -111,11 +105,9 @@ For every materialized topic:
 3. add `outcome_ids` to every assessment-rubric question;
 4. ensure every outcome is taught and assessed at least once;
 5. run `instructions/36-review-course-content.md` as a separate pass;
-6. create `state/content-reviews/TOPIC-000.yml` for the current version;
-7. represent every outcome in slides through honest `data-outcome-ids`;
-8. run `instructions/37-review-study-slides.md` before PDF rendering.
+6. create `state/content-reviews/TOPIC-000.yml` for the current version.
 
-A marker or identifier beside a heading does not prove coverage. Reviewers must verify the actual explanation, example, practice, assessment and visual summary.
+A marker or identifier beside a heading does not prove coverage. Reviewers must verify the actual explanation, example, practice and assessment.
 
 ## Complete-content contract
 
@@ -137,8 +129,7 @@ Every ready lesson must be self-contained for the configured time and level. It 
 14. direct assessment action;
 15. **How this content was built** provenance;
 16. **Other ways to learn** when useful;
-17. **Sources and paths to deepen** with verified links and locators;
-18. one direct **Slides da aula** PDF link.
+17. **Sources and paths to deepen** with verified links and locators.
 
 Reject modules that merely instruct the learner to read, study, watch, reflect or discuss without teaching the underlying content.
 
@@ -159,8 +150,6 @@ For every materialized module:
 - provide a free or official alternative for potentially paid resources;
 - keep the lesson understandable without opening external links.
 
-The slide deck inherits these reviewed claims. It does not run a second research pass or introduce unsupported claims. It must preserve every required concept and at least two worked examples instead of compressing the lesson into a generic shell.
-
 ## Videos and courses
 
 Use videos when they provide a useful alternative explanation or demonstration. Include title, creator or institution, direct link, duration or recommended timestamp, language or legends when relevant and one active task.
@@ -170,21 +159,6 @@ Use Coursera, edX, Udemy, Khan Academy or other catalogs only at the exact secti
 ## Visual learning with Mermaid
 
 The roadmap must show the actual topic dependency graph. Every materialized module contains the configured number of explained Mermaid diagrams. A diagram is a teaching artifact, not decoration.
-
-Every slide deck also contains at least one useful Mermaid source under `diagrams/`. Reuse or simplify a reviewed lesson model, then render it to static SVG before browser inspection. Mermaid is authored in `.mmd` files and rendered to static SVG before HTML inspection and PDF generation.
-
-## Study-slide authoring and rendering
-
-Slides are derived only after the lesson, practice and assessment pass `instructions/36-review-course-content.md`.
-
-- Use `templates/study-slides/` and create twelve to twenty-four topic-specific 16:9 slides according to estimated effort.
-- Keep one principal conceptual move per slide and normally no more than 120 words.
-- Prefer dark high-contrast layouts, semantic headings, concise examples and focused diagrams.
-- Do not generate raster illustrations or an image of each slide.
-- Do not use a CDN, remote font, GitHub Pages, RawGitHack, PowerPoint or an external slide service.
-- Do not expose HTML source to the learner.
-
-After authoring, run `instructions/37-review-study-slides.md`, correct findings, render `slides.pdf`, commit `slides.meta.json` and run `scripts/validate_study_slides.py`.
 
 ## Contextual integration recommendation
 
@@ -233,7 +207,7 @@ Do not foreground generation thresholds, topological order, PR status, CI or int
 
 ## Pull request and automatic review
 
-Open one draft PR containing only allowed curriculum artifacts. Run curriculum review, course-content review for every materialized topic, slide review, PDF rendering and the shared phase review. The lesson, slide sources, PDF, metadata and reviews belong to the same content version and PR. Merge only when no material decision or blocking finding remains.
+Open one draft PR containing only allowed curriculum artifacts. Run curriculum review, course-content review for every materialized topic, and the shared phase review. The lesson, metadata and reviews belong to the same content version and PR. Merge only when no material decision or blocking finding remains.
 
 ## Completion
 

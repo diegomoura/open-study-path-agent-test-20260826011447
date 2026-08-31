@@ -49,6 +49,5 @@ jobs:
           set -o pipefail
           python -m unittest tests/test_refresh_review_fingerprints.py 2>&1 | tee usable-generation-tests.log
 
-# PDF generation remains in the dedicated study-slide validation path. This job
-# intentionally does not install Playwright or Chromium and represents the
-# durable learning_window_usable gate, not slides_pdf_status.
+# This job intentionally does not install Playwright or Chromium and
+# represents the durable learning_window_usable gate.

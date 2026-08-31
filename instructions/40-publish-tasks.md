@@ -1,8 +1,8 @@
 # Publish tasks and selected integrations
 
-Use the approved roadmap, topic contracts, ready lessons, reviewed slide PDFs, integration plan and current state. Publication creates only the external organization that helps the learner act now. It must not regenerate pedagogical content, slide sources or PDFs.
+Use the approved roadmap, topic contracts, ready lessons, integration plan and current state. Publication creates only the external organization that helps the learner act now. It must not regenerate pedagogical content.
 
-Read `docs/learner-facing-language.md` and `docs/study-slides.md` before writing task descriptions or the completion response.
+Read `docs/learner-facing-language.md` before writing task descriptions or the completion response.
 
 The natural command is:
 
@@ -18,7 +18,7 @@ Do not advertise, probe or summarize tools merely because they were mentioned in
 
 ## Authority model
 
-GitHub stores approved curriculum, lessons, slide PDFs, assessments and verified progress. Exactly one task backend tracks operational execution. Reminders and calendars support routine only; they never establish learning completion.
+GitHub stores approved curriculum, lessons, assessments and verified progress. Exactly one task backend tracks operational execution. Reminders and calendars support routine only; they never establish learning completion.
 
 ## Standard assessment labels
 
@@ -51,20 +51,13 @@ Numbering is a navigation aid, not a prerequisite rule. Readiness, movement betw
 
 For every ready topic, show these learner-facing capabilities in this order:
 
-1. one **Slides** link to the current reviewed PDF;
-2. one **Aula** link to the complete module;
-3. one **Prática** link only when a separate approved exercise or laboratory is useful;
-4. one direct **Avaliação** link.
+1. one **Aula** link to the complete module;
+2. one **Prática** link only when a separate approved exercise or laboratory is useful;
+3. one direct **Avaliação** link.
 
 When practice is already contained in the lesson, do not create or link a duplicate deck. Never create flashcard Markdown, TSV exports or Quizlet sets. The **Aula** remains the practice destination in that case.
 
-Build the slide URL from the exact instance identity and topic contract:
-
-```text
-https://github.com/OWNER/REPOSITORY/raw/HEAD/study/slides/TOPIC-000/slides.pdf
-```
-
-Do not show internal HTML, CSS, Mermaid source, generated SVG and render metadata, slide reviews, topic contracts, rubric YAML, state files or synchronization records.
+Do not show internal topic contracts, rubric YAML, state files or synchronization records.
 
 ### Primary next lesson and parallel availability
 
@@ -85,7 +78,6 @@ Use a description equivalent to:
 >
 > **Recursos**
 >
-> - **Slides:** <link direto para o PDF da versão atual>
 > - **Aula:** <link direto para o módulo completo>
 > - **Prática:** <somente quando houver um exercício separado útil>
 > - **Avaliação:** <link direto para o formulário>
@@ -116,7 +108,7 @@ Use:
 > **Tempo sugerido:** <estimativa>  
 > **O que você vai produzir:** <entregável>
 >
-> A aula completa será preparada automaticamente quando todos os pré-requisitos acima estiverem concluídos. Os slides serão gerados junto com ela. Você não precisa pedir a geração manualmente.
+> A aula completa será preparada automaticamente quando todos os pré-requisitos acima estiverem concluídos. Você não precisa pedir a geração manualmente.
 
 The future card must stand on its own. Do not link nonexistent modules, PDFs, assessments or internal contracts.
 
@@ -191,7 +183,7 @@ Before publication success, read the board or project and every created or updat
 - blocked or not-yet-materialized cards are in **Planejado**;
 - objective, effort and deliverable match;
 - prerequisite copy contains exactly the direct prerequisite titles;
-- resource order is Slides, Aula, optional Prática, Avaliação;
+- resource order is Aula, optional Prática, Avaliação;
 - links point to current reviewed content and future cards contain no broken resource links;
 - no internal artifact or inactive provider is exposed;
 - the persisted roadmap fingerprint matches the current approved roadmap.

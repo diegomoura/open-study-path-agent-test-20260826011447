@@ -72,7 +72,6 @@ def test_assessment_commands_are_semantic() -> None:
 
 def test_specialized_reviews_do_not_need_second_review() -> None:
     assert is_specialized_review_path("state/content-reviews/TOPIC-001.yml")
-    assert is_specialized_review_path("state/slide-reviews/TOPIC-001.yml")
     assert not is_specialized_review_path("state/reviews/curriculum.yml")
 
 
@@ -88,16 +87,6 @@ def test_regeneration_closure() -> None:
     targets = set(regeneration_targets(["study/modules/TOPIC-001.md"]))
     assert targets == {
         "state/content-reviews/TOPIC-001.yml",
-        "state/slide-reviews/TOPIC-001.yml",
-        "study/slides/TOPIC-001/slides.meta.json",
-        "study/slides/TOPIC-001/slides.pdf",
-    }
-
-    slide_targets = set(regeneration_targets(["study/slides/TOPIC-002/index.html"]))
-    assert slide_targets == {
-        "state/slide-reviews/TOPIC-002.yml",
-        "study/slides/TOPIC-002/slides.meta.json",
-        "study/slides/TOPIC-002/slides.pdf",
     }
 
 

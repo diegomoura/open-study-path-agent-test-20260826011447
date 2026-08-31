@@ -35,17 +35,15 @@ wired to a real agent call so far:
   see `docs/claude-agent-pilot-etapa5.md`, section 6.
 - `generate_detailed` -- the `detailed_generation` suboperation
   (`instructions/30-generate-path.md` -- topic contracts, lesson modules,
-  rubrics, GitHub Issue Forms), restricted to **no slide generation** by
-  default (`AGENT_PILOT_ENABLE_SLIDES`, unset/false). Etapa 5's second
+  rubrics, GitHub Issue Forms). Etapa 5's second
   slice (Etapa 5b). Validated with 7 real dispatches -- real pedagogical
   content generation and correct reviewer blocking on a real gap both
   confirmed, no clean `approved` run yet (the last attempt correctly
   blocked on a missing required deliverable, `state/content-reviews/`,
   now fixed in the prompt but not re-validated) -- see
-  `docs/claude-agent-pilot-etapa5.md`, section 8. Turning the slides env
-  var on is refused loudly before any API call; slide rendering
-  (`scripts/render_study_slides.mjs`, Node.js/Puppeteer) is a separate,
-  not-yet-built slice of work.
+  `docs/claude-agent-pilot-etapa5.md`, section 8. Study slides were later
+  removed from the pilot entirely (not just toggled off) -- see
+  `docs/claude-agent-pilot-etapa10-remove-slides.md`.
 
 `diagnostic` (Etapa 4b) has its own workflow now
 (`.github/workflows/agent-pilot-diagnostic.yml`), triggered by
@@ -65,7 +63,7 @@ original real 4-turn validation (question budget respected, correct
 placement conclusion, reviewer approved with substantive findings) --
 see `docs/claude-agent-pilot-etapa4b-diagnostic-design.md`, section 6.
 
-`generate` (curriculum/content/slides) has not been picked up either --
+`generate` (curriculum/content) has not been picked up either --
 proposal section 7, step 5. `publish`'s real-dispatch validation is
 constrained by this: there is no real approved roadmap in the disposable
 test repository yet, so its validation dispatch uses a small fixture topic

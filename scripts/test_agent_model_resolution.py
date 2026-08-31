@@ -47,7 +47,6 @@ def test_economy_dial_warns_for_structural_agents_only() -> None:
     warned_ids = {agent_id for agent_id, agent in resolved.items() if agent.warning}
     assert warned_ids == STRUCTURAL_AGENTS
     assert "publish" not in warned_ids
-    assert "slide_generator" not in warned_ids
 
 
 def test_explicit_override_wins_over_dial() -> None:
@@ -72,9 +71,10 @@ def test_structural_override_below_recommended_produces_warning() -> None:
 
 
 def test_mechanical_override_below_recommended_has_no_warning() -> None:
-    # publish's recommended tier is already haiku, so there's no "below" to warn about.
-    resolved = resolve_effective_models(default_config(model_overrides={"slide_generator": "haiku"}))
-    agent = resolved["slide_generator"]
+    # diagnostic is not in STRUCTURAL_AGENTS, so overriding it below its
+    # recommended tier (sonnet) produces no warning, unlike a structural agent.
+    resolved = resolve_effective_models(default_config(model_overrides={"diagnostic": "haiku"}))
+    agent = resolved["diagnostic"]
     assert agent.effective_tier == "haiku"
     assert agent.warning is None
 

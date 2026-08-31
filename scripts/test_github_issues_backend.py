@@ -78,7 +78,6 @@ def _two_topics() -> list[TopicProjection]:
             content_version=1,
             canonical_state="planned",
             materialized=True,
-            slides_url="https://github.com/o/r/raw/HEAD/study/slides/aula-01/slides.pdf",
             lesson_url="https://github.com/o/r/blob/HEAD/study/lessons/aula-01.md",
             assessment_url="https://github.com/o/r/blob/HEAD/study/assessments/aula-01.md",
         ),

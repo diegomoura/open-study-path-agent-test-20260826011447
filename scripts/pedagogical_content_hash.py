@@ -10,7 +10,6 @@ from pathlib import Path
 
 BLOCKS = (
     ("practice-links", "open-study-path:practice-links"),
-    ("slides-link", "open-study-path:slides-link"),
     ("task-links", "open-study-path:task-links"),
 )
 

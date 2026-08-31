@@ -31,7 +31,6 @@ CURRICULUM_PREFIXES = (
     "study/topics/",
     "study/modules/",
     "study/assessments/",
-    "study/slides/",
     ".github/ISSUE_TEMPLATE/assessment-topic-",
 )
 

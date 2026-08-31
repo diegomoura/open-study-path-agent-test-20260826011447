@@ -11,7 +11,6 @@ Uma trilha possui:
 - um mapa completo do caminho de aprendizagem;
 - etapas pequenas, com objetivo e tempo sugerido;
 - aulas autocontidas com explicações, exemplos, prática e diagramas;
-- slides visuais em PDF para revisar cada aula pronta;
 - fontes verificáveis e formas alternativas de aprender;
 - flashcards quando ajudam;
 - avaliações com feedback e revisão focada;
@@ -42,9 +41,9 @@ Há revisores especializados para configuração, intake, diagnóstico, currícu
 
 A revisão procura contradições entre o pedido, os artefatos produzidos, o estado persistido e as ferramentas externas. Cada aprovação registra os arquivos exatos revisados e suas versões em `state/reviews/`. Mudanças sem revisão, cobertura parcial, aprovação antiga ou achado bloqueante impedem o merge.
 
-A revisão de aulas continua mais profunda: cada resultado prometido precisa ser realmente ensinado e avaliado, com evidência versionada em `state/content-reviews/`. Depois disso, uma revisão separada verifica se os slides resumem fielmente a aula, cobrem os mesmos resultados e continuam legíveis.
+A revisão de aulas continua mais profunda: cada resultado prometido precisa ser realmente ensinado e avaliado, com evidência versionada em `state/content-reviews/`.
 
-Veja `docs/review-framework.md` e `docs/study-slides.md`.
+Veja `docs/review-framework.md`.
 
 ## Linguagem voltada para quem estuda
 
@@ -87,7 +86,7 @@ Veja `docs/claude-agent-setup.md` para o passo a passo completo, as restrições
 flowchart LR
     I[Conte o que quer aprender] --> D[Diagnóstico curto]
     D --> R[Trilha personalizada]
-    R --> A[Aulas e slides prontos]
+    R --> A[Aulas prontas]
     A --> P[Prática e avaliação]
     P -->|Concluiu| N[Próximas aulas]
     P -->|Precisa revisar| V[Revisão focada]
@@ -102,23 +101,19 @@ O mapa completo é criado desde o início. Em trilhas maiores, apenas as primeir
 - `study/roadmap.md` — visão completa e sequência;
 - `study/topics/` — visão resumida de cada etapa;
 - `study/modules/` — aulas completas;
-- `study/slides/` — fontes internas e PDFs dos slides;
 - `study/flashcards/` — prática local em Markdown e TSV;
 - `study/assessments/` — rubricas;
 - `.github/ISSUE_TEMPLATE/` — formulários de entrada e avaliação;
 - `study/integrations.md` — ferramentas que podem ajudar;
 - `state/reviews/` — revisões independentes das operações;
 - `state/content-reviews/` — revisão semântica das aulas materializadas;
-- `state/slide-reviews/` — revisão semântica dos slides;
 - `state/` — registros técnicos de progresso e integrações.
 
 ## Aprendizagem visual
 
 O roadmap mostra as dependências reais em Mermaid. Cada aula pronta possui ao menos um diagrama útil e explicado. Diagramas podem representar decisões, sequências, estados, relações, arquitetura, dados ou cronologia.
 
-Depois da revisão da aula, o template produz uma apresentação resumida em HTML semântico, revisa o conteúdo visual e gera automaticamente um PDF 16:9. O HTML é apenas a base de renderização; a pessoa recebe o PDF na aula e na ferramenta de tarefas.
-
-Veja `docs/mermaid-visual-learning.md` e `docs/study-slides.md`.
+Veja `docs/mermaid-visual-learning.md`.
 
 ## Integrações por necessidade
 
@@ -153,11 +148,10 @@ O agente localiza a submissão correta sem exigir o número da issue na situaç�
 ## Princípios
 
 - a aula ensina; não é uma lista de links;
-- os slides resumem a aula aprovada sem criar um segundo conteúdo;
 - as fontes são verificadas e explicadas;
 - exemplos e atividades são personalizados sem expor dados desnecessários;
 - toda operação gerada passa por revisão independente;
 - ferramentas opcionais nunca bloqueiam o caminho principal;
-- conteúdo, slides e avaliações ficam versionados no GitHub;
+- conteúdo e avaliações ficam versionados no GitHub;
 - detalhes técnicos ficam disponíveis sem ocupar a conversa principal;
 - nenhuma credencial ou submissão bruta é versionada.

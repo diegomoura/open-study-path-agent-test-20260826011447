@@ -34,7 +34,7 @@ Every generated artifact changed by an instance operation must be covered by an 
 
 Authoring and review are separate passes even when the same runtime performs both. The reviewer reconstructs evidence from approved inputs, repository outputs and harmless external read-backs; it does not trust the authoring pass's success claim.
 
-Specialized review remains additive: materialized teaching content requires `instructions/36-review-course-content.md`, study slides require `instructions/37-review-study-slides.md`, and selected integrations require resolution and projection checks.
+Specialized review remains additive: materialized teaching content requires `instructions/36-review-course-content.md`, and selected integrations require resolution and projection checks.
 
 Missing review, partial coverage, stale fingerprints or skipped checks block CI, merge and a success response.
 
@@ -80,8 +80,7 @@ Read `docs/beginner-first-pedagogy.md`. A topic overview is not a lesson. Every 
 - guided and independent practice;
 - active recall inside the lesson;
 - deliverable and assessment instructions;
-- provenance, inspected sources and useful alternative formats;
-- a direct link to the current slide PDF.
+- provenance, inspected sources and useful alternative formats.
 
 Do not generate flashcards, Markdown decks, TSV exports or Quizlet sets. Recovery practice stays inside the lesson and assessment unless a genuinely different exercise or laboratory adds value.
 
@@ -98,18 +97,6 @@ Every topic defines stable learning outcomes and required concepts. Every materi
 ## Mermaid visual learning
 
 Every roadmap contains the actual topic dependency graph. Every ready module contains the configured minimum number of explained Mermaid diagrams. A diagram supplements prose and practice; it does not replace them.
-
-## Study slides and PDF
-
-Read `docs/study-slides.md` and `instructions/37-review-study-slides.md` whenever a topic is materialized.
-
-Create semantic HTML/CSS and Mermaid source files under `study/slides/TOPIC-000/`, derive 12–24 topic-specific slides according to estimated effort from the reviewed lesson, represent outcomes honestly, include Mermaid source, render it to static SVG, run slide review and render `slides.pdf` and validate it before merge.
-
-HTML, CSS, Mermaid sources and generated SVG are build inputs only. The learner sees only:
-
-`https://github.com/OWNER/REPOSITORY/raw/HEAD/study/slides/TOPIC-000/slides.pdf`
-
-A failed render, stale source hash, missing SVG, overflow, page mismatch or missing PDF blocks merge and publication.
 
 ## Capability-based integrations
 
@@ -162,13 +149,13 @@ Exactly one unfinished eligible topic occupies **Próxima aula**: the earliest e
 
 ### Human task titles
 
-A ready card says what the learner will do, how long it may take, where the slides, complete lesson, optional separate practice and assessment are, what to produce and how to finish.
+A ready card says what the learner will do, how long it may take, where the complete lesson, optional separate practice and assessment are, what to produce and how to finish.
 
-Show resources in this order: **Slides**, **Aula**, optional **Prática**, **Avaliação**. Do not create a duplicate practice resource when the exercises already live in the lesson.
+Show resources in this order: **Aula**, optional **Prática**, **Avaliação**. Do not create a duplicate practice resource when the exercises already live in the lesson.
 
-A future card begins with **Pré-requisitos desta aula**, lists exactly the direct prerequisite titles and explains that numbering helps navigation while the list position and prerequisites determine readiness. Do not attach nonexistent lesson, slide PDF, practice or assessment links.
+A future card begins with **Pré-requisitos desta aula**, lists exactly the direct prerequisite titles and explains that numbering helps navigation while the list position and prerequisites determine readiness. Do not attach nonexistent lesson, practice or assessment links.
 
-A task backend is not a repository inventory. Do not link topic contracts, rubric YAML, state files, synchronization records, slide sources or review evidence.
+A task backend is not a repository inventory. Do not link topic contracts, rubric YAML, state files or synchronization records.
 
 After successful publication, do not add “O restante ficou assim” or list inactive, deferred, reserved, fallback-only or merely connected providers. Show the primary destination, first action and evaluation command.
 
@@ -190,7 +177,7 @@ Read `instructions/55-evaluate-topic.md`. Resolve submissions using labels, hidd
 
 Grade every response independently, calculate 0–100, comment on the issue, persist a versioned attempt and update progress. No external provider sets completion.
 
-When mastered, run `instructions/57-materialize-next-content.md` automatically and return the next ready slide PDF and lesson. When more work is needed, create focused review and targeted reassessment using supportive language such as “Revisão necessária”.
+When mastered, run `instructions/57-materialize-next-content.md` automatically and return the next ready lesson. When more work is needed, create focused review and targeted reassessment using supportive language such as “Revisão necessária”.
 
 ## Agent model configuration
 

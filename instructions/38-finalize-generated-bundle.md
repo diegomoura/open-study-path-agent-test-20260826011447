@@ -4,7 +4,7 @@ Use this contract whenever a phase creates or changes a materialized lesson. It 
 
 ## One final source state
 
-Finish the learner-facing lesson, assessment form, rubric, flashcards and practice sections before rendering slides. Do not render a PDF from an intermediate lesson and then continue editing the lesson.
+Finish the learner-facing lesson, assessment form, rubric, flashcards and practice sections before the module is considered final. Do not treat an intermediate lesson as final while still editing it.
 
 A published lesson contains no YAML frontmatter. Operational metadata remains in `study/topics/TOPIC-000.md`.
 
@@ -22,20 +22,18 @@ After the final lesson text is settled:
 
 1. synchronize the bounded practice-link block;
 2. validate the module and assessment form;
-3. author or update the semantic slide sources;
-4. run the independent content and slide reviews;
-5. render `slides.pdf` and `slides.meta.json` from that exact lesson and slide source state;
-6. refresh specialized review fingerprints;
-7. refresh the generic phase review fingerprints last;
-8. run the complete repository validation before the first or next push.
+3. run the independent content review;
+4. refresh specialized review fingerprints;
+5. refresh the generic phase review fingerprints last;
+6. run the complete repository validation before the first or next push.
 
-When a lesson changes, use `regeneration_targets()` from `scripts/generated_instance_contract.py` to identify the dependent PDF, metadata and specialized reviews that must be refreshed in the same final batch. When slide HTML, CSS or JavaScript changes, refresh the PDF, metadata and slide review.
+When a lesson changes, use `regeneration_targets()` from `scripts/generated_instance_contract.py` to identify the dependent specialized reviews that must be refreshed in the same final batch.
 
 Never fix one stale artifact, push it, wait for validation to reveal the next dependent stale artifact and repeat. Prepare and validate the complete closure locally, then publish one coherent head.
 
 ## Review separation
 
-`state/content-reviews/` and `state/slide-reviews/` are specialized review evidence. They are validated by their own contracts and are not themselves generated artifacts that require approval by a second generic review. The generic phase review covers the lesson, topic contract, assessment, flashcards, slide sources, PDF and metadata.
+`state/content-reviews/` is specialized review evidence. It is validated by its own contract and is not itself a generated artifact that requires approval by a second generic review. The generic phase review covers the lesson, topic contract, assessment and flashcards.
 
 ## Observable branch updates
 

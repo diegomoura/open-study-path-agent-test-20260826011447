@@ -2,7 +2,7 @@
 
 Run this review after an authoring pass creates or changes any materialized lesson, assessment or learner-facing task projection. It is a separate internal role from curriculum planning and content authorship. Do not ask the learner for a generic review command.
 
-This review approves the complete teaching content before slide authoring begins. It does not approve the visual summary or rendered PDF. After it passes, generate the internal slide sources and run `instructions/37-review-study-slides.md` as another independent role.
+This review approves the complete teaching content before it is presented to the learner.
 
 ## Role
 
@@ -108,22 +108,10 @@ Approve only when:
 
 A changed lesson or content version requires a new review.
 
-## Study-slide handoff
-
-Only after approval:
-
-1. derive a concise visual narrative from the reviewed lesson;
-2. generate HTML, CSS, Mermaid source files and generated SVG under `study/slides/TOPIC-000/`;
-3. preserve outcomes through `data-outcome-ids`;
-4. avoid new research, unsupported claims and raster slide images;
-5. run `instructions/37-review-study-slides.md` before rendering the PDF.
-
-The course-content reviewer does not pre-approve the slide summary.
-
 ## Independence boundary
 
 The same runtime may execute authoring and review, but as separate passes with separate instructions and artifacts. During review, inspect repository output as evidence and actively search for contradictions.
 
 ## Merge boundary
 
-Course-content review is required before a curriculum or materialization PR can merge when enabled. When study slides are enabled, the same PR must subsequently contain a current approved slide review, generated PDF and passing deterministic slide validation.
+Course-content review is required before a curriculum or materialization PR can merge when enabled.

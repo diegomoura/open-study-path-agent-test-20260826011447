@@ -14,9 +14,6 @@ learning_outcomes:
     required_concepts:
       - Replace me with a concept that must be taught.
 module: study/modules/TOPIC-000.md
-slides: study/slides/TOPIC-000/index.html
-slides_pdf: study/slides/TOPIC-000/slides.pdf
-slides_review: state/slide-reviews/TOPIC-000.yml
 assessment: study/assessments/TOPIC-000.yml
 assessment_form: .github/ISSUE_TEMPLATE/assessment-topic-000.yml
 ---
@@ -48,8 +45,6 @@ Defina entre três e sete ações pequenas e verificáveis, normalmente com 10�
 ## Aula
 
 Quando `content_status: materialized`, registre internamente [a aula completa](../modules/TOPIC-000.md). A aula publicada não recebe frontmatter YAML; ela começa diretamente pelo título e pela orientação de estudo.
-
-A mesma versão materializada também gera fontes HTML internas em `slides`, o PDF learner-facing em `slides_pdf` e a revisão especializada em `slides_review`. Somente o PDF aparece na aula e nas ferramentas de tarefas. Não exponha o HTML, CSS, Mermaid source files and generated SVG, metadados de renderização ou evidência de revisão como navegação de estudo.
 
 Quando `content_status: planned`, use:
 

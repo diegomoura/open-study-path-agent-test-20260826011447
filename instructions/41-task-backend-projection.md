@@ -86,7 +86,7 @@ After all required external writes:
 6. verify all parallel eligible lessons;
 7. verify prerequisites, states and roadmap fingerprint;
 8. scan every managed visible field for internal metadata;
-9. verify current lesson, slides, practice and assessment URLs;
+9. verify current lesson, practice and assessment URLs;
 10. persist the operation checkpoint and `state/integrations.json`;
 11. render `study/integrations.md` from authoritative state;
 12. only then report success.

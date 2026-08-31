@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate bounded connector-first generation and CI-owned static slide rendering."""
+"""Validate bounded connector-first generation execution."""
 from __future__ import annotations
 
 import sys
@@ -45,19 +45,14 @@ def main() -> None:
     require(EXECUTION_CONTRACT, [
         "Connector-first execution", "Do not attempt `gh`, `git clone`, `curl`", "Do not begin with shell authentication probes",
         "Do not use fixed `sleep` loops", "Capability preflight", "Batched GitHub writes", "create_blob", "create_tree",
-        "create_commit", "update_ref", "never create one commit per generated file", "Slide authoring boundary",
-        "diagrams/*.mmd", "Do not author `slides.js`, `slides.zip`, PNG", "12–24 topic-specific slides", "CI render handoff",
-        "study-slide-render-output", "converts every `diagrams/*.mmd` file to static SVG", "visually inspect the PDFs",
+        "create_commit", "update_ref", "never create one commit per generated file",
         "Never run `scripts/validate_curriculum.py` directly", "GitHub Actions is the final rendering environment",
         "scripts/validate_instance_operation_scope.py", "Do not change a validator to make generated content pass",
         "Batch every failure of the same deterministic class", TERMINAL_RESOLVER, "Final current-head read-back",
         "Never say that the trail is generated while the pull request remains open", "Terminal condition",
     ])
-    forbid(EXECUTION_CONTRACT, ["slides.zip` and", "package_study_slides.py", "esbuild@", "Playwright"])
-    require("docs/study-slides.md", ["static SVG", "slides.pdf", "12 slides", "at least two worked examples", "generic filler", "contains no Mermaid runtime"])
-    require("instructions/37-review-study-slides.md", ["version 4", "required_concept_coverage", "content_density", "topic_specificity", "static_svg_quality", "pdf_delivery"])
     require("AGENTS.md", [EXECUTION_CONTRACT, "Complete them before responding", "Do not lead with PR, CI", "instructions/57-materialize-next-content.md", "## Safety"])
-    for path in [TERMINAL_RESOLVER, TERMINAL_TESTS, SCOPE_GUARD, SCOPE_TESTS, "scripts/render_study_slides.mjs", "scripts/test_study_slide_renderer.mjs"]:
+    for path in [TERMINAL_RESOLVER, TERMINAL_TESTS, SCOPE_GUARD, SCOPE_TESTS]:
         text(path)
     manifest = load_yaml("instructions/manifest.yml")
     phases = {phase.get("id"): phase for phase in manifest.get("phases", []) if isinstance(phase, dict)}
@@ -68,17 +63,14 @@ def main() -> None:
         "python scripts/test_instance_operation_scope.py", "python scripts/validate_instance_operation_scope.py",
         "python scripts/test_generation_terminal_state.py", "python scripts/validate_generation_efficiency.py",
         "python scripts/validate_learning_experience.py", "python scripts/test_curriculum_placeholder_detection.py",
-        "python scripts/validate_curriculum_safe.py", "node scripts/test_study_slide_renderer.mjs",
-        "node scripts/render_study_slides.mjs --check", "python scripts/validate_study_slides.py",
+        "python scripts/validate_curriculum_safe.py",
     ]:
         if command not in workflow: fail(f"validation workflow is missing: {command}")
-    for term in ["study-slide-render-output", "REVIEW_BASE_SHA", "mermaid@11.12.2", "puppeteer@25.3.0", "pdf-lib@1.17.1"]:
+    for term in ["REVIEW_BASE_SHA"]:
         if term not in workflow: fail(f"validation workflow is missing render/scope term: {term}")
-    for obsolete in ["package_study_slides.py", "study-slide-package-output", "slides.zip"]:
-        if obsolete in workflow: fail(f"validation workflow retains obsolete package term: {obsolete}")
     if "python scripts/validate_curriculum.py" in workflow:
         fail("workflow must use the safe curriculum validator")
-    print("Efficient connector-first generation and CI-owned static SVG/PDF contracts passed.")
+    print("Efficient connector-first generation passed.")
 
 
 if __name__ == "__main__":

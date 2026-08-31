@@ -406,7 +406,7 @@ def test_operation_journal_uses_dedicated_validation() -> None:
     assert uses_dedicated_validation(
         "state/operations/publication-trello-v1.json"
     )
-    assert uses_dedicated_validation("state/slide-reviews/TOPIC-001.yml")
+    assert uses_dedicated_validation("state/content-reviews/TOPIC-001.yml")
     assert not uses_dedicated_validation("state/integrations.json")
     assert not uses_dedicated_validation("state/operations/readme.md")
 

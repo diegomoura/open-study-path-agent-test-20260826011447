@@ -72,8 +72,6 @@ AGENT_CATALOG: dict[str, AgentSpec] = {
     "curriculum_reviewer": AgentSpec("curriculum_reviewer", "generate", "reviewer", "opus", True),
     "content_author": AgentSpec("content_author", "generate|evaluate", "author", "sonnet", True),
     "content_reviewer": AgentSpec("content_reviewer", "generate|evaluate", "reviewer", "sonnet", True),
-    "slide_generator": AgentSpec("slide_generator", "generate|evaluate", "author", "sonnet", False),
-    "slide_reviewer": AgentSpec("slide_reviewer", "generate|evaluate", "reviewer", "sonnet", False),
     "publish": AgentSpec("publish", "publish", "author", "haiku", False),
     "integration_preflight": AgentSpec("integration_preflight", "publish", "reviewer", "haiku", False),
     "evaluate": AgentSpec("evaluate", "evaluate", "author", "sonnet", True),
