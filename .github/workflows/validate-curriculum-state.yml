@@ -4,6 +4,16 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_call:
+    # See validate-template.yml's workflow_call comment: lets
+    # agent-pilot-setup.yml's auto-merge gate run this check inline against
+    # its own branch, since a GITHUB_TOKEN-authored PR never gets its own
+    # `pull_request`-triggered run.
+    inputs:
+      ref:
+        description: Branch or SHA to validate (defaults to the calling workflow's own ref)
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -15,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v5

@@ -116,14 +116,44 @@ agent call.
   reviewer prompt explicitly labels untrusted and to be verified
   independently, per `docs/review-framework.md`.
 
-## What this pilot deliberately does not do yet
+## Auto-merge (Opcao C, Etapa 12)
 
-- **No auto-merge.** The workflow opens a pull request and records the
-  reviewer's verdict in `state/reviews/agent-pilot-<phase>.yml` and in the PR
-  body, but a human merges it. `instructions/03-await-ci-and-merge.md`'s
-  automatic-merge policies are not invoked from this workflow. Wiring that up
-  is a follow-up once the pilot's review quality has been checked against a
-  few real runs (proposal, section 7, step 3).
+The workflow auto-merges (squash + delete branch) when, and only when, both
+hold for the exact head commit the reviewer job pushed:
+
+- the independent reviewer's artifact (`state/reviews/agent-pilot-<phase>.yml`)
+  is genuinely approved -- validated with the same fingerprint/coverage logic
+  (`scripts/review_framework.py`'s `validate_review_document`) the
+  human-facing pipeline already requires, not a raw string match on `status`;
+- every completion check `instructions/manifest.yml`'s
+  `automatic_completion.check_sets` requires for that phase succeeded.
+
+This is a **separate mechanism** from `instructions/03-await-ci-and-merge.md`
+and `scripts/ci_completion_state.py`, which remain exactly what they were:
+the automatic-completion contract for the older instructions-driven
+pipeline (chat/agent operating a `workflow.*_merge_policy` by hand). That
+pipeline's CI observation assumes external `pull_request`-triggered check
+runs it can poll for. The agent-pilot workflow cannot make that assumption:
+it always opens its pull request with the default `GITHUB_TOKEN`, and GitHub
+does not cascade events caused by that token to trigger other workflows'
+`pull_request` runs. So instead of waiting on separate check runs that would
+never start, `scripts/resolve_completion_check_sets.py` resolves which of
+the six named checks the phase requires, and the workflow calls each one
+inline as a reusable workflow (`workflow_call`) against its own branch --
+the same technique already used for
+`.github/workflows/agent-pilot-diagnostic-answer-bridge.yml` and documented
+in `docs/claude-agent-pilot-etapa9d-diagnostic-answer-form.md`.
+`scripts/agent_pilot_merge_decision.py` makes the final call from the
+review-document validation plus each check job's actual result (a required
+check that only "skipped" -- e.g. an infrastructure hiccup -- blocks exactly
+like a failure; only checks the phase does not require are allowed to be
+absent). See `docs/claude-agent-pilot-etapa12-auto-merge.md` for the full
+design, the false-positive/false-negative findings that motivated it, and
+why the digest step never costs an API call.
+
+If either condition is not met, nothing changes from before: the pull
+request is left open for a human to decide.
+
 - **No fork trigger.** `workflow_dispatch` requires repository write access
   to invoke, which is the cheapest way to keep `ANTHROPIC_API_KEY` away from
   untrusted input for this first pilot. Issue- or label-triggered runs are

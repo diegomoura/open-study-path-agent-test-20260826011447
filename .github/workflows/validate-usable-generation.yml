@@ -23,6 +23,13 @@ on:
       - 'study/flashcards/**'
       - 'state/content-reviews/**'
   workflow_dispatch:
+  workflow_call:
+    # See validate-template.yml's workflow_call comment.
+    inputs:
+      ref:
+        description: Branch or SHA to validate (defaults to the calling workflow's own ref)
+        required: false
+        type: string
 
 concurrency:
   group: usable-generation-${{ github.workflow }}-${{ github.ref }}
@@ -37,6 +44,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

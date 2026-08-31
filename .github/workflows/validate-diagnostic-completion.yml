@@ -22,6 +22,13 @@ on:
       - "instructions/phase-completion.md"
       - "scripts/test_diagnostic_completion_recovery.py"
       - ".github/workflows/validate-diagnostic-completion.yml"
+  workflow_call:
+    # See validate-template.yml's workflow_call comment.
+    inputs:
+      ref:
+        description: Branch or SHA to validate (defaults to the calling workflow's own ref)
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -35,6 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

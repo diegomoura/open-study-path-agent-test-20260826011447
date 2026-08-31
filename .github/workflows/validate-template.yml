@@ -11,6 +11,24 @@ on:
         description: Base commit used for operation-scope and review validation
         required: false
         type: string
+  workflow_call:
+    # Lets another workflow in this same repository (agent-pilot-setup.yml's
+    # auto-merge gate) run this validation inline, against a branch the
+    # calling workflow itself pushed. A GITHUB_TOKEN-authored pull request
+    # never gets its own `pull_request`-triggered run (GitHub does not cascade
+    # events caused by the default token), so this is the reusable-workflow
+    # ("workflow_call") escape hatch already used elsewhere in this repo for
+    # the same reason -- see .github/workflows/agent-pilot-diagnostic-answer-bridge.yml
+    # and docs/claude-agent-pilot-etapa9d-diagnostic-answer-form.md.
+    inputs:
+      ref:
+        description: Branch or SHA to validate (defaults to the calling workflow's own ref)
+        required: false
+        type: string
+      review_base_sha:
+        description: Base commit used for operation-scope and review validation
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -23,6 +41,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref || github.ref }}
           fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -44,6 +63,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref || github.ref }}
           fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
